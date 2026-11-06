@@ -15,7 +15,7 @@ import { filter, map } from 'rxjs';
 import { Carrito } from './carrito/carrito';
 import { CarritoService } from './core/carrito.service';
 import { Ficha } from './ficha/ficha';
-import { SplitText, animar, gsap } from './core/animaciones';
+import { SplitText, animar, esperaVuelo, gsap } from './core/animaciones';
 
 interface NavLink {
   label: string;
@@ -158,18 +158,34 @@ export class App {
       }
       const sube = cantidad > anterior;
       anterior = cantidad;
+      // Si hay un producto volando hacia el carrito, rebota recién cuando aterriza
+      const delay = sube ? esperaVuelo() : 0;
       if (boton) {
         gsap.fromTo(
           boton,
           { rotate: sube ? -14 : 10 },
-          { rotate: 0, duration: 0.6, ease: 'elastic.out(1.2, 0.4)', overwrite: true },
+          {
+            rotate: 0,
+            duration: 0.6,
+            delay,
+            immediateRender: !delay,
+            ease: 'elastic.out(1.2, 0.4)',
+            overwrite: true,
+          },
         );
       }
       if (badge) {
         gsap.fromTo(
           badge,
           { scale: sube ? 1.6 : 0.7 },
-          { scale: 1, duration: 0.5, ease: 'back.out(3)', overwrite: true },
+          {
+            scale: 1,
+            duration: 0.5,
+            delay,
+            immediateRender: !delay,
+            ease: 'back.out(3)',
+            overwrite: true,
+          },
         );
       }
     });

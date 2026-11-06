@@ -4,6 +4,8 @@
 html {
     scroll-behavior: smooth;
     scrollbar-color: $mostaza $negro-base;
+    // Sin zoom por doble toque (toques repetidos en botones), pero el pinch-zoom sigue andando
+    touch-action: manipulation;
 }
 
 // Con el carrito o la ficha abiertos la página de atrás no scrollea

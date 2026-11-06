@@ -1,4 +1,5 @@
 import { Component, computed, inject, input } from '@angular/core';
+import { volarAlCarrito } from '../core/animaciones';
 import { CarritoService } from '../core/carrito.service';
 import { Producto } from '../core/models';
 
@@ -14,7 +15,9 @@ export class Acciones {
   readonly producto = input.required<Producto>();
   protected readonly cantidad = computed(() => this.carrito.cantidadDe(this.producto().id));
 
-  protected sumar(): void {
+  protected sumar(evento: MouseEvent): void {
+    // La carita vuela desde el botón tocado hasta el carrito
+    volarAlCarrito(evento.currentTarget as HTMLElement);
     this.carrito.agregar(this.producto());
   }
 

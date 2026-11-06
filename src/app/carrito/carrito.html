@@ -1,4 +1,4 @@
-<dialog #dialogo class="carrito" aria-labelledby="carrito-titulo" (close)="cerrar()" (click)="clickFondo($event)">
+<dialog #dialogo class="carrito" aria-labelledby="carrito-titulo" (close)="cerrar()" (cancel)="cancelar($event)" (click)="clickFondo($event)">
     <div class="carrito__panel">
         <!-- ===== Encabezado ===== -->
         <header class="carrito__head">
@@ -43,7 +43,7 @@
                         }
                         <div class="stepper">
                             <button type="button" class="stepper__btn" [attr.aria-label]="'Quitar un ' + l.producto.nombre"
-                                (click)="carrito.cambiar(i, -1)">
+                                (click)="restar(l, i, $event)">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
                                     <path d="M5 12h14" />
@@ -62,7 +62,7 @@
                     <div class="linea__lado">
                         <span class="linea__precio">{{ precio(carrito.subtotal(l)) }}</span>
                         <button type="button" class="linea__borrar" [attr.aria-label]="'Eliminar ' + l.producto.nombre"
-                            (click)="carrito.quitar(i)">
+                            (click)="borrar(l, $event)">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
@@ -72,6 +72,17 @@
                 </li>
                 }
             </ul>
+
+            <!-- Vaciar: el primer toque pide confirmación (evita borrar todo por un toque sin querer) -->
+            <div class="vaciar">
+                <button type="button" class="vaciar__btn" [class.confirmar]="confirmarVaciar()" (click)="vaciar()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
+                    </svg>
+                    {{ confirmarVaciar() ? '¿Seguro? Tocá de nuevo' : 'Vaciar pedido' }}
+                </button>
+            </div>
 
             <!-- ===== Datos del cliente ===== -->
             <section class="datos" aria-labelledby="datos-titulo">

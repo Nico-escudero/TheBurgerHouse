@@ -17,12 +17,30 @@
     overscroll-behavior: contain;
 
     &[open] {
-        animation: subir .35s $ease;
+        animation: subir .45s $ease;
     }
 
     &::backdrop {
         background: rgba(0, 0, 0, .55);
         backdrop-filter: blur(6px);
+    }
+
+    &[open]::backdrop {
+        animation: fondo-entra .35s ease-out;
+    }
+
+    // Salida (la clase la pone cerrarDialogo antes de cerrar de verdad)
+    &.cerrando {
+        animation: bajar .28s cubic-bezier(.4, 0, 1, 1) forwards;
+    }
+
+    &.cerrando::backdrop {
+        animation: fondo-sale .28s ease-in forwards;
+    }
+
+    // La foto arranca con un poco de zoom y se asienta mientras sube la hoja
+    &[open]:not(.cerrando) .ficha__foto img {
+        animation: foto-asienta .7s $ease;
     }
 
     @media (min-width: 768px) {
@@ -31,7 +49,11 @@
         border-radius: 24px;
 
         &[open] {
-            animation: aparecer .3s $ease;
+            animation: aparecer .4s $ease;
+        }
+
+        &.cerrando {
+            animation: desaparecer .22s ease-in forwards;
         }
     }
 }
@@ -42,15 +64,60 @@
     }
 }
 
-@keyframes aparecer {
-    from {
-        opacity: 0;
-        transform: translateY(16px) scale(.97);
+@keyframes bajar {
+    to {
+        transform: translateY(100%);
     }
 }
 
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(.94);
+    }
+}
+
+@keyframes desaparecer {
+    to {
+        opacity: 0;
+        transform: translateY(12px) scale(.96);
+    }
+}
+
+@keyframes foto-asienta {
+    from {
+        transform: scale(1.12);
+    }
+}
+
+@keyframes fondo-entra {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes fondo-sale {
+    to {
+        opacity: 0;
+    }
+}
+
+// Recorta el zoom de entrada de la foto
+.ficha__foto {
+    overflow: hidden;
+}
+
+// Movimiento reducido: sin deslizar ni zoom, solo fundidos cortos
 @media (prefers-reduced-motion: reduce) {
     .ficha[open] {
+        animation: fondo-entra .2s ease-out;
+    }
+
+    .ficha.cerrando {
+        animation: fondo-sale .2s ease-in forwards;
+    }
+
+    .ficha[open] .ficha__foto img {
         animation: none;
     }
 }

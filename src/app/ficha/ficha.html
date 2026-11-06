@@ -1,4 +1,4 @@
-<dialog #dialogo class="ficha" [attr.aria-label]="producto()?.nombre" (close)="cerrar()" (click)="clickFondo($event)">
+<dialog #dialogo class="ficha" [attr.aria-label]="producto()?.nombre" (close)="cerrar()" (cancel)="cancelar($event)" (click)="clickFondo($event)">
     @if (producto(); as p) {
     <div class="ficha__hoja">
         <button type="button" class="ficha__cerrar" aria-label="Cerrar" (click)="cerrar()">

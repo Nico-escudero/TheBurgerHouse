@@ -16,12 +16,25 @@
     outline: none;
 
     &[open] {
-        animation: subir .35s $ease;
+        animation: subir .45s $ease;
     }
 
     &::backdrop {
         background: rgba(0, 0, 0, .55);
         backdrop-filter: blur(6px);
+    }
+
+    &[open]::backdrop {
+        animation: fondo-entra .35s ease-out;
+    }
+
+    // Salida (la clase la pone cerrarDialogo antes de cerrar de verdad)
+    &.cerrando {
+        animation: bajar .28s cubic-bezier(.4, 0, 1, 1) forwards;
+    }
+
+    &.cerrando::backdrop {
+        animation: fondo-sale .28s ease-in forwards;
     }
 
     @media (min-width: 768px) {
@@ -32,7 +45,11 @@
         border-radius: 24px 0 0 24px;
 
         &[open] {
-            animation: desde-derecha .35s $ease;
+            animation: desde-derecha .45s $ease;
+        }
+
+        &.cerrando {
+            animation: hacia-derecha .28s cubic-bezier(.4, 0, 1, 1) forwards;
         }
     }
 }
@@ -43,15 +60,44 @@
     }
 }
 
+@keyframes bajar {
+    to {
+        transform: translateY(100%);
+    }
+}
+
 @keyframes desde-derecha {
     from {
         transform: translateX(100%);
     }
 }
 
+@keyframes hacia-derecha {
+    to {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes fondo-entra {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes fondo-sale {
+    to {
+        opacity: 0;
+    }
+}
+
+// Movimiento reducido: sin deslizar, solo fundidos cortos
 @media (prefers-reduced-motion: reduce) {
     .carrito[open] {
-        animation: none;
+        animation: fondo-entra .2s ease-out;
+    }
+
+    .carrito.cerrando {
+        animation: fondo-sale .2s ease-in forwards;
     }
 }
 
@@ -100,9 +146,16 @@
 
 .carrito__scroll {
     flex: 1;
+    overflow-x: hidden; // la fila que se borra sale hacia la derecha: sin barra horizontal
     overflow-y: auto;
     overscroll-behavior: contain;
     padding: 0 20px 20px;
+    // Scroll vertical sin barra visible (sigue andando con rueda, touch y teclado)
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 // ===== Vacío =====
@@ -244,6 +297,39 @@
 }
 
 // ===== Datos del cliente =====
+// ===== Vaciar pedido =====
+.vaciar {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 10px;
+}
+
+.vaciar__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1.5px solid transparent;
+    border-radius: 99px;
+    background: transparent;
+    color: $eliminar;
+    font: 600 15px $font-text;
+    cursor: pointer;
+    transition: background-color .2s $ease, border-color .2s $ease, color .2s $ease;
+
+    &:hover {
+        background: rgba($eliminar, .08);
+    }
+
+    // Esperando el segundo toque
+    &.confirmar {
+        border-color: $eliminar;
+        background: $eliminar;
+        color: #ffffff;
+    }
+}
+
 .datos {
     display: grid;
     gap: 10px;

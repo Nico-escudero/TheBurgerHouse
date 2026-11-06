@@ -11,7 +11,16 @@ export interface LineaCarrito {
 
 export type Entrega = 'retiro' | 'envio';
 
-const CARRITO_KEY = 'bh_carrito_v1';
+const CARRITO_KEY = 'bh_carrito_v2';
+const CARRITO_VIEJO = 'bh_carrito_v1'; // formato anterior, sin fecha: se descarta
+
+// El carrito guardado vence si pasó este tiempo desde el último cambio
+const CARRITO_VENCE_MS = 10 * 60 * 1000; // 10 minutos
+
+interface CarritoGuardado {
+  guardado: number; // Date.now() del último cambio
+  lineas: LineaCarrito[];
+}
 
 @Injectable({ providedIn: 'root' })
 export class CarritoService {
@@ -45,7 +54,8 @@ export class CarritoService {
     // Guarda el pedido para que no se pierda al recargar
     effect(() => {
       try {
-        localStorage.setItem(CARRITO_KEY, JSON.stringify(this.lineas()));
+        const datos: CarritoGuardado = { guardado: Date.now(), lineas: this.lineas() };
+        localStorage.setItem(CARRITO_KEY, JSON.stringify(datos));
       } catch {
         /* sin espacio o modo privado: se ignora */
       }
@@ -54,7 +64,10 @@ export class CarritoService {
     // Cuando llega el menú actualizado: refresca precios y saca lo que ya no existe o quedó sin stock
     effect(() => {
       const productos = new Map(
-        this.menu.categorias().flatMap((c) => c.productos).map((p) => [p.id, p]),
+        this.menu
+          .categorias()
+          .flatMap((c) => c.productos)
+          .map((p) => [p.id, p]),
       );
       if (!productos.size) return;
       untracked(() => {
@@ -68,7 +81,9 @@ export class CarritoService {
   }
 
   precioUnitario(l: LineaCarrito): number {
-    return l.conPapas && l.producto.precio_con_papas ? l.producto.precio_con_papas : l.producto.precio;
+    return l.conPapas && l.producto.precio_con_papas
+      ? l.producto.precio_con_papas
+      : l.producto.precio;
   }
 
   subtotal(l: LineaCarrito): number {
@@ -125,9 +140,7 @@ export class CarritoService {
     );
     const local = this.menu.config()['direccion'] ?? 'el local';
     const entrega =
-      this.entrega() === 'envio'
-        ? `Envío a: ${this.direccion().trim()}`
-        : `Retiro en ${local}`;
+      this.entrega() === 'envio' ? `Envío a: ${this.direccion().trim()}` : `Retiro en ${local}`;
     const aclaraciones = this.aclaraciones().trim();
 
     return [
@@ -145,8 +158,16 @@ export class CarritoService {
 
   private leer(): LineaCarrito[] {
     try {
+      localStorage.removeItem(CARRITO_VIEJO);
       const raw = localStorage.getItem(CARRITO_KEY);
-      return raw ? (JSON.parse(raw) as LineaCarrito[]) : [];
+      if (!raw) return [];
+      const datos = JSON.parse(raw) as CarritoGuardado;
+      // Vencido (o sin fecha): arranca vacío
+      if (!datos.guardado || Date.now() - datos.guardado > CARRITO_VENCE_MS) {
+        localStorage.removeItem(CARRITO_KEY);
+        return [];
+      }
+      return Array.isArray(datos.lineas) ? datos.lineas : [];
     } catch {
       return [];
     }

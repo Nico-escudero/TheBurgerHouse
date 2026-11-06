@@ -1,6 +1,8 @@
 import { Component, ElementRef, computed, effect, inject, signal, viewChild } from '@angular/core';
 import { CarritoService } from '../core/carrito.service';
 import { formatoPrecio } from '../core/formato';
+import { cerrarDialogo, entrarPanel, volarAlCarrito } from '../core/animaciones';
+import { Producto } from '../core/models';
 
 // Ficha del producto tocado: foto, descripción, opción con papas, cantidad y "Agregar"
 @Component({
@@ -12,7 +14,9 @@ export class Ficha {
   protected readonly carrito = inject(CarritoService);
   private readonly dialogo = viewChild.required<ElementRef<HTMLDialogElement>>('dialogo');
 
-  protected readonly producto = this.carrito.ficha;
+  // Último producto abierto: queda pintado mientras la hoja sale animada
+  private readonly ultimo = signal<Producto | null>(null);
+  protected readonly producto = computed(() => this.carrito.ficha() ?? this.ultimo());
   protected readonly conPapas = signal(false);
   protected readonly cantidad = signal(1);
 
@@ -33,12 +37,19 @@ export class Ficha {
     // Abre/cierra el <dialog> según haya producto seleccionado; cada apertura arranca de cero
     effect(() => {
       const d = this.dialogo().nativeElement;
-      if (this.producto()) {
+      const p = this.carrito.ficha();
+      if (p) {
+        this.ultimo.set(p);
         this.conPapas.set(false);
         this.cantidad.set(1);
-        if (!d.open) d.showModal();
-      } else if (d.open) {
-        d.close();
+        d.classList.remove('cerrando');
+        if (!d.open) {
+          d.showModal();
+          // Después de que Angular pinte el producto nuevo: foto y textos entran escalonados
+          setTimeout(() => entrarPanel(d.querySelectorAll('.ficha__cuerpo > *')));
+        }
+      } else {
+        cerrarDialogo(d);
       }
     });
   }
@@ -53,12 +64,22 @@ export class Ficha {
 
   protected agregar(): void {
     const p = this.producto();
-    if (p) this.carrito.agregar(p, this.conPapas(), this.cantidad());
+    if (p) {
+      // La carita vuela desde el botón "Agregar" hasta el carrito
+      volarAlCarrito(this.dialogo().nativeElement.querySelector('.ficha__agregar')!);
+      this.carrito.agregar(p, this.conPapas(), this.cantidad());
+    }
     this.cerrar();
   }
 
   protected cerrar(): void {
     this.carrito.ficha.set(null);
+  }
+
+  // Esc: en vez del cierre instantáneo del navegador, sale con animación
+  protected cancelar(evento: Event): void {
+    evento.preventDefault();
+    this.cerrar();
   }
 
   // Click en el fondo oscuro (fuera de la hoja) cierra
