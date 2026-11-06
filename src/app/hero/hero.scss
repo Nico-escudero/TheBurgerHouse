@@ -67,7 +67,7 @@
     }
 
     @media (min-width: 768px) {
-        font-size: clamp(3.5rem, calc(var(--pantalla, 100svh) * .095), 6rem);
+        font-size: clamp(3.5rem, calc(var(--pantalla, 100svh) * .13), 6rem);
         margin-bottom: 1.5rem;
         margin-top: 1.5rem;
     }
@@ -176,15 +176,21 @@
 
 // Saludo: va y vuelve un poco, después descansa
 @keyframes hero-saludar {
-    0%, 60%, 100% {
+
+    0%,
+    60%,
+    100% {
         transform: rotate(0deg);
     }
+
     15% {
         transform: rotate(14deg);
     }
+
     30% {
         transform: rotate(-8deg);
     }
+
     45% {
         transform: rotate(10deg);
     }
@@ -203,6 +209,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     .hero__media,
     .hero__sello,
     .hero__carita,

@@ -55,5 +55,9 @@ h6 {
 @media (max-width:800px) {
     body::before {
         background-image: url('/img/fondo-burger-house-mobile.webp');
+        // 100lvh = alto con la barra del navegador escondida: así no queda una franja vacía abajo al scrollear
+        bottom: auto;
+        height: 100vh;
+        height: 100lvh;
     }
 }
