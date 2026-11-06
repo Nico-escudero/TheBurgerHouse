@@ -11,7 +11,7 @@
     <article class="card" appRevelar="item" [indice]="$index" [class.en-pedido]="carrito.cantidadDe(p.id) > 0">
         <div class="card__foto">
             @if (p.imagen_url) {
-            <img [src]="p.imagen_url" [alt]="p.nombre" width="124" height="124" loading="lazy"
+            <img [src]="p.imagen_url" [alt]="p.nombre" width="124" height="124" loading="lazy" decoding="async"
                 (error)="ocultarImagen($event)">
             }
         </div>

@@ -7,5 +7,7 @@ import { Component } from '@angular/core';
   styleUrl: './marquee.scss',
 })
 export class Marquee {
-  readonly items = Array(10);
+  readonly grupos = Array(2);
+  readonly items = Array(5); // por grupo: más ancho que la pantalla más grande
+
 }

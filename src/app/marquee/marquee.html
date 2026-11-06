@@ -1,7 +1,13 @@
 <div class="marquee" aria-hidden="true">
+    <!-- Dos grupos iguales: cada uno corre su propio ancho y el segundo tapa el hueco del primero.
+         Capas más chicas que una sola tira gigante: iOS Safari no deja de pintarlas al animar -->
     <div class="marquee__track">
-        @for (_ of items; track $index) {
-        <span>Meat &amp; Cheese ✦ Smash burgers ✦ Tandil ✦ </span>
+        @for (g of grupos; track $index) {
+        <div class="marquee__grupo">
+            @for (_ of items; track $index) {
+            <span>Meat &amp; Cheese ✦ Smash burgers ✦ Tandil ✦ </span>
+            }
+        </div>
         }
     </div>
 </div>

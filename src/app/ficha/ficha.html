@@ -11,7 +11,7 @@
         <!-- Foto 4:3; sin foto (o si falla) se ve el placeholder con rayas + carita -->
         <div class="ficha__foto">
             @if (p.imagen_url) {
-            <img [src]="p.imagen_url" [alt]="p.nombre" width="1200" height="900" (error)="ocultarImagen($event)">
+            <img [src]="p.imagen_url" [alt]="p.nombre" width="1200" height="900" decoding="async" (error)="ocultarImagen($event)">
             }
         </div>
 

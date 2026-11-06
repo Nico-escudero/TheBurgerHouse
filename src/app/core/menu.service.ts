@@ -1,13 +1,22 @@
-import { Injectable, inject, signal } from '@angular/core';
-import { SupabaseService } from './supabase.service';
+import { Injectable, signal } from '@angular/core';
+import { environment } from '../../environments/environment';
 import { Categoria, MenuCache, Salsa } from './models';
 
 const CACHE_KEY = 'bh_menu_v1';
 
+// Lectura pública del menú con fetch directo a la API REST de Supabase (PostgREST).
+// No usa @supabase/supabase-js: así esa librería (~200 KB) queda solo en el chunk de /admin
+// y no demora la primera carga del sitio.
+async function consultar<T>(ruta: string): Promise<T> {
+    const res = await fetch(`${environment.supabaseUrl}/rest/v1/${ruta}`, {
+        headers: { apikey: environment.supabaseKey },
+    });
+    if (!res.ok) throw new Error(`Supabase ${res.status}: ${await res.text()}`);
+    return (await res.json()) as T;
+}
+
 @Injectable({ providedIn: 'root' })
 export class MenuService {
-    private sb = inject(SupabaseService).client;
-
     readonly categorias = signal<Categoria[]>([]);
     readonly salsas = signal<Salsa[]>([]);
     readonly config = signal<Record<string, string>>({});
@@ -27,24 +36,20 @@ export class MenuService {
 
     async cargar(): Promise<void> {
         try {
+            // Mismas consultas que antes con supabase-js: categorías con sus productos activos,
+            // salsas activas y configuración, todo ordenado por "orden"
             const [cats, salsas, cfg] = await Promise.all([
-                this.sb
-                    .from('categorias')
-                    .select('*, productos(*)')
-                    .eq('productos.activo', true)
-                    .order('orden')
-                    .order('orden', { referencedTable: 'productos' }),
-                this.sb.from('salsas').select('*').eq('activo', true).order('orden'),
-                this.sb.from('configuracion').select('clave, valor'),
+                consultar<Categoria[]>(
+                    'categorias?select=*,productos(*)&productos.activo=eq.true&order=orden.asc&productos.order=orden.asc',
+                ),
+                consultar<Salsa[]>('salsas?select=*&activo=eq.true&order=orden.asc'),
+                consultar<{ clave: string; valor: string }[]>('configuracion?select=clave,valor'),
             ]);
 
-            const fallo = cats.error ?? salsas.error ?? cfg.error;
-            if (fallo) throw fallo;
-
             const datos: MenuCache = {
-                categorias: (cats.data ?? []) as Categoria[],
-                salsas: (salsas.data ?? []) as Salsa[],
-                config: Object.fromEntries((cfg.data ?? []).map((r) => [r.clave, r.valor])),
+                categorias: cats ?? [],
+                salsas: salsas ?? [],
+                config: Object.fromEntries((cfg ?? []).map((r) => [r.clave, r.valor])),
             };
 
             this.categorias.set(datos.categorias);

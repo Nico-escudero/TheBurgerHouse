@@ -31,12 +31,21 @@
               }
             ],
             "styles": [
+              "src/styles/bootstrap.scss",
               "src/styles.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
                 "src"
-              ]
+              ],
+              "sass": {
+                "silenceDeprecations": [
+                  "import",
+                  "global-builtin",
+                  "color-functions",
+                  "if-function"
+                ]
+              }
             }
           },
           "configurations": {

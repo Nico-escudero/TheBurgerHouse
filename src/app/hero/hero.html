@@ -1,5 +1,6 @@
 <!-- Mobile: carita que saluda arriba a la derecha, detrás del título -->
-<img class="hero__saludo hero__saludo--mobile d-md-none" src="/carita.svg" alt="" aria-hidden="true">
+<img class="hero__saludo hero__saludo--mobile d-md-none" src="/carita.svg" alt="" aria-hidden="true" width="190"
+    height="190" decoding="async">
 
 <div class="container hero__contenido mt-3 mt-md-0">
 
@@ -12,12 +13,13 @@
                 1712.</p>
         </div>
         <div class="hero__cta">
-            <button class="hero__button align-content-center" type="button">Ver el menú <svg
+            <!-- Enlace interno a las burgers (antes era un <button> sin acción) -->
+            <a class="hero__button align-content-center" routerLink="/" fragment="hamburgesas">Ver el menú <svg
                     xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                    class="bi bi-arrow-right" viewBox="0 0 16 16">
+                    class="bi bi-arrow-right" viewBox="0 0 16 16" aria-hidden="true">
                     <path fill-rule="evenodd"
                         d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8" />
-                </svg></button>
+                </svg></a>
         </div>
         <div class="hero__visual">
             <!-- clip-path del marco ondulado (coordenadas 0-1: se adapta al tamaño de la caja) -->
@@ -31,10 +33,16 @@
 
             <div class="hero__media">
                 <!-- Desktop: carita grande que saluda, detrás de la foto -->
-                <img class="hero__saludo d-none d-md-block" src="/carita.svg" alt="" aria-hidden="true">
+                <img class="hero__saludo d-none d-md-block" src="/carita.svg" alt="" aria-hidden="true" width="1000"
+                    height="1000" decoding="async">
 
                 <div class="hero__photo">
-                    <img src="/img/hero.webp" alt="La burger más pedida de The Burger House" fetchpriority="high">
+                    <!-- Imagen LCP: sin lazy, prioridad alta. El preload de index.html usa el mismo srcset/sizes -->
+                    <img src="/img/hero.webp"
+                        srcset="/img/hero-480.webp 480w, /img/hero-768.webp 768w, /img/hero.webp 1152w"
+                        sizes="(min-width: 768px) 470px, min(54vw, 280px)" width="1152" height="1152"
+                        alt="Smash burger con bacon y queso fundido, la más pedida de The Burger House en Tandil"
+                        fetchpriority="high" decoding="async">
                 </div>
 
                 <!-- Sello que gira: texto en círculo + carita -->

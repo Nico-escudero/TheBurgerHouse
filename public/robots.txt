@@ -1,0 +1,9 @@
+# The Burger House
+# DOMINIO: URL temporal de Vercel: reemplazar "https://the-burger-house-demo.vercel.app" al tener el dominio definitivo
+
+User-agent: *
+Allow: /
+# Dashboard privado (además responde con X-Robots-Tag: noindex)
+Disallow: /admin
+
+Sitemap: https://the-burger-house-demo.vercel.app/sitemap.xml

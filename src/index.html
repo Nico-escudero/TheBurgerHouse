@@ -1,17 +1,114 @@
 <!doctype html>
-<html lang="en">
+<html lang="es-AR">
 
 <head>
   <meta charset="utf-8" />
-  <title>TheBurgerHouse | Smash burgers Tandil</title>
+  <title>Smash burgers en Tandil | The Burger House</title>
   <base href="/" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description"
+    content="Smash burgers en Tandil. Mirá el menú de The Burger House, armá tu pedido y mandalo por WhatsApp. Envío a domicilio o retiro en Maipú 1712." />
+
+  <!--
+    DOMINIO: "https://the-burger-house-demo.vercel.app" es la URL temporal de Vercel.
+    Al tener el dominio definitivo, reemplazarlo en este archivo y en public/robots.txt, public/sitemap.xml y public/llms.txt
+  -->
+  <link rel="canonical" href="https://the-burger-house-demo.vercel.app/" />
+
+  <!-- Open Graph (WhatsApp, Facebook, Instagram, etc.) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="The Burger House" />
+  <meta property="og:locale" content="es_AR" />
+  <meta property="og:title" content="Smash burgers en Tandil | The Burger House" />
+  <meta property="og:description"
+    content="Elegí tu burger y pedila por WhatsApp. Envío a domicilio o retiro en Maipú 1712, Tandil." />
+  <meta property="og:url" content="https://the-burger-house-demo.vercel.app/" />
+  <meta property="og:image" content="https://the-burger-house-demo.vercel.app/og-image.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="The Burger House: smash burgers en Tandil. Pedí por WhatsApp, Maipú 1712." />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Smash burgers en Tandil | The Burger House" />
+  <meta name="twitter:description"
+    content="Elegí tu burger y pedila por WhatsApp. Envío a domicilio o retiro en Maipú 1712, Tandil." />
+  <meta name="twitter:image" content="https://the-burger-house-demo.vercel.app/og-image.jpg" />
+  <meta name="twitter:image:alt" content="The Burger House: smash burgers en Tandil. Pedí por WhatsApp, Maipú 1712." />
+
+  <!-- Íconos -->
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="/img/hero.webp" fetchpriority="high">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
+
+  <!-- Supabase: menú (API REST) y fotos de productos -->
+  <link rel="preconnect" href="https://chxewldeqeqjlchumgse.supabase.co" crossorigin />
+
+  <!-- Recursos críticos de la primera pantalla: foto del hero (LCP) y las fuentes del título y el texto -->
+  <link rel="preload" as="image" href="/img/hero.webp"
+    imagesrcset="/img/hero-480.webp 480w, /img/hero-768.webp 768w, /img/hero.webp 1152w"
+    imagesizes="(min-width: 768px) 470px, min(54vw, 280px)" fetchpriority="high" />
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/archivo-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/barlow-semi-condensed-600-latin.woff2" crossorigin />
+
+  <!-- Fuentes propias (antes Google Fonts por @import). Solo se descargan las variantes que se usan -->
+  <style>
+    @font-face { font-family: 'Archivo'; font-style: normal; font-weight: 400; font-display: swap; src: url(/fonts/archivo-latin.woff2) format('woff2'); }
+    @font-face { font-family: 'Archivo'; font-style: normal; font-weight: 800; font-display: swap; src: url(/fonts/archivo-latin.woff2) format('woff2'); }
+    @font-face { font-family: 'Archivo'; font-style: normal; font-weight: 900; font-display: swap; src: url(/fonts/archivo-latin.woff2) format('woff2'); }
+    @font-face { font-family: 'Archivo'; font-style: italic; font-weight: 800; font-display: swap; src: url(/fonts/archivo-italic-latin.woff2) format('woff2'); }
+    @font-face { font-family: 'Barlow Semi Condensed'; font-style: normal; font-weight: 500; font-display: swap; src: url(/fonts/barlow-semi-condensed-500-latin.woff2) format('woff2'); }
+    @font-face { font-family: 'Barlow Semi Condensed'; font-style: normal; font-weight: 600; font-display: swap; src: url(/fonts/barlow-semi-condensed-600-latin.woff2) format('woff2'); }
+    @font-face { font-family: 'Barlow Semi Condensed'; font-style: normal; font-weight: 700; font-display: swap; src: url(/fonts/barlow-semi-condensed-700-latin.woff2) format('woff2'); }
+  </style>
+
+  <!-- Datos estructurados: local (Restaurant) y sitio web -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Restaurant",
+        "@id": "https://the-burger-house-demo.vercel.app/#restaurant",
+        "name": "The Burger House",
+        "description": "Smash burgers en Tandil. Pedidos por WhatsApp con envío a domicilio o retiro en el local.",
+        "url": "https://the-burger-house-demo.vercel.app/",
+        "image": "https://the-burger-house-demo.vercel.app/og-image.jpg",
+        "logo": "https://the-burger-house-demo.vercel.app/android-chrome-512x512.png",
+        "telephone": "+5492494606000",
+        "servesCuisine": ["Hamburguesas", "Smash burgers"],
+        "hasMenu": "https://the-burger-house-demo.vercel.app/#hamburgesas",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Maipú 1712",
+          "addressLocality": "Tandil",
+          "addressRegion": "Buenos Aires",
+          "addressCountry": "AR"
+        },
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            "opens": "20:00",
+            "closes": "23:30"
+          }
+        ],
+        "sameAs": ["https://www.instagram.com/theburgerhouse.tandil"]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://the-burger-house-demo.vercel.app/#website",
+        "name": "The Burger House",
+        "url": "https://the-burger-house-demo.vercel.app/",
+        "inLanguage": "es-AR",
+        "publisher": { "@id": "https://the-burger-house-demo.vercel.app/#restaurant" }
+      }
+    ]
+  }
+  </script>
 
   <!-- Loader principal: estilos inline para que se vea antes de que cargue la app -->
   <style>
@@ -75,14 +172,18 @@
     // En /admin no hay loader; en el sitio se bloquea el scroll hasta que termine
     if (location.pathname.startsWith('/admin')) {
       document.querySelectorAll('.loader, .loader__cortina').forEach(function (el) { el.remove(); });
+      // El dashboard no se indexa (respaldo del header X-Robots-Tag de vercel.json) y no hereda la canonical del sitio
+      var robots = document.createElement('meta');
+      robots.name = 'robots';
+      robots.content = 'noindex, nofollow';
+      document.head.appendChild(robots);
+      document.querySelector('link[rel="canonical"]')?.remove();
+      document.title = 'Admin | The Burger House';
     } else {
       document.documentElement.classList.add('cargando');
     }
   </script>
   <app-root></app-root>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-    crossorigin="anonymous"></script>
 </body>
 
 </html>

@@ -10,8 +10,16 @@
     text-transform: uppercase;
 
     &__track {
-        display: inline-block;
+        display: flex;
+        width: max-content;
+    }
+
+    // Cada grupo se mueve su propio ancho: al terminar el ciclo vuelve al inicio sin salto
+    &__grupo {
+        flex-shrink: 0;
+        white-space: pre; // conserva el espacio final de cada frase (si no, se pega con la siguiente)
         animation: marquee 22s linear infinite;
+        will-change: transform;
     }
 
     @media (max-width: 699px) {
@@ -19,15 +27,16 @@
         padding: 8px 0;
     }
 
+    // Movimiento reducido: la cinta sigue corriendo, pero más lenta
     @media (prefers-reduced-motion: reduce) {
-        &__track {
-            animation: none;
+        &__grupo {
+            animation-duration: 45s;
         }
     }
 }
 
 @keyframes marquee {
     to {
-        transform: translateX(-50%);
+        transform: translateX(-100%);
     }
 }

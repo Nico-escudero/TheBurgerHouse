@@ -151,6 +151,7 @@
     right: -62%;
     top: -26%;
     width: 95%;
+    height: auto; // el <img> tiene width/height (evitan CLS): el alto sale de la proporción, no del atributo
     transform-origin: 50% 90%; // gira desde abajo, como una mano que saluda
     animation: hero-saludar 2.8s ease-in-out infinite;
     pointer-events: none;
@@ -208,17 +209,26 @@
     }
 }
 
+// Movimiento reducido: las animaciones decorativas siguen, pero más lentas y tranquilas
 @media (prefers-reduced-motion: reduce) {
 
     .hero__media,
-    .hero__sello,
-    .hero__carita,
+    .hero__carita {
+        animation-duration: 10s;
+    }
+
+    .hero__sello {
+        animation-duration: 30s;
+    }
+
     .hero__saludo {
-        animation: none;
+        animation-duration: 5s;
     }
 }
 
 .hero__button {
+    display: inline-block; // es un <a>: mismo comportamiento de caja que el <button> anterior
+    text-decoration: none;
     margin: 1rem auto;
     padding: .5rem 1rem;
     border: 2px solid $mostaza;
@@ -228,4 +238,10 @@
     font-size: 1.3rem;
     color: $tinta;
     background-color: $mostaza;
+
+    // Reboot de Bootstrap cambia el color de los links en hover
+    &:hover,
+    &:focus-visible {
+        color: $tinta;
+    }
 }

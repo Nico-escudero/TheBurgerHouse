@@ -33,7 +33,7 @@
                 <li class="linea">
                     <div class="linea__foto">
                         @if (l.producto.imagen_url) {
-                        <img [src]="l.producto.imagen_url" alt="" width="64" height="64">
+                        <img [src]="l.producto.imagen_url" alt="" width="64" height="64" loading="lazy" decoding="async">
                         }
                     </div>
                     <div class="linea__info">

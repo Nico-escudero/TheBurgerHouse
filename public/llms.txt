@@ -1,0 +1,31 @@
+# The Burger House
+
+> Hamburguesería de smash burgers en Tandil (Buenos Aires, Argentina). El sitio muestra el menú completo; el cliente arma su pedido en un carrito y lo envía por WhatsApp. Envío a domicilio o retiro en el local de Maipú 1712, Tandil.
+
+- Dirección: Maipú 1712, Tandil, Buenos Aires, Argentina
+- Horario: miércoles a domingo, de 20:00 a 23:30
+- Pedidos: por WhatsApp (+54 9 249 460-6000), desde el carrito del sitio
+- Instagram: [@theburgerhouse.tandil](https://www.instagram.com/theburgerhouse.tandil)
+- Idioma del sitio: español (Argentina)
+
+## Menú
+
+El sitio es una sola página con una sección por categoría. Los productos, precios y stock se cargan en vivo desde la base de datos, por lo que el menú del sitio es siempre la fuente actualizada. Lista de referencia (noviembre de 2026):
+
+- [Burgers](https://the-burger-house-demo.vercel.app/#hamburgesas): Meat & Cheese, Sweet Bacon, Baby Oklahoma, Veggie Style, Smoked Bacon, Big House, Kid Burger, Not Smash, Monster House + Papas Crunch, American Croissant + Papas Crunch, Provolone Crispy + Papas, Fried Onion, Patty Melt + Papas, Mush Burger, Blue Cheese. Varias se pueden pedir con papas.
+- [Acompañamientos](https://the-burger-house-demo.vercel.app/#acompaniamientos): papas confitadas, papas crunch, papas fritas, chicken bites.
+- [Extras](https://the-burger-house-demo.vercel.app/#extras): medallón blend, cheddar, bacon.
+- [Postres](https://the-burger-house-demo.vercel.app/#postres): cookie cream (box x6 y x12), cubanito de helado.
+- [Bebidas](https://the-burger-house-demo.vercel.app/#bebidas): gaseosas, aguas, Aquarius, cervezas y fernet con Coca.
+- [Salsas](https://the-burger-house-demo.vercel.app/#salsas): salsas de la casa (House, Mil-House, Monster, Big-House, lactonesa de cebolla).
+
+## Cómo pedir
+
+1. Elegir productos en el menú y agregarlos al carrito.
+2. Indicar envío a domicilio o retiro en el local.
+3. Enviar el pedido: se abre WhatsApp con el mensaje armado.
+
+## Opcional
+
+- [Sitio](https://the-burger-house-demo.vercel.app/): página principal con el menú
+- [Sitemap](https://the-burger-house-demo.vercel.app/sitemap.xml)

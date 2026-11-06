@@ -105,13 +105,19 @@ export class App {
     const host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
     animar(
       () => host,
-      () => {
+      (reducido) => {
+        // Movimiento reducido: header y footer aparecen con fundidos, sin desplazarse
         const header = this.header()?.nativeElement;
         if (header) {
-          gsap.from(header, { yPercent: -120, duration: 0.8, ease: 'power3.out' });
+          gsap.from(
+            header,
+            reducido
+              ? { autoAlpha: 0, duration: 0.5 }
+              : { yPercent: -120, duration: 0.8, ease: 'power3.out' },
+          );
           gsap.from(header.querySelectorAll('.site-nav__link'), {
             autoAlpha: 0,
-            y: -12,
+            y: reducido ? 0 : -12,
             duration: 0.4,
             stagger: 0.05,
             delay: 0.35,
@@ -124,10 +130,9 @@ export class App {
         if (!titulo) return;
         const letras = SplitText.create(titulo, { type: 'chars', mask: 'chars' });
         gsap.from(letras.chars, {
-          yPercent: 100,
+          ...(reducido ? { autoAlpha: 0 } : { yPercent: 100, ease: 'back.out(1.6)' }),
           duration: 0.6,
           stagger: 0.025,
-          ease: 'back.out(1.6)',
           scrollTrigger: { trigger: titulo, start: 'top 95%', once: true },
         });
         return () => letras.revert();

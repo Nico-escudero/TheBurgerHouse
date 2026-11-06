@@ -1,5 +1,5 @@
 @use 'styles/variables' as *;
-@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,800;0,900;1,800&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap');
+// Fuentes: @font-face self-hosted en index.html (public/fonts), con preload de las críticas
 
 html {
     scroll-behavior: smooth;

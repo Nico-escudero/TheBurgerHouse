@@ -1,0 +1,35 @@
+// Bootstrap 5.3 recortado: solo lo que usa el sitio (antes se cargaba completo desde el CDN).
+// - reboot + root: estilos base y variables CSS (--bs-*)
+// - containers: .container del hero
+// - card: article.card del menú comparte nombre con el componente de Bootstrap
+// - utilidades: solo las clases que aparecen en los templates
+// Si se agrega una clase de Bootstrap nueva en un template, sumar su grupo acá.
+
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/variables-dark';
+@import 'bootstrap/scss/maps';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/utilities';
+
+@import 'bootstrap/scss/root';
+@import 'bootstrap/scss/reboot';
+@import 'bootstrap/scss/containers';
+@import 'bootstrap/scss/card';
+
+// d-*, align-*, justify-*, p-*, mt-*, text-uppercase, position-absolute
+$utilities: map-get-multiple(
+  $utilities,
+  (
+    'display',
+    'align-items',
+    'justify-content',
+    'align-content',
+    'padding',
+    'margin-top',
+    'text-transform',
+    'position'
+  )
+);
+
+@import 'bootstrap/scss/utilities/api';

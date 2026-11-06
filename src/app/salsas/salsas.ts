@@ -17,7 +17,8 @@ export class Salsas {
     // Caritas de fondo: giran y se desplazan a distinto ritmo mientras se scrollea
     animar(
       () => host,
-      () => {
+      (reducido) => {
+        if (reducido) return; // parallax: no se usa con movimiento reducido
         const scroll = { trigger: host, start: 'top bottom', end: 'bottom top', scrub: 1 };
         gsap.fromTo(
           '.salsas__carita--grande',
