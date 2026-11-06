@@ -1,0 +1,41 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "The Burger House, ir al inicio" [ref=e5] [cursor=pointer]:
+        - /url: /#inicio
+        - text: THE BURGER HOUSE
+      - navigation "Secciones del menú" [ref=e6]
+      - button "Abrir carrito" [ref=e7] [cursor=pointer]
+  - main [ref=e11]:
+    - heading "Elegí tu burger. Pedila por WhatsApp." [level=1] [ref=e17]:
+      - generic [aria-hidden] [ref=e19]: Elegí
+      - generic [aria-hidden] [ref=e21]: tu
+      - generic [aria-hidden] [ref=e23]: burger.
+      - generic [aria-hidden] [ref=e26]: Pedila
+      - generic [aria-hidden] [ref=e28]: por
+      - generic [aria-hidden] [ref=e30]: WhatsApp.
+    - paragraph [ref=e35]: Cargando el menú…
+    - paragraph [ref=e39]: Cargando el menú…
+    - paragraph [ref=e43]: Cargando el menú…
+    - paragraph [ref=e47]: Cargando el menú…
+    - paragraph [ref=e51]: Cargando el menú…
+  - contentinfo [ref=e55]:
+    - heading "The Burger House" [level=2] [ref=e56]:
+      - generic [aria-hidden] [ref=e58]: T
+      - generic [aria-hidden] [ref=e60]: h
+      - generic [aria-hidden] [ref=e62]: e
+      - generic [aria-hidden] [ref=e64]: B
+      - generic [aria-hidden] [ref=e66]: u
+      - generic [aria-hidden] [ref=e68]: r
+      - generic [aria-hidden] [ref=e70]: g
+      - generic [aria-hidden] [ref=e72]: e
+      - generic [aria-hidden] [ref=e74]: r
+      - generic [aria-hidden] [ref=e76]: H
+      - generic [aria-hidden] [ref=e78]: o
+      - generic [aria-hidden] [ref=e80]: u
+      - generic [aria-hidden] [ref=e82]: s
+      - generic [aria-hidden] [ref=e84]: e
+    - paragraph [ref=e85]:
+      - text: Maipú 1712, Tandil ·
+      - link "@theburgerhouse.tandil" [ref=e86] [cursor=pointer]:
+        - /url: https://www.instagram.com/theburgerhouse.tandil

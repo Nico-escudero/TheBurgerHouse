@@ -1,0 +1,50 @@
+- generic [active] [ref=e1]:
+  - status "Cargando The Burger House" [ref=e3]:
+    - paragraph [ref=e9]: The Burger House
+  - generic [ref=e12]:
+    - banner [ref=e13]:
+      - generic [ref=e14]:
+        - link "The Burger House, ir al inicio" [ref=e15] [cursor=pointer]:
+          - /url: /#inicio
+          - text: THE BURGER HOUSE
+        - navigation "Secciones del menú" [ref=e16]:
+          - link "Burgers" [ref=e17] [cursor=pointer]:
+            - /url: /#hamburgesas
+          - link "Acompañamientos" [ref=e18] [cursor=pointer]:
+            - /url: /#acompaniamientos
+          - link "Extras" [ref=e19] [cursor=pointer]:
+            - /url: /#extras
+          - link "Postres" [ref=e20] [cursor=pointer]:
+            - /url: /#postres
+          - link "Bebidas" [ref=e21] [cursor=pointer]:
+            - /url: /#bebidas
+          - link "Salsas" [ref=e22] [cursor=pointer]:
+            - /url: /#salsas
+        - button "Abrir carrito" [ref=e23] [cursor=pointer]
+    - main [ref=e27]:
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - text: smash burgers · tandil
+          - heading "Elegí tu burger. Pedila por WhatsApp." [level=1] [ref=e33]
+          - paragraph [ref=e34]: Armá tu pedido y mandanoslo por WhatsApp. Envío a domicilio o retiro en Maipú 1712.
+        - button "Ver el menú" [ref=e36] [cursor=pointer]
+        - generic [ref=e40]:
+          - img "La burger más pedida de The Burger House" [ref=e42]
+          - img [aria-hidden] [ref=e43]:
+            - generic [ref=e45]: LA MÁS PEDIDA ✦ LA MÁS PEDIDA ✦
+      - generic [ref=e47]: Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦
+      - paragraph [ref=e54]: Cargando el menú…
+      - paragraph [ref=e58]: Cargando el menú…
+      - paragraph [ref=e62]: Cargando el menú…
+      - paragraph [ref=e66]: Cargando el menú…
+      - paragraph [ref=e70]: Cargando el menú…
+      - generic [ref=e73]:
+        - generic [ref=e74]: "06"
+        - heading "Salsas" [level=2] [ref=e75]
+        - generic [ref=e76]: de la casa
+    - contentinfo [ref=e77]:
+      - heading "The Burger House" [level=2] [ref=e78]
+      - paragraph [ref=e79]:
+        - text: Maipú 1712, Tandil ·
+        - link "@theburgerhouse.tandil" [ref=e80] [cursor=pointer]:
+          - /url: https://www.instagram.com/theburgerhouse.tandil

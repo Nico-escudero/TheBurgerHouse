@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject } from '@angular/core';
+import { animar, gsap } from '../core/animaciones';
 import { MenuService } from '../core/menu.service';
 import { Hero } from '../hero/hero';
 import { Marquee } from '../marquee/marquee';
@@ -19,5 +20,25 @@ export class Sections {
   constructor() {
     // Trae el menú de Supabase (mientras tanto se muestra el guardado en localStorage, si hay)
     inject(MenuService).cargar();
+
+    // La franja del marquee entra barriendo desde la izquierda (el texto ya corre por CSS)
+    const host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+    animar(
+      () => host,
+      () => {
+        // clip-path en vez de scaleX: el texto tiene animación CSS y escalarlo lo deja borroso
+        gsap.fromTo(
+          'section.marquee',
+          { clipPath: 'inset(-20% 100% -20% 0%)' },
+          {
+            clipPath: 'inset(-20% 0% -20% 0%)',
+            clearProps: 'clipPath',
+            duration: 0.9,
+            delay: 0.5,
+            ease: 'power4.out',
+          },
+        );
+      },
+    );
   }
 }

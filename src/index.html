@@ -9,9 +9,76 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="image" href="/img/hero.webp" fetchpriority="high">
+
+  <!-- Loader principal: estilos inline para que se vea antes de que cargue la app -->
+  <style>
+    html.cargando { overflow: hidden; }
+    .loader {
+      position: fixed; inset: 0; z-index: 9999;
+      display: grid; place-items: center;
+      background-color: #0A0A0A;
+      background-image:
+        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+      color: #F5F5F5;
+      font-family: 'Barlow Semi Condensed', sans-serif;
+    }
+    /* Panel mostaza que barre detrás del loader al salir */
+    .loader__cortina { position: fixed; inset: 0; z-index: 9998; background: #F2B83B; }
+    .loader__centro { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+    .loader__carita { width: 96px; height: 96px; }
+    .loader__carita svg { display: block; width: 100%; height: 100%; animation: loader-girar 2.4s linear infinite; }
+    .loader__marca {
+      margin: 0; overflow: hidden;
+      font: italic 900 clamp(26px, 6vw, 44px)/1 'Archivo', sans-serif;
+      letter-spacing: .02em; text-transform: uppercase; white-space: nowrap;
+    }
+    .loader__marca span { color: #F2B83B; }
+    .loader__barra { width: min(240px, 60vw); height: 4px; border-radius: 99px; background: #2D2D2D; overflow: hidden; }
+    .loader__progreso { height: 100%; background: #F2B83B; transform: scaleX(0); transform-origin: left; }
+    .loader__pie {
+      position: absolute; left: clamp(20px, 4vw, 48px); right: clamp(20px, 4vw, 48px); bottom: clamp(20px, 4vw, 40px);
+      display: flex; justify-content: space-between; align-items: flex-end;
+      font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #BDBDBD; font-size: 14px;
+    }
+    .loader__numero { font: 900 clamp(48px, 10vw, 96px)/.8 'Archivo', sans-serif; color: #F5F5F5; letter-spacing: 0; }
+    @keyframes loader-girar { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .loader__carita svg { animation: none; } }
+  </style>
 </head>
 
 <body>
+  <div class="loader__cortina" aria-hidden="true"></div>
+  <div class="loader" role="status" aria-live="polite" aria-label="Cargando The Burger House">
+    <div class="loader__centro">
+      <div class="loader__carita" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <path fill="#F2B83B"
+            d="m94 50 2.6 6.1-4.1 5.3-4.6 4.3.2 6.3-.8 6.6-6.2 2.5-6.1 1.4-3 5.6-4 5.3-6.6-.9-6-1.9L50 94l-6.1 2.6-5.3-4.1-4.3-4.6-6.3.2-6.6-.8-2.5-6.2-1.4-6.1-5.6-3-5.3-4 .9-6.6 1.9-6L6 50l-2.6-6.1 4.1-5.3 4.6-4.3-.2-6.3.8-6.6 6.2-2.5 6.1-1.4 3-5.6 4-5.3 6.6.9 6 1.9L50 6l6.1-2.6 5.3 4.1 4.3 4.6 6.3-.2 6.6.8 2.5 6.2 1.4 6.1 5.6 3 5.3 4-.9 6.6-1.9 6Z" />
+          <path fill="none" stroke="#111" stroke-linecap="round" stroke-width="5"
+            d="M36 32v14m26-16v16M28 56c14 14 32 12 46-6" />
+        </svg>
+      </div>
+      <p class="loader__marca">The Burger <span>House</span></p>
+      <div class="loader__barra"><div class="loader__progreso"></div></div>
+    </div>
+    <div class="loader__pie">
+      <span>Smash burgers · Tandil</span>
+      <span class="loader__numero">0</span>
+    </div>
+  </div>
+  <script>
+    // En /admin no hay loader; en el sitio se bloquea el scroll hasta que termine
+    if (location.pathname.startsWith('/admin')) {
+      document.querySelectorAll('.loader, .loader__cortina').forEach(function (el) { el.remove(); });
+    } else {
+      document.documentElement.classList.add('cargando');
+    }
+  </script>
   <app-root></app-root>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"

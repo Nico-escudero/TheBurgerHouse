@@ -4,6 +4,7 @@ import { formatoPrecio } from '../../core/formato';
 import { Producto } from '../../core/models';
 import { AdminService } from '../admin.service';
 import { describirError } from '../errores';
+import { ConfirmarService } from '../confirmar/confirmar.service';
 
 @Component({
   selector: 'app-productos-admin',
@@ -13,6 +14,7 @@ import { describirError } from '../errores';
 })
 export class ProductosAdmin {
   protected readonly admin = inject(AdminService);
+  private readonly confirmar = inject(ConfirmarService);
   protected readonly precio = formatoPrecio;
 
   protected readonly filtroCategoria = signal<number | null>(null); // null = todas
@@ -56,7 +58,14 @@ export class ProductosAdmin {
   }
 
   protected async borrar(p: Producto): Promise<void> {
-    if (!confirm(`¿Eliminar "${p.nombre}"? No se puede deshacer.\n\nSi solo querés sacarlo un tiempo, usá "Visible".`)) return;
+    const ok = await this.confirmar.preguntar({
+      titulo: `¿Eliminar "${p.nombre}"?`,
+      mensaje: 'El producto se borra del menú. No se puede deshacer.',
+      detalle: 'Si solo querés sacarlo un tiempo, usá "Visible".',
+      aceptar: 'Eliminar',
+      peligro: true,
+    });
+    if (!ok) return;
     await this.ejecutar(p.id, () => this.admin.borrarProducto(p));
   }
 

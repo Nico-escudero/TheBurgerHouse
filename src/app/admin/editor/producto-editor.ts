@@ -4,6 +4,7 @@ import { formatoPrecio } from '../../core/formato';
 import { AdminService, DatosProducto } from '../admin.service';
 import { aWebp, pesoLegible } from '../imagen';
 import { describirError } from '../errores';
+import { ConfirmarService } from '../confirmar/confirmar.service';
 
 interface Borrador {
   categoria_id: number | null;
@@ -37,6 +38,7 @@ const VACIO: Borrador = {
 export class ProductoEditor {
   protected readonly admin = inject(AdminService);
   private readonly router = inject(Router);
+  private readonly confirmar = inject(ConfirmarService);
 
   readonly id = input<string>(); // parámetro :id de la ruta (vacío en "nuevo")
 
@@ -246,7 +248,14 @@ export class ProductoEditor {
 
   protected async eliminar(): Promise<void> {
     const p = this.existente();
-    if (!p || !confirm(`¿Eliminar "${p.nombre}"? No se puede deshacer.`)) return;
+    if (!p) return;
+    const ok = await this.confirmar.preguntar({
+      titulo: `¿Eliminar "${p.nombre}"?`,
+      mensaje: 'El producto se borra del menú. No se puede deshacer.',
+      aceptar: 'Eliminar',
+      peligro: true,
+    });
+    if (!ok) return;
     this.guardando.set(true);
     try {
       await this.admin.borrarProducto(p);
@@ -262,8 +271,14 @@ export class ProductoEditor {
   }
 
   // Lo usa el guard de la ruta para avisar si hay cambios sin guardar
-  puedeSalir(): boolean {
-    return !this.sucio() || this.guardando() || confirm('Hay cambios sin guardar. ¿Salir igual?');
+  puedeSalir(): boolean | Promise<boolean> {
+    if (!this.sucio() || this.guardando()) return true;
+    return this.confirmar.preguntar({
+      titulo: 'Hay cambios sin guardar',
+      mensaje: 'Si salís ahora se pierden.',
+      aceptar: 'Salir igual',
+      cancelar: 'Seguir editando',
+    });
   }
 
   protected avisoSalida(evento: BeforeUnloadEvent): void {

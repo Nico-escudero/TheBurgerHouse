@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { adminGuard } from './admin.guard';
 
 // Avisa si se sale del editor con cambios sin guardar
-const confirmarSalida = (c: { puedeSalir(): boolean }) => c.puedeSalir();
+const confirmarSalida = (c: { puedeSalir(): boolean | Promise<boolean> }) => c.puedeSalir();
 
 export default [
   { path: 'login', loadComponent: () => import('./login/login').then((m) => m.Login) },

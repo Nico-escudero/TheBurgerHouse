@@ -7,14 +7,14 @@
 </svg>
 }
 
-<div class="seccion__head">
+<div class="seccion__head" appRevelar="grupo">
     <span class="seccion__num">06</span>
     <h2 class="seccion__title">Salsas</h2>
     <span class="seccion__count">de la casa</span>
 </div>
 <div class="seccion__grid salsas__grid">
     @for (salsa of menu.salsas(); track salsa.id) {
-    <div class="salsa">
+    <div class="salsa" appRevelar="item" [indice]="$index">
         <h3 class="salsa__nombre">{{ salsa.nombre }}</h3>
         <p class="salsa__desc">{{ salsa.descripcion }}</p>
     </div>

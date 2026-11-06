@@ -1,5 +1,6 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { Acciones } from '../acciones/acciones';
+import { Revelar } from '../core/animaciones';
 import { CarritoService } from '../core/carrito.service';
 import { formatoPrecio } from '../core/formato';
 import { MenuService } from '../core/menu.service';
@@ -8,7 +9,7 @@ import { Producto } from '../core/models';
 // Una categoría del menú (encabezado + cards o filas), con los datos de Supabase
 @Component({
   selector: 'app-menu-categoria',
-  imports: [Acciones],
+  imports: [Acciones, Revelar],
   templateUrl: './menu-categoria.html',
   styleUrl: './menu-categoria.scss',
 })

@@ -3,10 +3,11 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { AuthService } from '../../core/auth.service';
 import { AdminService } from '../admin.service';
 import { AdminEstilos } from './admin-estilos';
+import { Confirmar } from '../confirmar/confirmar';
 
 @Component({
   selector: 'app-admin-layout',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, AdminEstilos],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, AdminEstilos, Confirmar],
   templateUrl: './admin-layout.html',
   styleUrl: './admin-layout.scss',
 })

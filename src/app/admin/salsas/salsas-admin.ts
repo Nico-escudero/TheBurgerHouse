@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Salsa } from '../../core/models';
 import { AdminService } from '../admin.service';
 import { describirError } from '../errores';
+import { ConfirmarService } from '../confirmar/confirmar.service';
 
 interface BorradorSalsa {
   id: number | null; // null = nueva
@@ -17,6 +18,7 @@ interface BorradorSalsa {
 })
 export class SalsasAdmin {
   protected readonly admin = inject(AdminService);
+  private readonly confirmar = inject(ConfirmarService);
 
   protected readonly editando = signal<BorradorSalsa | null>(null);
   protected readonly guardando = signal(false);
@@ -62,7 +64,13 @@ export class SalsasAdmin {
   }
 
   protected async borrar(s: Salsa): Promise<void> {
-    if (!confirm(`¿Eliminar la salsa "${s.nombre}"?`)) return;
+    const ok = await this.confirmar.preguntar({
+      titulo: `¿Eliminar "${s.nombre}"?`,
+      mensaje: 'La salsa se borra del menú. No se puede deshacer.',
+      aceptar: 'Eliminar',
+      peligro: true,
+    });
+    if (!ok) return;
     await this.ejecutar(() => this.admin.borrarSalsa(s.id));
   }
 

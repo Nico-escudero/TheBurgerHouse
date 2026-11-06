@@ -14,6 +14,7 @@ import { filter, map } from 'rxjs';
 import { Carrito } from './carrito/carrito';
 import { CarritoService } from './core/carrito.service';
 import { Ficha } from './ficha/ficha';
+import { SplitText, animar, gsap } from './core/animaciones';
 
 interface NavLink {
   label: string;
@@ -62,6 +63,9 @@ export class App {
 
   private readonly header = viewChild<ElementRef<HTMLElement>>('header');
   private readonly linksBar = viewChild<ElementRef<HTMLElement>>('linksBar');
+  private readonly badge = viewChild<ElementRef<HTMLElement>>('badge');
+  private readonly cartBtn = viewChild<ElementRef<HTMLElement>>('cartBtn');
+  private readonly footer = viewChild<ElementRef<HTMLElement>>('footer');
   private frame = 0;
 
   // Alto real del header, medido en vivo (cambia entre desktop y mobile)
@@ -77,6 +81,8 @@ export class App {
 
     afterNextRender(() => this.actualizarActivo());
 
+    this.animarSitio();
+
     // Mobile: centra el link activo dentro de la barra deslizable
     effect(() => {
       const id = this.activo();
@@ -91,6 +97,70 @@ export class App {
         left: link.offsetLeft - (barra.clientWidth - link.offsetWidth) / 2,
         behavior: 'smooth',
       });
+    });
+  }
+
+  // Animaciones GSAP del sitio público: entrada del header, footer y rebote del carrito
+  private animarSitio(): void {
+    const host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+    animar(
+      () => host,
+      () => {
+        const header = this.header()?.nativeElement;
+        if (header) {
+          gsap.from(header, { yPercent: -120, duration: 0.8, ease: 'power3.out' });
+          gsap.from(header.querySelectorAll('.site-nav__link'), {
+            autoAlpha: 0,
+            y: -12,
+            duration: 0.4,
+            stagger: 0.05,
+            delay: 0.35,
+            ease: 'power2.out',
+          });
+        }
+
+        // Footer: las letras del nombre suben una a una al llegar al final
+        const titulo = this.footer()?.nativeElement.querySelector('.footer__big');
+        if (!titulo) return;
+        const letras = SplitText.create(titulo, { type: 'chars', mask: 'chars' });
+        gsap.from(letras.chars, {
+          yPercent: 100,
+          duration: 0.6,
+          stagger: 0.025,
+          ease: 'back.out(1.6)',
+          scrollTrigger: { trigger: titulo, start: 'top 95%', once: true },
+        });
+        return () => letras.revert();
+      },
+    );
+
+    // Rebote del carrito cada vez que cambia la cantidad (no en la carga inicial)
+    const sinMovimiento = matchMedia('(prefers-reduced-motion: reduce)');
+    let anterior = this.cantidadCarrito();
+    effect(() => {
+      const cantidad = this.cantidadCarrito();
+      const boton = this.cartBtn()?.nativeElement;
+      const badge = this.badge()?.nativeElement;
+      if (cantidad === anterior || sinMovimiento.matches) {
+        anterior = cantidad;
+        return;
+      }
+      const sube = cantidad > anterior;
+      anterior = cantidad;
+      if (boton) {
+        gsap.fromTo(
+          boton,
+          { rotate: sube ? -14 : 10 },
+          { rotate: 0, duration: 0.6, ease: 'elastic.out(1.2, 0.4)', overwrite: true },
+        );
+      }
+      if (badge) {
+        gsap.fromTo(
+          badge,
+          { scale: sube ? 1.6 : 0.7 },
+          { scale: 1, duration: 0.5, ease: 'back.out(3)', overwrite: true },
+        );
+      }
     });
   }
 

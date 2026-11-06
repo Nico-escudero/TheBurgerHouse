@@ -1,5 +1,5 @@
 @if (categoria(); as cat) {
-<div class="seccion__head">
+<div class="seccion__head" appRevelar="grupo">
     <span class="seccion__num">{{ num() }}</span>
     <h2 class="seccion__title" [class.largo]="cat.nombre.length > 10">{{ cat.nombre }}</h2>
     <span class="seccion__count">{{ cat.productos.length }} opciones</span>
@@ -8,7 +8,7 @@
 <div class="seccion__grid">
     @for (p of cat.productos; track p.id) {
     @if (cat.modo === 'card') {
-    <article class="card" [class.en-pedido]="carrito.cantidadDe(p.id) > 0">
+    <article class="card" appRevelar="item" [indice]="$index" [class.en-pedido]="carrito.cantidadDe(p.id) > 0">
         <div class="card__foto">
             @if (p.imagen_url) {
             <img [src]="p.imagen_url" [alt]="p.nombre" width="124" height="124" loading="lazy"
@@ -35,7 +35,7 @@
         <app-acciones class="vertical" [producto]="p" />
     </article>
     } @else {
-    <article class="fila" [class.en-pedido]="carrito.cantidadDe(p.id) > 0">
+    <article class="fila" appRevelar="item" [indice]="$index" [class.en-pedido]="carrito.cantidadDe(p.id) > 0">
         <h3 class="fila__nombre">{{ p.nombre }}</h3>
         <div class="fila__lado">
             <span class="fila__precio">{{ precio(p.precio) }}</span>
