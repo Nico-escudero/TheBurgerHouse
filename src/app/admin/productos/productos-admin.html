@@ -42,7 +42,7 @@
     }
 
     <ul class="lista">
-        @for (p of c.productos; track p.id; let primero = $first; let ultimo = $last) {
+        @for (p of c.productos; track p.id) {
         <li class="prod adm-escalonado" [style.--i]="$index" [class.oculto]="!p.activo" [class.ocupado]="ocupado() === p.id">
             <div class="prod__foto">
                 @if (p.imagen_url) {
@@ -79,20 +79,6 @@
             </div>
 
             <div class="prod__acciones">
-                <button type="button" class="adm-icono" aria-label="Subir" title="Subir"
-                    [disabled]="primero || !!busqueda() || ocupado() === p.id" (click)="mover(p, -1)">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M6 15l6-6 6 6" />
-                    </svg>
-                </button>
-                <button type="button" class="adm-icono" aria-label="Bajar" title="Bajar"
-                    [disabled]="ultimo || !!busqueda() || ocupado() === p.id" (click)="mover(p, 1)">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M6 9l6 6 6-6" />
-                    </svg>
-                </button>
                 <a class="adm-icono" [routerLink]="['/admin/productos', p.id]" [attr.aria-label]="'Editar ' + p.nombre"
                     title="Editar">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"

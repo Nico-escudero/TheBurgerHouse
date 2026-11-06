@@ -53,10 +53,6 @@ export class ProductosAdmin {
     });
   }
 
-  protected mover(p: Producto, direccion: -1 | 1): Promise<void> {
-    return this.ejecutar(p.id, () => this.admin.mover(p, direccion));
-  }
-
   protected async borrar(p: Producto): Promise<void> {
     const ok = await this.confirmar.preguntar({
       titulo: `¿Eliminar "${p.nombre}"?`,

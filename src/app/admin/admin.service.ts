@@ -89,24 +89,6 @@ export class AdminService {
     this.actualizarLocal(p.id, { [campo]: valor });
   }
 
-  // Intercambia el orden con el vecino de arriba (-1) o de abajo (+1) dentro de la categoría
-  async mover(p: Producto, direccion: -1 | 1): Promise<void> {
-    const lista = this.categorias().find((c) => c.id === p.categoria_id)?.productos ?? [];
-    const i = lista.findIndex((x) => x.id === p.id);
-    const vecino = lista[i + direccion];
-    if (!vecino) return;
-
-    // Si tenían el mismo orden se usan las posiciones para que el cambio se note
-    const ordenP = vecino.orden !== p.orden ? vecino.orden : i + direccion;
-    const ordenV = vecino.orden !== p.orden ? p.orden : i;
-    const [a, b] = await Promise.all([
-      this.sb.from('productos').update({ orden: ordenP }).eq('id', p.id),
-      this.sb.from('productos').update({ orden: ordenV }).eq('id', vecino.id),
-    ]);
-    if (a.error ?? b.error) throw a.error ?? b.error;
-    await this.cargar();
-  }
-
   private actualizarLocal(id: string, cambios: Partial<Producto>): void {
     this.categorias.update((cats) =>
       cats.map((c) => ({
