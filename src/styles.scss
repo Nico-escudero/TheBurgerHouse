@@ -1,1 +1,59 @@
-/* You can add global styles to this file, and also import other style files */
+@use 'styles/variables' as *;
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,800;0,900;1,800&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap');
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-color: $mostaza $negro-base;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+// Respaldo para anclas nativas (#id): alto del header + 20px de nubes
+[id] {
+    scroll-margin-top: 88px;
+}
+
+@media (max-width: 800px) {
+    [id] {
+        scroll-margin-top: 136px;
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: $negro-base;
+    color: $blanco;
+    font-family: $font-text;
+
+    // Fondo en una capa fija aparte: iOS Safari ignora "background-attachment: fixed"
+    // y escala la imagen al alto de toda la página (se veía con zoom)
+    &::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background: $negro-base url('/img/fondo-burger-house-desktop.webp') center / cover no-repeat;
+        pointer-events: none;
+    }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: $font-display;
+}
+
+
+@media (max-width:800px) {
+    body::before {
+        background-image: url('/img/fondo-burger-house-mobile.webp');
+    }
+}

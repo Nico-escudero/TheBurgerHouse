@@ -1,0 +1,26 @@
+$font-display: 'Archivo', sans-serif; // logo, títulos, precios, totales
+$font-text: 'Barlow Semi Condensed', sans-serif; // cuerpo, nav, botones, productos
+
+// ===== Colores principales =====
+$mostaza: #F2B83B; // acento: CTA, precios, nav activo, títulos en contorno
+$negro-base: #0A0A0A; // fondo general
+$tinta: #111111; // texto sobre mostaza/blanco, pastillas de salsas
+$blanco: #F5F5F5; // texto principal
+
+// ===== Interfaz =====
+$superficie: #181818; // cards
+$hover: #202020; // card en hover, fondo de imágenes
+$borde: #2D2D2D; // bordes de cards
+$gris-texto: #BDBDBD; // descripciones y etiquetas
+$gris-claro: #D8D8D8; // bajadas del hero
+
+// ===== Estados =====
+$whatsapp: #1FA855; // botón de pedido
+$badge: #E0382C; // contador del carrito
+$ambar: #A56F00; // precio extra sobre blanco
+$eliminar: #B3261E; // ícono de borrar ítem
+
+// ===== Extras útiles =====
+$grilla: rgba(255, 255, 255, .05); // líneas del fondo (30 × 30 px)
+$ghost: rgba(255, 255, 255, .06); // texto gigante "Meat and Cheese"
+$ease: cubic-bezier(.32, .72, 0, 1);

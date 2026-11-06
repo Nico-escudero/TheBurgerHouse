@@ -1,0 +1,197 @@
+﻿@use 'styles/variables' as *;
+
+.site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    margin-bottom: 20px; // reserva el alto de las nubes: no tapan el inicio del hero
+    background: #fff;
+    color: $tinta;
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: calc(100% - 1px); // el -1px tapa la línea fina entre barra y nubes
+        height: 20px;
+        background: url('/nubes.svg') repeat-x 0 0 / 40px 20px;
+        pointer-events: none;
+    }
+
+    &__inner {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        grid-template-areas: 'logo links cart';
+        align-items: center;
+        gap: 2rem;
+        padding: .75rem clamp(1.5rem, 4vw, 4rem);
+    }
+
+    // ===== Logo =====
+    &__logo {
+        grid-area: logo;
+        justify-self: start;
+        font-family: $font-display;
+        font-weight: 900;
+        font-style: italic;
+        font-size: 1.4rem;
+        letter-spacing: .02em;
+        color: $tinta;
+        text-decoration: none;
+        white-space: nowrap;
+
+        span {
+            color: $ambar;
+        }
+
+        img {
+            display: block;
+            height: 40px;
+            width: auto;
+        }
+    }
+
+    // ===== Links =====
+    &__links {
+        grid-area: links;
+        position: relative; // referencia del offsetLeft de los links (scroll horizontal en mobile)
+        display: flex;
+        gap: .75rem;
+    }
+
+    &__link {
+        flex-shrink: 0;
+        padding: .5rem 1rem;
+        border-radius: 999px;
+        font-family: $font-text;
+        font-weight: 600;
+        font-size: 1rem;
+        color: $tinta;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: background-color .3s $ease;
+
+        &:hover {
+            background: $mostaza;
+        }
+
+        &.is-active {
+            background: $mostaza;
+        }
+
+        &:focus-visible {
+            outline: 2px solid $tinta;
+            outline-offset: 2px;
+        }
+    }
+
+    // ===== Carrito =====
+    &__cart {
+        grid-area: cart;
+        justify-self: end;
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 2px solid $tinta;
+        border-radius: 50%;
+        background: #fff;
+        color: $tinta;
+        cursor: pointer;
+        transition: background-color .3s $ease, color .3s $ease;
+
+        &:hover {
+            background: $tinta;
+            color: #fff;
+        }
+
+        &:focus-visible {
+            outline: 2px solid $mostaza;
+            outline-offset: 2px;
+        }
+    }
+
+    &__badge {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        min-width: 20px;
+        height: 20px;
+        padding: 0 5px;
+        box-sizing: border-box;
+        border-radius: 999px;
+        background: $badge;
+        color: #fff;
+        font-family: $font-text;
+        font-weight: 700;
+        font-size: .75rem;
+        line-height: 20px;
+        text-align: center;
+    }
+}
+
+.footer {
+    position: relative;
+    padding: 40px 110px;
+    text-align: center;
+    overflow: hidden;
+
+    &__big {
+        margin: 0;
+        font-family: $font-display;
+        font-weight: 900;
+        font-size: clamp(40px, 9vw, 110px);
+        line-height: .9;
+        text-transform: uppercase;
+
+        color: transparent;
+        -webkit-text-stroke: 2px rgba(255, 255, 255, .35);
+    }
+
+    p {
+        margin-top: 18px;
+        font: 600 18px $font-text;
+    }
+
+    a {
+        color: $mostaza;
+    }
+}
+
+// ===== Mobile: logo + carrito arriba, links deslizables abajo =====
+@media (max-width: 800px) {
+    .site-nav {
+        &__inner {
+            grid-template-columns: 1fr auto;
+            grid-template-areas:
+                'logo cart'
+                'links links';
+            row-gap: .5rem;
+            padding: .75rem 1rem .5rem;
+        }
+
+        &__logo {
+            font-size: 1.15rem;
+        }
+
+        &__links {
+            overflow-x: auto;
+            scroll-snap-type: x proximity;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; // Firefox
+            margin: 0 -1rem; // el scroll llega hasta los bordes
+            padding: 0 1rem .25rem;
+
+            &::-webkit-scrollbar {
+                display: none; // Chrome / Safari
+            }
+        }
+
+        &__link {
+            scroll-snap-align: start;
+        }
+    }
+}

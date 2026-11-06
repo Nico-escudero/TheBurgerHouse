@@ -11,14 +11,7 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss",
-          "standalone": false
-        },
-        "@schematics/angular:directive": {
-          "standalone": false
-        },
-        "@schematics/angular:pipe": {
-          "standalone": false
+          "style": "scss"
         }
       },
       "root": "",
@@ -40,13 +33,10 @@
             "styles": [
               "src/styles.scss"
             ],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "security": {
-              "allowedHosts": []
-            },
-            "ssr": {
-              "entry": "src/server.ts"
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src"
+              ]
             }
           },
           "configurations": {

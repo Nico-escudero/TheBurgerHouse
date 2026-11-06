@@ -1,0 +1,48 @@
+@use 'styles/variables' as *;
+
+section.hamburgesas,
+section.acompaniamientos,
+section.extras,
+section.postres,
+section.bebidas,
+section.salsas {
+    min-height: calc(100vh - 80px);
+}
+
+section.salsas {
+    background-color: $mostaza;
+}
+
+// ===== Primera pantalla: hero (85%) + marquee (15%) =====
+// --pantalla = alto visible menos el header (barra + 20px de nubes)
+section.inicio,
+section.marquee {
+    --pantalla: calc(100svh - 88px);
+
+    @media (max-width: 800px) {
+        --pantalla: calc(100svh - 136px);
+    }
+}
+
+section.inicio {
+    display: flex;
+    align-items: center;
+    min-height: calc(var(--pantalla) * .85);
+    overflow-x: clip; // la carita que saluda se recorta en el borde sin scroll horizontal
+
+    > app-hero {
+        flex: 1;
+    }
+}
+
+section.marquee {
+    display: flex;
+    align-items: center;
+    height: calc(var(--pantalla) * .15);
+    overflow-x: clip; // la cinta girada no genera scroll horizontal
+
+    > app-marquee {
+        flex: 1;
+        min-width: 0;
+    }
+}

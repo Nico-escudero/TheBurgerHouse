@@ -1,0 +1,36 @@
+- generic [ref=f11e2]:
+  - banner [ref=f11e3]:
+    - generic [ref=f11e4]:
+      - link "The Burger House, ir al inicio" [ref=f11e5] [cursor=pointer]:
+        - /url: /#inicio
+        - text: THE BURGER HOUSE
+      - navigation "Secciones del menú" [ref=f11e6]:
+        - link "Burgers" [ref=f11e7] [cursor=pointer]:
+          - /url: /#hamburgesas
+        - link "Acompañamientos" [ref=f11e8] [cursor=pointer]:
+          - /url: /#acompaniamientos
+        - link "Extras" [ref=f11e9] [cursor=pointer]:
+          - /url: /#extras
+        - link "Postres" [ref=f11e10] [cursor=pointer]:
+          - /url: /#postres
+        - link "Bebidas" [ref=f11e11] [cursor=pointer]:
+          - /url: /#bebidas
+        - link "Salsas" [ref=f11e12] [cursor=pointer]:
+          - /url: /#salsas
+      - button "Abrir carrito" [ref=f11e13] [cursor=pointer]:
+        - generic [ref=f11e16]: "2"
+  - main [ref=f11e18]:
+    - paragraph [ref=f11e21]: hero works!
+    - generic [ref=f11e22]: Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦
+    - paragraph [ref=f11e28]: hambuergesas works!
+    - paragraph [ref=f11e31]: acompaniamientos works!
+    - paragraph [ref=f11e34]: extras works!
+    - paragraph [ref=f11e37]: postres works!
+    - paragraph [ref=f11e40]: bebidas works!
+    - paragraph [ref=f11e43]: salsas works!
+  - contentinfo [ref=f11e44]:
+    - paragraph [ref=f11e45]: the burger house
+    - paragraph [ref=f11e46]:
+      - text: Maipú 1712, Tandil ·
+      - link "@theburgerhouse.tandil" [ref=f11e47] [cursor=pointer]:
+        - /url: https://www.instagram.com/theburgerhouse.tandil/

@@ -1,0 +1,64 @@
+<!-- Mobile: carita que saluda arriba a la derecha, detrás del título -->
+<img class="hero__saludo hero__saludo--mobile d-md-none" src="/carita.svg" alt="" aria-hidden="true">
+
+<div class="container hero__contenido mt-3 mt-md-0">
+
+    <!-- Grilla: mobile = texto arriba y botón | foto abajo; desktop = texto + botón | foto -->
+    <div class="hero__grid">
+        <div class="hero__texto">
+            <span class="hero__badge text-uppercase">smash burgers · tandil</span>
+            <h1 class="hero__title">Elegí tu burger. <span>Pedila</span> por WhatsApp.</h1>
+            <p class="hero__subtitle">Armá tu pedido y mandanoslo por WhatsApp. Envío a domicilio o retiro en Maipú
+                1712.</p>
+        </div>
+        <div class="hero__cta">
+            <button class="hero__button align-content-center" type="button">Ver el menú <svg
+                    xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-arrow-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8" />
+                </svg></button>
+        </div>
+        <div class="hero__visual">
+            <!-- clip-path del marco ondulado (coordenadas 0-1: se adapta al tamaño de la caja) -->
+            <svg width="0" height="0" class="position-absolute" aria-hidden="true">
+                <defs>
+                    <clipPath id="hero-onda" clipPathUnits="objectBoundingBox">
+                        <path [attr.d]="onda" />
+                    </clipPath>
+                </defs>
+            </svg>
+
+            <div class="hero__media">
+                <!-- Desktop: carita grande que saluda, detrás de la foto -->
+                <img class="hero__saludo d-none d-md-block" src="/carita.svg" alt="" aria-hidden="true">
+
+                <div class="hero__photo">
+                    <img src="/img/hero.webp" alt="La burger más pedida de The Burger House" fetchpriority="high">
+                </div>
+
+                <!-- Sello que gira: texto en círculo + carita -->
+                <svg aria-hidden="true" class="hero__sello" viewBox="0 0 120 120">
+                    <defs>
+                        <path id="hero-circulo" d="M15 60a45 45 0 1 1 90 0 45 45 0 1 1-90 0" />
+                    </defs>
+                    <circle cx="60" cy="60" r="59" fill="#111" stroke="#f2b83b" stroke-width="2" /><text fill="#f2b83b"
+                        font-size="11" font-weight="800">
+                        <textPath href="#hero-circulo" lengthAdjust="spacing" textLength="278">LA MÁS PEDIDA ✦ LA MÁS
+                            PEDIDA ✦</textPath>
+                    </text>
+                    <image width="44" height="44" x="38" y="38" href="/carita-primer-plano.svg" />
+                </svg>
+
+                <!-- Carita blanca: misma forma de carita-primer-plano.svg con relleno blanco -->
+                <svg class="hero__carita" viewBox="0 0 100 100" aria-hidden="true">
+                    <path fill="#fff"
+                        d="m94 50 2.6 6.1-4.1 5.3-4.6 4.3.2 6.3-.8 6.6-6.2 2.5-6.1 1.4-3 5.6-4 5.3-6.6-.9-6-1.9L50 94l-6.1 2.6-5.3-4.1-4.3-4.6-6.3.2-6.6-.8-2.5-6.2-1.4-6.1-5.6-3-5.3-4 .9-6.6 1.9-6L6 50l-2.6-6.1 4.1-5.3 4.6-4.3-.2-6.3.8-6.6 6.2-2.5 6.1-1.4 3-5.6 4-5.3 6.6.9 6 1.9L50 6l6.1-2.6 5.3 4.1 4.3 4.6 6.3-.2 6.6.8 2.5 6.2 1.4 6.1 5.6 3 5.3 4-.9 6.6-1.9 6Z" />
+                    <path fill="none" stroke="#111" stroke-linecap="round" stroke-width="5"
+                        d="M36 32v14m26-16v16M28 56c14 14 32 12 46-6" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+</div>

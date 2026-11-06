@@ -1,0 +1,224 @@
+@use 'styles/variables' as *;
+
+// ===== Grilla =====
+// Mobile: texto a lo ancho; abajo el botón a la izquierda y la burger grande a la derecha
+.hero__grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+        'texto texto'
+        'cta   visual';
+    column-gap: .5rem;
+
+    // Desktop: texto + botón a la izquierda, burger a la derecha
+    @media (min-width: 768px) {
+        grid-template-columns: 7fr 5fr;
+        grid-template-areas:
+            'texto visual'
+            'cta   visual';
+        column-gap: 1.5rem;
+        align-content: center;
+    }
+}
+
+.hero__texto {
+    grid-area: texto;
+    align-self: end;
+}
+
+.hero__cta {
+    grid-area: cta;
+    align-self: start;
+}
+
+.hero__visual {
+    grid-area: visual;
+    align-self: center;
+    min-width: 0;
+}
+
+.hero__badge {
+    padding: .5rem 1rem;
+    border: 2px solid $mostaza;
+    border-radius: 999px;
+    font-family: $font-text;
+    font-weight: 600;
+    font-size: 1rem;
+    color: $mostaza;
+
+}
+
+.hero__title {
+    font-family: $font-display;
+    // Mobile: 4 líneas grandes (ELEGÍ TU / BURGER. / PEDILA POR / WHATSAPP.);
+    // también acompaña el alto de pantalla para que hero + marquee entren en la primera pantalla
+    font-size: clamp(2.25rem, min(12.5vw, calc(var(--pantalla, 100svh) * .07)), 3.5rem);
+    font-weight: 900;
+    line-height: 0.95;
+    color: $blanco;
+    text-transform: uppercase;
+    margin-bottom: .75rem;
+    margin-top: 1rem;
+
+    span {
+        line-height: .9;
+        color: transparent;
+        -webkit-text-stroke: 2px $mostaza;
+    }
+
+    @media (min-width: 768px) {
+        font-size: clamp(3.5rem, calc(var(--pantalla, 100svh) * .095), 6rem);
+        margin-bottom: 1.5rem;
+        margin-top: 1.5rem;
+    }
+}
+
+.hero__subtitle {
+    font-family: $font-text;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: $gris-claro;
+    margin-bottom: .5rem;
+
+    @media (min-width: 768px) {
+        width: 70%;
+        font-size: 1.5rem;
+    }
+}
+
+// ===== Imagen: foto en marco ondulado que flota + sello que gira + carita (como el demo) =====
+.hero__media {
+    position: relative;
+    isolation: isolate; // la carita que saluda queda detrás del marco sin irse detrás del fondo
+    // Mobile: ocupa el espacio a la derecha del botón
+    width: min(54vw, 280px);
+    aspect-ratio: 1;
+    margin: 1.25rem .75rem .5rem auto; // margen derecho: el sello no se corta en el borde
+    animation: hero-flotar 6s ease-in-out infinite;
+
+    // Marco mostaza: misma onda, un poco más grande y girada
+    &::before {
+        content: '';
+        position: absolute;
+        inset: -3%;
+        clip-path: url(#hero-onda);
+        background: $mostaza;
+        transform: rotate(6deg);
+    }
+
+    @media (min-width: 768px) {
+        width: min(100%, 470px, calc(var(--pantalla, 100svh) * .7));
+        margin: 0 auto;
+    }
+}
+
+.hero__photo {
+    position: absolute;
+    inset: 0;
+    clip-path: url(#hero-onda);
+    background: #222;
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.hero__sello {
+    position: absolute;
+    right: -6%;
+    top: -4%;
+    width: 31%;
+    animation: hero-girar 14s linear infinite;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .5));
+}
+
+.hero__carita {
+    position: absolute;
+    left: -8%;
+    bottom: 4%;
+    width: 21%;
+    pointer-events: none;
+    animation: hero-flotar 4s ease-in-out infinite;
+}
+
+.hero__saludo {
+    position: absolute;
+    z-index: -1;
+    right: -62%;
+    top: -26%;
+    width: 95%;
+    transform-origin: 50% 90%; // gira desde abajo, como una mano que saluda
+    animation: hero-saludar 2.8s ease-in-out infinite;
+    pointer-events: none;
+}
+
+// Mobile: la carita va arriba a la derecha del hero, detrás del texto
+:host {
+    position: relative;
+    display: block;
+}
+
+.hero__contenido {
+    position: relative;
+    z-index: 1; // el texto queda por encima de la carita
+}
+
+.hero__saludo--mobile {
+    z-index: 0;
+    top: -.5rem;
+    right: -3.5rem;
+    width: 190px;
+}
+
+// Saludo: va y vuelve un poco, después descansa
+@keyframes hero-saludar {
+    0%, 60%, 100% {
+        transform: rotate(0deg);
+    }
+    15% {
+        transform: rotate(14deg);
+    }
+    30% {
+        transform: rotate(-8deg);
+    }
+    45% {
+        transform: rotate(10deg);
+    }
+}
+
+@keyframes hero-flotar {
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+@keyframes hero-girar {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero__media,
+    .hero__sello,
+    .hero__carita,
+    .hero__saludo {
+        animation: none;
+    }
+}
+
+.hero__button {
+    margin: 1rem auto;
+    padding: .5rem 1rem;
+    border: 2px solid $mostaza;
+    border-radius: 999px;
+    font-family: $font-text;
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: $tinta;
+    background-color: $mostaza;
+}

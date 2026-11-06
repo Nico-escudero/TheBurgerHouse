@@ -1,0 +1,30 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "The Burger House, ir al inicio" [ref=e5] [cursor=pointer]:
+        - /url: /#inicio
+        - text: THE BURGER HOUSE
+      - navigation "Secciones del menú" [ref=e6]:
+        - link "Burgers" [ref=e7] [cursor=pointer]:
+          - /url: /#hamburgesas
+        - link "Acompañamientos" [ref=e8] [cursor=pointer]:
+          - /url: /#acompaniamientos
+        - link "Extras" [ref=e9] [cursor=pointer]:
+          - /url: /#extras
+        - link "Postres" [ref=e10] [cursor=pointer]:
+          - /url: /#postres
+        - link "Bebidas" [ref=e11] [cursor=pointer]:
+          - /url: /#bebidas
+        - link "Salsas" [ref=e12] [cursor=pointer]:
+          - /url: /#salsas
+      - button "Abrir carrito" [ref=e13] [cursor=pointer]:
+        - generic [ref=e16]: "2"
+  - main [ref=e18]:
+    - paragraph [ref=e21]: hero works!
+    - generic [ref=e22]: Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦ Meat & Cheese ✦ Smash burgers ✦ Tandil ✦
+    - paragraph [ref=e28]: hambuergesas works!
+    - paragraph [ref=e31]: acompaniamientos works!
+    - paragraph [ref=e34]: extras works!
+    - paragraph [ref=e37]: postres works!
+    - paragraph [ref=e40]: bebidas works!
+    - paragraph [ref=e43]: salsas works!

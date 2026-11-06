@@ -1,0 +1,33 @@
+.marquee {
+    background: #f2b83b;
+    color: #111;
+    overflow: hidden;
+    white-space: nowrap;
+    transform: rotate(-1.5deg);
+    margin: 0; // la section la centra en su 15% de pantalla
+    padding: 12px 0;
+    font: 900 28px/1 'Archivo', sans-serif;
+    text-transform: uppercase;
+
+    &__track {
+        display: inline-block;
+        animation: marquee 22s linear infinite;
+    }
+
+    @media (max-width: 699px) {
+        font-size: 20px;
+        padding: 8px 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        &__track {
+            animation: none;
+        }
+    }
+}
+
+@keyframes marquee {
+    to {
+        transform: translateX(-50%);
+    }
+}
