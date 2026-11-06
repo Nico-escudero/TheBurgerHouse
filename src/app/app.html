@@ -43,7 +43,11 @@
     </p>
 </footer>
 
-<!-- Paneles: carrito y ficha de producto (<dialog> modal) -->
+<!-- Paneles: carrito y ficha de producto (<dialog> modal).
+     Se cargan aparte, apenas el navegador queda libre: no demoran la primera pantalla.
+     Si alguien toca el carrito antes, se abre igual en cuanto el panel termina de cargar. -->
+@defer (on idle) {
 <app-carrito />
 <app-ficha />
+}
 }

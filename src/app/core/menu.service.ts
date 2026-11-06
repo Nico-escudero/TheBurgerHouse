@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, PendingTasks, inject, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Categoria, MenuCache, Salsa } from './models';
 
@@ -23,6 +23,9 @@ export class MenuService {
     readonly cargando = signal(true);
     readonly error = signal(false);
 
+    // El prerender (build) espera a que termine la carga: así el HTML generado incluye el menú
+    private readonly pendientes = inject(PendingTasks);
+
     constructor() {
         // muestra el menú guardado al instante mientras se actualiza
         const cache = this.leerCache();
@@ -35,6 +38,7 @@ export class MenuService {
     }
 
     async cargar(): Promise<void> {
+        const terminar = this.pendientes.add();
         try {
             // Mismas consultas que antes con supabase-js: categorías con sus productos activos,
             // salsas activas y configuración, todo ordenado por "orden"
@@ -63,6 +67,7 @@ export class MenuService {
             this.error.set(this.categorias().length === 0);
         } finally {
             this.cargando.set(false);
+            terminar();
         }
     }
 

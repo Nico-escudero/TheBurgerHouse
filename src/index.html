@@ -180,7 +180,14 @@
       document.querySelector('link[rel="canonical"]')?.remove();
       document.title = 'Admin | The Burger House';
     } else {
-      document.documentElement.classList.add('cargando');
+      // El loader se ve solo la primera vez de la sesión (lo marca src/app/core/loader.ts al terminar)
+      var visto = false;
+      try { visto = sessionStorage.getItem('bh_loader_visto') === '1'; } catch (e) { }
+      if (visto) {
+        document.querySelectorAll('.loader, .loader__cortina').forEach(function (el) { el.remove(); });
+      } else {
+        document.documentElement.classList.add('cargando');
+      }
     }
   </script>
   <app-root></app-root>

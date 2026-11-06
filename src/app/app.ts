@@ -1,9 +1,10 @@
-import { ViewportScroller } from '@angular/common';
+import { ViewportScroller, isPlatformBrowser } from '@angular/common';
 import {
   Component,
   ElementRef,
   afterNextRender,
   effect,
+  PLATFORM_ID,
   inject,
   signal,
   viewChild,
@@ -58,7 +59,8 @@ export class App {
       filter((e) => e instanceof NavigationEnd),
       map((e) => (e as NavigationEnd).urlAfterRedirects.startsWith('/admin')),
     ),
-    { initialValue: location.pathname.startsWith('/admin') },
+    // En el prerender (build) no existe location: ahí siempre es la home
+    { initialValue: typeof location !== 'undefined' && location.pathname.startsWith('/admin') },
   );
 
   private readonly header = viewChild<ElementRef<HTMLElement>>('header');
@@ -83,9 +85,11 @@ export class App {
 
     this.animarSitio();
 
-    // Mobile: centra el link activo dentro de la barra deslizable
+    // Mobile: centra el link activo dentro de la barra deslizable (solo en el navegador, no en el prerender)
+    const enNavegador = isPlatformBrowser(inject(PLATFORM_ID));
     effect(() => {
       const id = this.activo();
+      if (!enNavegador) return;
       const barra = this.linksBar()?.nativeElement;
       if (id === this.HERO) {
         barra?.scrollTo({ left: 0, behavior: 'smooth' }); // en el hero la barra vuelve al inicio
@@ -140,13 +144,15 @@ export class App {
     );
 
     // Rebote del carrito cada vez que cambia la cantidad (no en la carga inicial)
-    const sinMovimiento = matchMedia('(prefers-reduced-motion: reduce)');
+    // matchMedia no existe en el prerender (build): ahí no hay animaciones
+    const sinMovimiento =
+      typeof matchMedia === 'function' ? matchMedia('(prefers-reduced-motion: reduce)') : null;
     let anterior = this.cantidadCarrito();
     effect(() => {
       const cantidad = this.cantidadCarrito();
       const boton = this.cartBtn()?.nativeElement;
       const badge = this.badge()?.nativeElement;
-      if (cantidad === anterior || sinMovimiento.matches) {
+      if (cantidad === anterior || !sinMovimiento || sinMovimiento.matches) {
         anterior = cantidad;
         return;
       }

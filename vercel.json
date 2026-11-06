@@ -1,12 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "angular",
+  "framework": null,
   "buildCommand": "npm run build",
   "outputDirectory": "dist/TheBurgerHouse/browser",
   "cleanUrls": false,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/((?!.*\\.).*)", "destination": "/index.html" }
+    { "source": "/admin", "destination": "/index.csr.html" },
+    { "source": "/admin/:path*", "destination": "/index.csr.html" }
   ],
   "headers": [
     {
@@ -26,11 +27,11 @@
     },
     {
       "source": "/img/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400" }]
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }]
     },
     {
       "source": "/(.*)\\.(svg|png|ico|jpg|webmanifest)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400" }]
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }]
     },
     {
       "source": "/admin(.*)",
