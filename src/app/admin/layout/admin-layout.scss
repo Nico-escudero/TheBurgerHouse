@@ -12,7 +12,18 @@
     z-index: 10;
     background: #ffffff;
     color: $tinta;
-    box-shadow: 0 2px 0 $mostaza;
+
+    // Nubes bajo la barra, como en el header del sitio
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: calc(100% - 1px); // el -1px tapa la línea fina entre barra y nubes
+        height: 20px;
+        background: url('/nubes.svg') repeat-x 0 0 / 40px 20px;
+        pointer-events: none;
+    }
 }
 
 .adm-nav__inner {
@@ -51,24 +62,75 @@
 
 .adm-nav__tabs {
     grid-area: tabs;
+    position: relative;
     display: flex;
     justify-content: center;
     gap: 4px;
 
     a {
+        position: relative;
+        z-index: 1;
         padding: 8px 16px;
         border-radius: 99px;
         color: $tinta;
         font: 600 17px $font-text;
         text-decoration: none;
+        transition: background .2s $ease;
 
-        &:hover {
+        &:hover:not(.activo) {
             background: #f1f1f1;
         }
+    }
+}
 
-        &.activo {
-            background: $mostaza;
+// Se ubica desde admin-layout.ts sobre el tab activo; sin tab activo queda oculta
+.adm-nav__pastilla {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0;
+    border-radius: 99px;
+    background: $mostaza;
+    opacity: 0;
+    transition: transform .4s $ease, width .4s $ease, opacity .2s $ease;
+
+    &.sin-transicion {
+        transition: none;
+    }
+}
+
+// ===== Entrada del nav: logo, tabs y botones bajan escalonados =====
+@keyframes adm-nav-bajar {
+    from {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+}
+
+.adm-nav__logo,
+.adm-nav__tabs,
+.adm-nav__lado {
+    animation: adm-nav-bajar .6s $ease backwards;
+}
+
+.adm-nav__tabs {
+    animation-delay: .08s;
+}
+
+.adm-nav__lado {
+    animation-delay: .16s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    @keyframes adm-nav-bajar {
+        from {
+            opacity: 0;
         }
+    }
+
+    .adm-nav__pastilla {
+        transition: opacity .2s $ease;
     }
 }
 

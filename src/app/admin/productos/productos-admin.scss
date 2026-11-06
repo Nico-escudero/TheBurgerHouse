@@ -109,7 +109,13 @@
     background: $superficie;
     border: 1px solid $borde;
     border-radius: 16px;
-    transition: opacity .2s $ease;
+    transition: opacity .2s $ease, transform .2s $ease, border-color .2s $ease;
+
+    // Se eleva un poco al pasar el mouse
+    &:hover {
+        transform: translateY(-2px);
+        border-color: #3a3a3a;
+    }
 
     &.oculto {
         border-style: dashed;
@@ -236,5 +242,11 @@
 
     .prod__acciones {
         grid-area: acciones;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .prod:hover {
+        transform: none;
     }
 }

@@ -8,7 +8,7 @@
 <div class="seccion__grid">
     @for (p of cat.productos; track p.id) {
     @if (cat.modo === 'card') {
-    <article class="card" appRevelar="item" [indice]="$index" [class.en-pedido]="carrito.cantidadDe(p.id) > 0">
+    <article class="card" appRevelar="item" [indice]="$index">
         <div class="card__foto">
             @if (p.imagen_url) {
             <img [src]="p.imagen_url" [alt]="p.nombre" width="124" height="124" loading="lazy" decoding="async"
@@ -35,7 +35,7 @@
         <app-acciones class="vertical" [producto]="p" />
     </article>
     } @else {
-    <article class="fila" appRevelar="item" [indice]="$index" [class.en-pedido]="carrito.cantidadDe(p.id) > 0">
+    <article class="fila" appRevelar="item" [indice]="$index">
         <h3 class="fila__nombre">{{ p.nombre }}</h3>
         <div class="fila__lado">
             <span class="fila__precio">{{ precio(p.precio) }}</span>

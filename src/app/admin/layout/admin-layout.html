@@ -4,7 +4,9 @@
     <div class="adm-nav__inner">
         <a class="adm-nav__logo" routerLink="/admin">THE BURGER <span>HOUSE</span> <em>Panel</em></a>
 
-        <nav class="adm-nav__tabs" aria-label="Secciones del panel">
+        <nav class="adm-nav__tabs" #tabs aria-label="Secciones del panel">
+            <!-- Pastilla mostaza que se desliza hasta el tab activo -->
+            <span class="adm-nav__pastilla" #pastilla aria-hidden="true"></span>
             <a routerLink="/admin/productos" routerLinkActive="activo" ariaCurrentWhenActive="page">Productos</a>
             <a routerLink="/admin/salsas" routerLinkActive="activo" ariaCurrentWhenActive="page">Salsas</a>
             <a routerLink="/admin/ajustes" routerLinkActive="activo" ariaCurrentWhenActive="page">Ajustes</a>

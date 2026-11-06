@@ -43,7 +43,7 @@
 
     <ul class="lista">
         @for (p of c.productos; track p.id; let primero = $first; let ultimo = $last) {
-        <li class="prod" [class.oculto]="!p.activo" [class.ocupado]="ocupado() === p.id">
+        <li class="prod adm-escalonado" [style.--i]="$index" [class.oculto]="!p.activo" [class.ocupado]="ocupado() === p.id">
             <div class="prod__foto">
                 @if (p.imagen_url) {
                 <img [src]="p.imagen_url" alt="" width="56" height="56" loading="lazy">

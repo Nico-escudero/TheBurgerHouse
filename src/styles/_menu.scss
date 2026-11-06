@@ -52,13 +52,8 @@
     align-items: center;
     padding: 12px;
     background: $superficie;
-    border: 1px solid $borde;
+    border: 1px solid $mostaza;
     border-radius: 20px;
-
-    // Con unidades en el pedido el borde pasa a mostaza
-    &.en-pedido {
-        border-color: $mostaza;
-    }
 }
 
 // Placeholder: rayas + carita. Se ve mientras carga la foto, si falla (la <img> se oculta con (error)) o si no hay foto
@@ -126,12 +121,8 @@
     gap: 12px;
     padding: 10px 14px;
     background: $superficie;
-    border: 1px solid $borde;
+    border: 1px solid $mostaza;
     border-radius: 16px;
-
-    &.en-pedido {
-        border-color: $mostaza;
-    }
 }
 
 .fila__nombre {

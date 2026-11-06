@@ -249,3 +249,36 @@ select.adm-input {
         color: #ff6b5e;
     }
 }
+
+// ===== Animaciones del panel =====
+@keyframes adm-entrar {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+}
+
+@keyframes adm-fundido {
+    from {
+        opacity: 0;
+    }
+}
+
+// Cambio de sección: la pantalla nueva entra con un fundido y sube un poco
+.adm-main > :not(router-outlet) {
+    animation: adm-entrar .45s $ease backwards;
+}
+
+// Filas de las listas: aparecen una tras otra (--i = posición, tope de 12 para no esperar de más)
+.adm-escalonado {
+    animation: adm-entrar .5s $ease backwards;
+    animation-delay: calc(min(var(--i, 0), 12) * 40ms + 80ms);
+}
+
+// Movimiento reducido: solo fundidos, sin desplazamientos
+@media (prefers-reduced-motion: reduce) {
+    .adm-main > :not(router-outlet),
+    .adm-escalonado {
+        animation-name: adm-fundido;
+    }
+}
