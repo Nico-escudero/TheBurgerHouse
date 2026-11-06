@@ -1,0 +1,71 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "src/app/hambuergesas/hambuergesas.html"
+        ],
+        "createdAt": "2026-11-06T17:00:10.979Z",
+        "reason": "model: src uses Angular [src] binding to burger.imagen, not empty"
+      },
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "src/app/acompaniamientos/acompaniamientos.html"
+        ],
+        "createdAt": "2026-11-06T17:01:29.753Z",
+        "reason": "model: src uses Angular [src] binding to item.imagen, not empty"
+      },
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "src/app/menu-categoria/menu-categoria.html"
+        ],
+        "createdAt": "2026-11-06T17:27:09.838Z",
+        "reason": "model: src uses Angular [src] binding to p.imagen_url inside @if, never empty"
+      },
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "src/app/ficha/ficha.html"
+        ],
+        "createdAt": "2026-11-06T17:28:45.267Z",
+        "reason": "model: src is Angular [src] binding to p.imagen_url inside @if"
+      },
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "src/app/carrito/carrito.html"
+        ],
+        "createdAt": "2026-11-06T17:28:45.521Z",
+        "reason": "model: src is Angular [src] binding to imagen_url inside @if"
+      },
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "src/app/admin/productos/productos-admin.html"
+        ],
+        "createdAt": "2026-11-06T17:43:51.900Z",
+        "reason": "model: src is Angular [src] binding to p.imagen_url inside @if"
+      },
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "src/app/admin/editor/producto-editor.html"
+        ],
+        "createdAt": "2026-11-06T17:45:14.123Z",
+        "reason": "model: src bound via [src] to fotoUrl() inside @if, preview of uploaded/stored photo"
+      }
+    ]
+  }
+}

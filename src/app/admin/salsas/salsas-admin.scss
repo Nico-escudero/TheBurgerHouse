@@ -1,0 +1,114 @@
+@use 'styles/variables' as *;
+
+.cabecera {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.grilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    align-items: start;
+    gap: 20px;
+}
+
+.form {
+    display: grid;
+    gap: 14px;
+}
+
+.botones {
+    display: flex;
+    gap: 10px;
+}
+
+// Pastilla como en la sección Salsas, sobre fondo mostaza
+.previa {
+    padding: 16px;
+    border-radius: 16px;
+    background: $mostaza;
+}
+
+.salsa,
+.item__texto {
+    display: grid;
+    gap: 2px;
+
+    strong {
+        font: 700 20px $font-text;
+        text-transform: uppercase;
+    }
+
+    span {
+        font: 600 13px $font-text;
+        text-transform: uppercase;
+    }
+}
+
+.salsa {
+    padding: 14px 22px;
+    border-radius: 34px;
+    background: $tinta;
+    color: $mostaza;
+
+    span {
+        color: #ffffff;
+    }
+}
+
+.lista {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 16px 14px 20px;
+    background: $superficie;
+    border: 1px solid $borde;
+    border-radius: 16px;
+
+    &.oculto {
+        border-style: dashed;
+
+        .item__texto {
+            opacity: .55;
+        }
+    }
+}
+
+.item__texto {
+    min-width: 0;
+    color: $mostaza;
+
+    span {
+        color: $gris-texto;
+    }
+
+    em {
+        justify-self: start;
+        margin-top: 4px;
+        padding: 1px 8px;
+        border-radius: 99px;
+        background: #2a2a2a;
+        color: $gris-texto;
+        font: normal 700 11px $font-text;
+        text-transform: uppercase;
+    }
+}
+
+.item__acciones {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}

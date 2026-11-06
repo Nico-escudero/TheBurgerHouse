@@ -1,15 +1,42 @@
 @use 'styles/variables' as *;
 
+// ===== Secciones del menú (burgers → salsas) =====
+section.menu-seccion {
+    position: relative;
+    overflow: hidden;
+    padding: 72px 20px 64px;
+    border-top: 1px solid rgba(255, 255, 255, .08);
+
+    // Barrita de acento arriba a la izquierda
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 20px;
+        width: 90px;
+        height: 5px;
+        background: $mostaza;
+    }
+
+    @media (max-width: 575px) {
+        padding: 56px 14px 48px;
+    }
+}
+
+// Fondo alternado: una sección sí, una no
 section.acompaniamientos,
-section.extras,
-section.postres,
-section.bebidas,
-section.salsas {
-    min-height: calc(100vh - 80px);
+section.postres {
+    background: rgba(255, 255, 255, .035);
 }
 
 section.salsas {
-    background-color: $mostaza;
+    background: $mostaza;
+    color: $tinta;
+    border-top: 0;
+
+    &::before {
+        background: $tinta;
+    }
 }
 
 // ===== Primera pantalla: hero (85%) + marquee (15%) =====

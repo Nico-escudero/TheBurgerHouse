@@ -1,0 +1,382 @@
+@use 'styles/variables' as *;
+
+// ===== Contenedor: hoja desde abajo en mobile, panel desde la derecha en desktop =====
+.carrito {
+    width: 100%;
+    max-width: 100%;
+    height: 92dvh;
+    max-height: 92dvh;
+    margin: auto 0 0;
+    padding: 0;
+    border: 0;
+    border-radius: 24px 24px 0 0;
+    background: #ffffff;
+    color: $tinta;
+    overflow: hidden;
+    outline: none;
+
+    &[open] {
+        animation: subir .35s $ease;
+    }
+
+    &::backdrop {
+        background: rgba(0, 0, 0, .55);
+        backdrop-filter: blur(6px);
+    }
+
+    @media (min-width: 768px) {
+        width: 440px;
+        height: 100dvh;
+        max-height: 100dvh;
+        margin: 0 0 0 auto;
+        border-radius: 24px 0 0 24px;
+
+        &[open] {
+            animation: desde-derecha .35s $ease;
+        }
+    }
+}
+
+@keyframes subir {
+    from {
+        transform: translateY(100%);
+    }
+}
+
+@keyframes desde-derecha {
+    from {
+        transform: translateX(100%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .carrito[open] {
+        animation: none;
+    }
+}
+
+.carrito__panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+// ===== Encabezado =====
+.carrito__head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.carrito__titulo {
+    margin: 0;
+    font: 900 26px $font-display;
+}
+
+.carrito__badge {
+    min-width: 28px;
+    padding: 2px 9px;
+    border-radius: 99px;
+    background: $mostaza;
+    font: 700 15px $font-text;
+    text-align: center;
+}
+
+.carrito__cerrar {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    margin-left: auto;
+    padding: 0;
+    border: 2px solid $tinta;
+    border-radius: 50%;
+    background: #ffffff;
+    color: $tinta;
+    cursor: pointer;
+}
+
+.carrito__scroll {
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0 20px 20px;
+}
+
+// ===== Vacío =====
+.carrito__vacio {
+    flex: 1;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 14px;
+    padding: 20px;
+    text-align: center;
+
+    p {
+        margin: 0;
+        font: 600 19px $font-text;
+        color: #555555;
+    }
+}
+
+.carrito__seguir {
+    padding: 12px 26px;
+    border: 0;
+    border-radius: 99px;
+    background: $mostaza;
+    color: $tinta;
+    font: 700 17px $font-text;
+    cursor: pointer;
+}
+
+// ===== Líneas del pedido =====
+.lineas {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.linea {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: start;
+    padding: 16px 0;
+    border-bottom: 1px dashed #d4d4d4;
+}
+
+.linea__foto {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    overflow: hidden;
+    background:
+        url('/carita.svg') center / 55% no-repeat,
+        repeating-linear-gradient(45deg, #1b1b1b 0 8px, $hover 8px 16px);
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.linea__info {
+    min-width: 0;
+}
+
+.linea__nombre {
+    margin: 0;
+    font: 700 17px / 1.1 $font-text;
+    text-transform: uppercase;
+}
+
+.linea__papas {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 1px 8px;
+    border-radius: 99px;
+    background: $mostaza;
+    font: 700 12px $font-text;
+}
+
+.linea__lado {
+    display: grid;
+    justify-items: end;
+    gap: 10px;
+}
+
+.linea__precio {
+    font: 800 17px $font-display;
+    white-space: nowrap;
+}
+
+.linea__borrar {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: $eliminar;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba($eliminar, .08);
+    }
+}
+
+.stepper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.stepper__btn {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 2px solid $tinta;
+    border-radius: 50%;
+    background: transparent;
+    color: $tinta;
+    cursor: pointer;
+
+    &--lleno {
+        background: $tinta;
+        color: #ffffff;
+    }
+}
+
+.stepper__cant {
+    min-width: 14px;
+    text-align: center;
+    font: 800 17px $font-display;
+}
+
+// ===== Datos del cliente =====
+.datos {
+    display: grid;
+    gap: 10px;
+    padding-top: 18px;
+}
+
+.datos__titulo {
+    margin: 0 0 2px;
+    font: 900 16px $font-display;
+    text-transform: uppercase;
+}
+
+.campo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    border: 2px solid $tinta;
+    border-radius: 14px;
+    background: #ffffff;
+    cursor: text;
+
+    svg {
+        flex-shrink: 0;
+    }
+
+    input,
+    textarea {
+        flex: 1;
+        min-width: 0;
+        padding: 12px 0;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: $tinta;
+        font: 500 16px $font-text; // 16px: iOS no hace zoom al enfocar
+
+        &::placeholder {
+            color: #8a8a8a;
+        }
+    }
+
+    textarea {
+        min-height: 56px;
+        resize: vertical;
+    }
+
+    &--area {
+        align-items: flex-start;
+
+        svg {
+            margin-top: 12px;
+        }
+    }
+
+    &:focus-within {
+        border-color: $mostaza;
+        box-shadow: 0 0 0 3px rgba($mostaza, .35);
+    }
+
+    &.error {
+        border-color: $eliminar;
+    }
+}
+
+.datos__error {
+    margin: 0;
+    font: 600 14px $font-text;
+    color: $eliminar;
+}
+
+.entrega {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.entrega__opcion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 46px;
+    border: 2px solid $tinta;
+    border-radius: 14px;
+    background: #ffffff;
+    color: $tinta;
+    font: 700 17px $font-text;
+    cursor: pointer;
+
+    &[aria-checked='true'] {
+        background: $tinta;
+        color: $mostaza;
+    }
+}
+
+// ===== Total + WhatsApp =====
+.carrito__pie {
+    padding: 14px 20px calc(16px + env(safe-area-inset-bottom));
+    border-top: 1px solid #e6e6e6;
+}
+
+.total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.total__label {
+    font: 900 18px $font-display;
+    text-transform: uppercase;
+}
+
+.total__monto {
+    font: 900 32px $font-display;
+}
+
+.whatsapp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 52px;
+    border: 0;
+    border-radius: 99px;
+    background: $whatsapp;
+    color: #ffffff;
+    font: 700 19px $font-text;
+    cursor: pointer;
+
+    &:hover {
+        filter: brightness(1.06);
+    }
+}

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { MenuService } from '../core/menu.service';
 import { Hero } from '../hero/hero';
 import { Marquee } from '../marquee/marquee';
 import { Hambuergesas } from '../hambuergesas/hambuergesas';
@@ -14,4 +15,9 @@ import { Salsas } from '../salsas/salsas';
   templateUrl: './sections.html',
   styleUrl: './sections.scss',
 })
-export class Sections { }
+export class Sections {
+  constructor() {
+    // Trae el menú de Supabase (mientras tanto se muestra el guardado en localStorage, si hay)
+    inject(MenuService).cargar();
+  }
+}

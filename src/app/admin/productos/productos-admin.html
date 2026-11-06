@@ -1,0 +1,119 @@
+<div class="cabecera">
+    <div>
+        <h1 class="adm-titulo">Productos</h1>
+        <p class="adm-sub">{{ total() }} en el menú</p>
+    </div>
+    <a class="adm-btn" routerLink="/admin/productos/nuevo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" />
+        </svg>
+        Nuevo producto
+    </a>
+</div>
+
+<div class="filtros">
+    <input class="adm-input filtros__buscar" type="search" placeholder="Buscar producto…" aria-label="Buscar producto"
+        [value]="busqueda()" (input)="busqueda.set(valor($event))">
+    <div class="filtros__cats" role="group" aria-label="Filtrar por categoría">
+        <button type="button" [class.activo]="filtroCategoria() === null" (click)="filtroCategoria.set(null)">Todas</button>
+        @for (c of admin.categorias(); track c.id) {
+        <button type="button" [class.activo]="filtroCategoria() === c.id" (click)="filtroCategoria.set(c.id)">
+            {{ c.nombre }} <span>{{ c.productos.length }}</span>
+        </button>
+        }
+    </div>
+</div>
+
+@if (error()) {
+<p class="adm-error aviso" role="alert">{{ error() }}</p>
+}
+
+@if (admin.cargando() && !admin.categorias().length) {
+<p class="vacio">Cargando…</p>
+}
+
+@for (c of vista(); track c.id) {
+<section class="categoria">
+    <h2 class="categoria__titulo">{{ c.nombre }} <span>{{ c.productos.length }}</span></h2>
+
+    @if (!c.productos.length) {
+    <p class="vacio">No hay productos en esta categoría.</p>
+    }
+
+    <ul class="lista">
+        @for (p of c.productos; track p.id; let primero = $first; let ultimo = $last) {
+        <li class="prod" [class.oculto]="!p.activo" [class.ocupado]="ocupado() === p.id">
+            <div class="prod__foto">
+                @if (p.imagen_url) {
+                <img [src]="p.imagen_url" alt="" width="56" height="56" loading="lazy">
+                }
+            </div>
+
+            <div class="prod__info">
+                <a class="prod__nombre" [routerLink]="['/admin/productos', p.id]">{{ p.nombre }}</a>
+                <p class="prod__precio">
+                    {{ precio(p.precio) }}
+                    @if (p.precio_con_papas) {
+                    <span>· con papas {{ precio(p.precio_con_papas) }}</span>
+                    }
+                </p>
+                <div class="prod__etiquetas">
+                    @if (!p.activo) { <span class="etq etq--gris">Oculto</span> }
+                    @if (!p.stock) { <span class="etq etq--rojo">Sin stock</span> }
+                    @if (!p.imagen_url && c.modo === 'card') { <span class="etq">Sin foto</span> }
+                </div>
+            </div>
+
+            <div class="prod__toggles">
+                <label class="adm-switch">
+                    <input type="checkbox" role="switch" [checked]="p.stock" [disabled]="ocupado() === p.id"
+                        (change)="cambiar(p, 'stock', $event)">
+                    Stock
+                </label>
+                <label class="adm-switch">
+                    <input type="checkbox" role="switch" [checked]="p.activo" [disabled]="ocupado() === p.id"
+                        (change)="cambiar(p, 'activo', $event)">
+                    Visible
+                </label>
+            </div>
+
+            <div class="prod__acciones">
+                <button type="button" class="adm-icono" aria-label="Subir" title="Subir"
+                    [disabled]="primero || !!busqueda() || ocupado() === p.id" (click)="mover(p, -1)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M6 15l6-6 6 6" />
+                    </svg>
+                </button>
+                <button type="button" class="adm-icono" aria-label="Bajar" title="Bajar"
+                    [disabled]="ultimo || !!busqueda() || ocupado() === p.id" (click)="mover(p, 1)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <a class="adm-icono" [routerLink]="['/admin/productos', p.id]" [attr.aria-label]="'Editar ' + p.nombre"
+                    title="Editar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4" />
+                    </svg>
+                </a>
+                <button type="button" class="adm-icono adm-icono--peligro" [attr.aria-label]="'Eliminar ' + p.nombre"
+                    title="Eliminar" [disabled]="ocupado() === p.id" (click)="borrar(p)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
+                    </svg>
+                </button>
+            </div>
+        </li>
+        }
+    </ul>
+</section>
+} @empty {
+@if (!admin.cargando()) {
+<p class="vacio">No se encontraron productos con "{{ busqueda() }}".</p>
+}
+}

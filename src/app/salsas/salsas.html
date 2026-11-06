@@ -1,1 +1,22 @@
-<p>salsas works!</p>
+<!-- Caritas decorativas de fondo (misma forma que la carita del hero, el color sale de "color") -->
+@for (tam of ['grande', 'chica']; track tam) {
+<svg class="salsas__carita" [class]="'salsas__carita--' + tam" viewBox="0 0 100 100" aria-hidden="true">
+    <path fill="currentColor"
+        d="m94 50 2.6 6.1-4.1 5.3-4.6 4.3.2 6.3-.8 6.6-6.2 2.5-6.1 1.4-3 5.6-4 5.3-6.6-.9-6-1.9L50 94l-6.1 2.6-5.3-4.1-4.3-4.6-6.3.2-6.6-.8-2.5-6.2-1.4-6.1-5.6-3-5.3-4 .9-6.6 1.9-6L6 50l-2.6-6.1 4.1-5.3 4.6-4.3-.2-6.3.8-6.6 6.2-2.5 6.1-1.4 3-5.6 4-5.3 6.6.9 6 1.9L50 6l6.1-2.6 5.3 4.1 4.3 4.6 6.3-.2 6.6.8 2.5 6.2 1.4 6.1 5.6 3 5.3 4-.9 6.6-1.9 6Z" />
+    <path fill="none" stroke="#111" stroke-linecap="round" stroke-width="5" d="M36 32v14m26-16v16M28 56c14 14 32 12 46-6" />
+</svg>
+}
+
+<div class="seccion__head">
+    <span class="seccion__num">06</span>
+    <h2 class="seccion__title">Salsas</h2>
+    <span class="seccion__count">de la casa</span>
+</div>
+<div class="seccion__grid salsas__grid">
+    @for (salsa of menu.salsas(); track salsa.id) {
+    <div class="salsa">
+        <h3 class="salsa__nombre">{{ salsa.nombre }}</h3>
+        <p class="salsa__desc">{{ salsa.descripcion }}</p>
+    </div>
+    }
+</div>

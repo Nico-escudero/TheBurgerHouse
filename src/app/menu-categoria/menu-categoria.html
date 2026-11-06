@@ -1,0 +1,52 @@
+@if (categoria(); as cat) {
+<div class="seccion__head">
+    <span class="seccion__num">{{ num() }}</span>
+    <h2 class="seccion__title" [class.largo]="cat.nombre.length > 10">{{ cat.nombre }}</h2>
+    <span class="seccion__count">{{ cat.productos.length }} opciones</span>
+</div>
+
+<div class="seccion__grid">
+    @for (p of cat.productos; track p.id) {
+    @if (cat.modo === 'card') {
+    <article class="card" [class.en-pedido]="carrito.cantidadDe(p.id) > 0">
+        <div class="card__foto">
+            @if (p.imagen_url) {
+            <img [src]="p.imagen_url" [alt]="p.nombre" width="124" height="124" loading="lazy"
+                (error)="ocultarImagen($event)">
+            }
+        </div>
+        <div class="card__info">
+            <h3 class="card__nombre">
+                <!-- Botón que cubre toda la card: abre la ficha del producto -->
+                <button type="button" class="card__abrir" [disabled]="!p.stock" (click)="abrirFicha(p)">
+                    {{ p.nombre }}
+                </button>
+            </h3>
+            @if (p.descripcion) {
+            <p class="card__desc">{{ p.descripcion }}</p>
+            }
+            <div class="card__precio">
+                <span>{{ precio(p.precio) }}</span>
+                @if (p.precio_con_papas) {
+                <span class="card__papas"> · con papas {{ precio(p.precio_con_papas) }}</span>
+                }
+            </div>
+        </div>
+        <app-acciones class="vertical" [producto]="p" />
+    </article>
+    } @else {
+    <article class="fila" [class.en-pedido]="carrito.cantidadDe(p.id) > 0">
+        <h3 class="fila__nombre">{{ p.nombre }}</h3>
+        <div class="fila__lado">
+            <span class="fila__precio">{{ precio(p.precio) }}</span>
+            <app-acciones [producto]="p" />
+        </div>
+    </article>
+    }
+    }
+</div>
+} @else if (menu.cargando()) {
+<p class="seccion__estado">Cargando el menú…</p>
+} @else if (menu.error()) {
+<p class="seccion__estado">No pudimos cargar el menú. Probá de nuevo en un rato.</p>
+}

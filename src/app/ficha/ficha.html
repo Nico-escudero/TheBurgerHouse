@@ -1,0 +1,64 @@
+<dialog #dialogo class="ficha" [attr.aria-label]="producto()?.nombre" (close)="cerrar()" (click)="clickFondo($event)">
+    @if (producto(); as p) {
+    <div class="ficha__hoja">
+        <button type="button" class="ficha__cerrar" aria-label="Cerrar" (click)="cerrar()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+        </button>
+
+        <!-- Foto 4:3; sin foto (o si falla) se ve el placeholder con rayas + carita -->
+        <div class="ficha__foto">
+            @if (p.imagen_url) {
+            <img [src]="p.imagen_url" [alt]="p.nombre" width="1200" height="900" (error)="ocultarImagen($event)">
+            }
+        </div>
+
+        <div class="ficha__cuerpo">
+            <h2 class="ficha__nombre">{{ p.nombre }}</h2>
+            @if (p.descripcion) {
+            <p class="ficha__desc">{{ p.descripcion }}</p>
+            }
+            <p class="ficha__precio">{{ precio(p.precio) }}</p>
+
+            @if (p.precio_con_papas) {
+            <label class="ficha__papas">
+                <input type="checkbox" role="switch" class="switch" [checked]="conPapas()"
+                    (change)="conPapas.set($any($event.target).checked)">
+                <span>Con papas</span>
+                <span class="ficha__extra">+{{ precio(extraPapas()) }}</span>
+            </label>
+            }
+
+            <div class="ficha__acciones">
+                <div class="stepper">
+                    <button type="button" class="stepper__btn" aria-label="Quitar uno" [disabled]="cantidad() === 1"
+                        (click)="restar()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                            <path d="M5 12h14" />
+                        </svg>
+                    </button>
+                    <span class="stepper__cant" aria-live="polite">{{ cantidad() }}</span>
+                    <button type="button" class="stepper__btn stepper__btn--lleno" aria-label="Agregar uno"
+                        (click)="sumar()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg>
+                    </button>
+                </div>
+
+                <button type="button" class="ficha__agregar" (click)="agregar()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    Agregar · {{ precio(total()) }}
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+</dialog>

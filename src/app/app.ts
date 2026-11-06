@@ -8,7 +8,12 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map } from 'rxjs';
+import { Carrito } from './carrito/carrito';
+import { CarritoService } from './core/carrito.service';
+import { Ficha } from './ficha/ficha';
 
 interface NavLink {
   label: string;
@@ -21,7 +26,7 @@ const AIRE = 0;
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink],
+  imports: [RouterOutlet, RouterLink, Carrito, Ficha],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   host: { '(window:scroll)': 'onScroll()' },
@@ -43,15 +48,25 @@ export class App {
   protected readonly HERO = 'inicio';
 
   protected readonly activo = signal(this.HERO);
-  protected readonly cantidadCarrito = signal(2);
+  protected readonly carrito = inject(CarritoService);
+  protected readonly cantidadCarrito = this.carrito.cantidadTotal;
 
-  private readonly header = viewChild.required<ElementRef<HTMLElement>>('header');
-  private readonly linksBar = viewChild.required<ElementRef<HTMLElement>>('linksBar');
+  // En /admin no se muestra el header/footer/carrito del sitio
+  protected readonly enAdmin = toSignal(
+    inject(Router).events.pipe(
+      filter((e) => e instanceof NavigationEnd),
+      map((e) => (e as NavigationEnd).urlAfterRedirects.startsWith('/admin')),
+    ),
+    { initialValue: location.pathname.startsWith('/admin') },
+  );
+
+  private readonly header = viewChild<ElementRef<HTMLElement>>('header');
+  private readonly linksBar = viewChild<ElementRef<HTMLElement>>('linksBar');
   private frame = 0;
 
   // Alto real del header, medido en vivo (cambia entre desktop y mobile)
   private get navAlto(): number {
-    return this.header().nativeElement.offsetHeight;
+    return this.header()?.nativeElement.offsetHeight ?? 0;
   }
 
   constructor() {
@@ -80,7 +95,7 @@ export class App {
   }
 
   protected onScroll(): void {
-    if (this.frame) return;
+    if (this.frame || this.enAdmin()) return;
     this.frame = requestAnimationFrame(() => {
       this.frame = 0;
       this.actualizarActivo();

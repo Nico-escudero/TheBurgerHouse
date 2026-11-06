@@ -1,1 +1,159 @@
-<p>carrito works!</p>
+<dialog #dialogo class="carrito" aria-labelledby="carrito-titulo" (close)="cerrar()" (click)="clickFondo($event)">
+    <div class="carrito__panel">
+        <!-- ===== Encabezado ===== -->
+        <header class="carrito__head">
+            <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path
+                    d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z" />
+            </svg>
+            <h2 id="carrito-titulo" class="carrito__titulo">Tu pedido</h2>
+            @if (carrito.cantidadTotal() > 0) {
+            <span class="carrito__badge">{{ carrito.cantidadTotal() }}</span>
+            }
+            <button type="button" class="carrito__cerrar" aria-label="Cerrar carrito" (click)="cerrar()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+            </button>
+        </header>
+
+        @if (carrito.lineas().length === 0) {
+        <!-- ===== Vacío ===== -->
+        <div class="carrito__vacio">
+            <img src="/carita.svg" alt="" width="72" height="72" aria-hidden="true">
+            <p>Tu pedido está vacío.</p>
+            <button type="button" class="carrito__seguir" (click)="cerrar()">Ver el menú</button>
+        </div>
+        } @else {
+        <div class="carrito__scroll">
+            <!-- ===== Productos ===== -->
+            <ul class="lineas">
+                @for (l of carrito.lineas(); track l.producto.id + l.conPapas; let i = $index) {
+                <li class="linea">
+                    <div class="linea__foto">
+                        @if (l.producto.imagen_url) {
+                        <img [src]="l.producto.imagen_url" alt="" width="64" height="64">
+                        }
+                    </div>
+                    <div class="linea__info">
+                        <h3 class="linea__nombre">{{ l.producto.nombre }}</h3>
+                        @if (l.conPapas) {
+                        <span class="linea__papas">Con papas</span>
+                        }
+                        <div class="stepper">
+                            <button type="button" class="stepper__btn" [attr.aria-label]="'Quitar un ' + l.producto.nombre"
+                                (click)="carrito.cambiar(i, -1)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                                    <path d="M5 12h14" />
+                                </svg>
+                            </button>
+                            <span class="stepper__cant">{{ l.cantidad }}</span>
+                            <button type="button" class="stepper__btn stepper__btn--lleno"
+                                [attr.aria-label]="'Agregar un ' + l.producto.nombre" (click)="carrito.cambiar(i, 1)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                                    <path d="M12 5v14M5 12h14" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="linea__lado">
+                        <span class="linea__precio">{{ precio(carrito.subtotal(l)) }}</span>
+                        <button type="button" class="linea__borrar" [attr.aria-label]="'Eliminar ' + l.producto.nombre"
+                            (click)="carrito.quitar(i)">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
+                            </svg>
+                        </button>
+                    </div>
+                </li>
+                }
+            </ul>
+
+            <!-- ===== Datos del cliente ===== -->
+            <section class="datos" aria-labelledby="datos-titulo">
+                <h3 id="datos-titulo" class="datos__titulo">Tus datos</h3>
+
+                <label class="campo" [class.error]="intento() && faltaNombre()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <circle cx="12" cy="8" r="4" />
+                        <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
+                    </svg>
+                    <input type="text" name="nombre" autocomplete="name" placeholder="Tu nombre" aria-label="Tu nombre"
+                        [value]="carrito.nombre()" (input)="carrito.nombre.set(valor($event))">
+                </label>
+
+                <div class="entrega" role="radiogroup" aria-label="Forma de entrega">
+                    <button type="button" role="radio" class="entrega__opcion"
+                        [attr.aria-checked]="carrito.entrega() === 'retiro'" (click)="carrito.entrega.set('retiro')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M3 9l2-5h14l2 5M3 9h18M3 9v2a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0V9M5 13v7h14v-7" />
+                        </svg>
+                        Retiro
+                    </button>
+                    <button type="button" role="radio" class="entrega__opcion"
+                        [attr.aria-checked]="carrito.entrega() === 'envio'" (click)="carrito.entrega.set('envio')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M2 6h12v10H2zM14 10h4l3 3v3h-7" />
+                            <circle cx="6" cy="18" r="2" />
+                            <circle cx="17" cy="18" r="2" />
+                        </svg>
+                        Envío
+                    </button>
+                </div>
+
+                @if (carrito.entrega() === 'envio') {
+                <label class="campo" [class.error]="intento() && faltaDireccion()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z" />
+                        <circle cx="12" cy="9" r="2.5" />
+                    </svg>
+                    <input type="text" name="direccion" autocomplete="street-address"
+                        placeholder="Dirección de entrega" aria-label="Dirección de entrega"
+                        [value]="carrito.direccion()" (input)="carrito.direccion.set(valor($event))">
+                </label>
+                }
+
+                <label class="campo campo--area">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4" />
+                    </svg>
+                    <textarea name="aclaraciones" rows="2" placeholder="Aclaraciones (sin cebolla, etc.)"
+                        aria-label="Aclaraciones" [value]="carrito.aclaraciones()"
+                        (input)="carrito.aclaraciones.set(valor($event))"></textarea>
+                </label>
+
+                @if (intento() && (faltaNombre() || faltaDireccion())) {
+                <p class="datos__error" role="alert">
+                    Completá {{ faltaNombre() ? 'tu nombre' : '' }}{{ faltaNombre() && faltaDireccion() ? ' y ' : ''
+                    }}{{ faltaDireccion() ? 'la dirección de entrega' : '' }} para hacer el pedido.
+                </p>
+                }
+            </section>
+        </div>
+
+        <!-- ===== Total + WhatsApp ===== -->
+        <footer class="carrito__pie">
+            <div class="total">
+                <span class="total__label">Total</span>
+                <span class="total__monto">{{ precio(carrito.total()) }}</span>
+            </div>
+            <button type="button" class="whatsapp" (click)="pedir()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 7.8 19.4z" />
+                </svg>
+                Pedir por WhatsApp
+            </button>
+        </footer>
+        }
+    </div>
+</dialog>

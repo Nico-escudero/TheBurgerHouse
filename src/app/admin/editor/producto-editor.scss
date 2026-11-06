@@ -1,0 +1,321 @@
+@use 'styles/variables' as *;
+@use 'styles/menu'; // card y fila del menú para la vista previa
+@use 'styles/ficha'; // hoja blanca de la ficha para la vista previa
+
+.volver {
+    display: inline-block;
+    margin-bottom: 14px;
+    font: 600 16px $font-text;
+    color: $gris-texto;
+    text-decoration: none;
+
+    &:hover {
+        color: $mostaza;
+    }
+}
+
+.cabecera {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.sin-guardar {
+    padding: 3px 12px;
+    border-radius: 99px;
+    border: 1px solid rgba($mostaza, .6);
+    color: $mostaza;
+    font: 700 13px $font-text;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+// ===== Formulario | vista previa =====
+.editor {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 440px;
+    align-items: start;
+    gap: 28px;
+}
+
+.editor__form {
+    display: grid;
+    gap: 16px;
+}
+
+.bloque {
+    display: grid;
+    gap: 16px;
+}
+
+.botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.botones__borrar {
+    margin-left: auto;
+}
+
+// ===== Foto =====
+.foto {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    align-items: center;
+    gap: 18px;
+    padding: 14px;
+    border: 2px dashed $borde;
+    border-radius: 16px;
+    transition: border-color .15s $ease, background .15s $ease;
+
+    &.arrastrando {
+        border-color: $mostaza;
+        background: rgba($mostaza, .06);
+    }
+}
+
+.foto__vista {
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+    overflow: hidden;
+    background:
+        url('/carita.svg') center / 30% no-repeat,
+        repeating-linear-gradient(45deg, #1b1b1b 0 10px, $hover 10px 20px);
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.foto__texto {
+    display: grid;
+    justify-items: start;
+    gap: 8px;
+
+    p {
+        margin: 0;
+        font: 600 16px $font-text;
+        color: $blanco;
+    }
+
+    small {
+        font: 500 13px $font-text;
+        color: #8a8a8a;
+    }
+}
+
+.foto__elegir {
+    position: relative;
+    min-height: 38px;
+    font-size: 15px;
+
+    input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    &:focus-within {
+        outline: 2px solid $mostaza;
+        outline-offset: 2px;
+    }
+}
+
+.foto .foto__ok {
+    color: #6fd08c;
+    font-weight: 700;
+}
+
+.foto__quitar {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #ff6b5e;
+    font: 600 14px $font-text;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+// ===== Vista previa =====
+.previa {
+    position: sticky;
+    top: 90px;
+    display: grid;
+    gap: 14px;
+    // Si la ficha es más alta que la pantalla, la vista previa scrollea sola
+    max-height: calc(100dvh - 110px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.previa__head {
+    display: grid;
+    gap: 10px;
+
+    .adm-panel__titulo {
+        margin: 0;
+    }
+}
+
+.previa__tabs {
+    display: inline-flex;
+    justify-self: start;
+    padding: 4px;
+    border-radius: 99px;
+    background: $superficie;
+    border: 1px solid $borde;
+
+    button {
+        padding: 6px 14px;
+        border: 0;
+        border-radius: 99px;
+        background: transparent;
+        color: $gris-texto;
+        font: 600 15px $font-text;
+        cursor: pointer;
+
+        &[aria-selected='true'] {
+            background: $mostaza;
+            color: $tinta;
+        }
+    }
+}
+
+.previa__aviso {
+    margin: 0;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: rgba($badge, .12);
+    color: #ff8a80;
+    font: 600 14px $font-text;
+}
+
+// Fondo como el de la página: grilla sobre negro
+.previa__menu {
+    display: grid;
+    gap: 10px;
+    padding: 18px 14px;
+    border-radius: 20px;
+    background-color: $negro-base;
+    background-image:
+        linear-gradient($grilla 1px, transparent 1px),
+        linear-gradient(90deg, $grilla 1px, transparent 1px);
+    background-size: 30px 30px;
+    border: 1px solid $borde;
+}
+
+// La card del menú en el ancho de la vista previa
+.previa .card {
+    grid-template-columns: 96px minmax(0, 1fr) auto;
+}
+
+.previa .card__foto {
+    width: 96px;
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.previa__mas {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: $mostaza;
+    color: $tinta;
+    font: 700 24px / 1 $font-text;
+}
+
+.previa__sin-stock {
+    font: 700 14px $font-text;
+    text-transform: uppercase;
+    color: #999999;
+    white-space: nowrap;
+}
+
+.previa__nota {
+    margin: 0;
+    font: 500 13px $font-text;
+    color: #8a8a8a;
+}
+
+// Ficha: hoja blanca con bordes redondeados
+.previa__ficha {
+    border-radius: 24px;
+    overflow: hidden;
+    background: #ffffff;
+    color: $tinta;
+
+    .ficha__cerrar {
+        cursor: default;
+    }
+
+    .stepper__btn {
+        font: 700 20px / 1 $font-text;
+    }
+
+    .apagado {
+        opacity: .35;
+    }
+}
+
+// Switch apagado de la ficha (solo dibujo)
+.switch-falso {
+    position: relative;
+    flex-shrink: 0;
+    width: 44px;
+    height: 26px;
+    border-radius: 99px;
+    background: #d6d6d6;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+    }
+}
+
+@media (max-width: 1000px) {
+    .editor {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    // En pantallas chicas la vista previa va primero, para ver los cambios mientras se escribe
+    .previa {
+        position: static;
+        order: -1;
+        max-height: none;
+    }
+}
+
+@media (max-width: 520px) {
+    .foto {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .botones .adm-btn {
+        flex: 1;
+    }
+
+    .botones__borrar {
+        margin-left: 0;
+    }
+}

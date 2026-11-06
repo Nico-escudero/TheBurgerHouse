@@ -1,0 +1,23 @@
+<app-admin-estilos />
+
+<header class="adm-nav">
+    <div class="adm-nav__inner">
+        <a class="adm-nav__logo" routerLink="/admin">THE BURGER <span>HOUSE</span> <em>Panel</em></a>
+
+        <nav class="adm-nav__tabs" aria-label="Secciones del panel">
+            <a routerLink="/admin/productos" routerLinkActive="activo" ariaCurrentWhenActive="page">Productos</a>
+            <a routerLink="/admin/salsas" routerLinkActive="activo" ariaCurrentWhenActive="page">Salsas</a>
+            <a routerLink="/admin/ajustes" routerLinkActive="activo" ariaCurrentWhenActive="page">Ajustes</a>
+        </nav>
+
+        <div class="adm-nav__lado">
+            <a class="adm-nav__sitio" routerLink="/" target="_blank">Ver sitio ↗</a>
+            <button type="button" class="adm-nav__salir" (click)="salir()"
+                [attr.title]="auth.sesion()?.user?.email">Salir</button>
+        </div>
+    </div>
+</header>
+
+<main class="adm-main">
+    <router-outlet />
+</main>

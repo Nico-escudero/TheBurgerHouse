@@ -1,5 +1,10 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter, withInMemoryScrolling, withRouterConfig } from '@angular/router';
+import {
+  provideRouter,
+  withComponentInputBinding,
+  withInMemoryScrolling,
+  withRouterConfig,
+} from '@angular/router';
 
 import { routes } from './app.routes';
 
@@ -12,6 +17,8 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }),
       // permite volver a la misma sección si el link ya está en la URL
       withRouterConfig({ onSameUrlNavigation: 'reload' }),
+      // los parámetros de la ruta (:id) llegan como input() al componente
+      withComponentInputBinding(),
     ),
   ],
 };

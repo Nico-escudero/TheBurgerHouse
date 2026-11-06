@@ -1,0 +1,52 @@
+@use 'styles/variables' as *;
+@use 'styles/menu';
+
+:host {
+    display: block;
+    position: relative;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+// Nombres largos ("ACOMPAÑAMIENTOS"): en mobile el mínimo baja para que no se corte
+.seccion__title.largo {
+    font-size: clamp(26px, 7.4vw, 88px);
+}
+
+.seccion__estado {
+    margin: 0;
+    font: 600 18px $font-text;
+    color: $gris-texto;
+}
+
+// La card entera abre la ficha: el botón del nombre se estira con ::after sobre toda la card
+.card {
+    position: relative;
+    transition: background .2s $ease;
+
+    &:has(.card__abrir:not(:disabled)):hover {
+        background: $hover;
+    }
+}
+
+.card__abrir {
+    all: unset;
+    cursor: pointer;
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+    }
+
+    &:disabled {
+        cursor: default;
+    }
+
+    &:focus-visible::after {
+        outline: 2px solid $mostaza;
+        outline-offset: 2px;
+        border-radius: 20px;
+    }
+}

@@ -1,0 +1,77 @@
+<div class="cabecera">
+    <div>
+        <h1 class="adm-titulo">Salsas</h1>
+        <p class="adm-sub">De la casa · {{ admin.salsas().length }}</p>
+    </div>
+    @if (!editando()) {
+    <button type="button" class="adm-btn" (click)="nueva()">+ Nueva salsa</button>
+    }
+</div>
+
+@if (error() && !editando()) {
+<p class="adm-error" role="alert">{{ error() }}</p>
+}
+
+<div class="grilla">
+    @if (editando(); as b) {
+    <form class="adm-panel form" (submit)="guardar($event)" novalidate>
+        <h2 class="adm-panel__titulo">{{ b.id ? 'Editar salsa' : 'Nueva salsa' }}</h2>
+        <label class="adm-campo">
+            <span>Nombre</span>
+            <input class="adm-input" type="text" maxlength="60" placeholder="Ej: 'House' (Sweet Bacon)"
+                [class.error]="error() && !b.nombre.trim()" [value]="b.nombre" (input)="set('nombre', texto($event))">
+        </label>
+        <label class="adm-campo">
+            <span>Descripción</span>
+            <textarea class="adm-input" rows="2" maxlength="160" [value]="b.descripcion"
+                (input)="set('descripcion', texto($event))"></textarea>
+        </label>
+        <label class="adm-switch">
+            <input type="checkbox" role="switch" [checked]="b.activo" (change)="set('activo', marcado($event))">
+            Visible en el menú
+        </label>
+
+        <!-- Vista previa: la pastilla tal cual se ve sobre el fondo mostaza -->
+        <div class="previa">
+            <div class="salsa">
+                <strong>{{ b.nombre.trim() || 'Nombre de la salsa' }}</strong>
+                <span>{{ b.descripcion }}</span>
+            </div>
+        </div>
+
+        @if (error()) { <p class="adm-error" role="alert">{{ error() }}</p> }
+        <div class="botones">
+            <button type="submit" class="adm-btn" [disabled]="guardando()">{{ guardando() ? 'Guardando…' : 'Guardar' }}</button>
+            <button type="button" class="adm-btn adm-btn--borde" (click)="editando.set(null)">Cancelar</button>
+        </div>
+    </form>
+    }
+
+    <ul class="lista">
+        @for (s of admin.salsas(); track s.id) {
+        <li class="item" [class.oculto]="!s.activo">
+            <div class="item__texto">
+                <strong>{{ s.nombre }}</strong>
+                <span>{{ s.descripcion }}</span>
+                @if (!s.activo) { <em>Oculta</em> }
+            </div>
+            <div class="item__acciones">
+                <button type="button" class="adm-icono" [attr.aria-label]="'Editar ' + s.nombre" title="Editar"
+                    (click)="editar(s)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4" />
+                    </svg>
+                </button>
+                <button type="button" class="adm-icono adm-icono--peligro" [attr.aria-label]="'Eliminar ' + s.nombre"
+                    title="Eliminar" [disabled]="guardando()" (click)="borrar(s)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
+                    </svg>
+                </button>
+            </div>
+        </li>
+        }
+    </ul>
+</div>

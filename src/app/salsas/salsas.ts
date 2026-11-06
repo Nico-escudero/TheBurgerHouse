@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { MenuService } from '../core/menu.service';
 
 @Component({
   selector: 'app-salsas',
@@ -6,4 +7,6 @@ import { Component } from '@angular/core';
   templateUrl: './salsas.html',
   styleUrl: './salsas.scss',
 })
-export class Salsas {}
+export class Salsas {
+  protected readonly menu = inject(MenuService);
+}

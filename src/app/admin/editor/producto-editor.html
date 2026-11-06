@@ -1,0 +1,243 @@
+<a class="volver" routerLink="/admin/productos">← Productos</a>
+
+@if (noEncontrado()) {
+<div class="adm-panel">
+    <p class="adm-error">Este producto no existe o fue eliminado.</p>
+</div>
+} @else {
+<div class="cabecera">
+    <h1 class="adm-titulo">{{ esNuevo() ? 'Nuevo producto' : 'Editar' }}</h1>
+    @if (sucio()) {
+    <span class="sin-guardar">Cambios sin guardar</span>
+    }
+</div>
+
+<div class="editor">
+    <!-- ===================== Formulario ===================== -->
+    <form class="editor__form" (submit)="guardar($event)" novalidate>
+        <section class="adm-panel bloque">
+            <h2 class="adm-panel__titulo">Datos</h2>
+
+            <label class="adm-campo">
+                <span>Categoría</span>
+                <select class="adm-input" [class.error]="intento() && errores().categoria"
+                    (change)="cambiarCategoria($event)">
+                    @for (c of admin.categorias(); track c.id) {
+                    <option [value]="c.id" [selected]="c.id === form().categoria_id">{{ c.nombre }}</option>
+                    }
+                </select>
+                @if (intento() && errores().categoria) { <p class="adm-error">{{ errores().categoria }}</p> }
+            </label>
+
+            <label class="adm-campo">
+                <span>Nombre</span>
+                <input class="adm-input" type="text" maxlength="60" placeholder="Ej: Meat & Cheese"
+                    [class.error]="intento() && errores().nombre" [value]="form().nombre"
+                    (input)="set('nombre', texto($event))">
+                @if (intento() && errores().nombre) { <p class="adm-error">{{ errores().nombre }}</p> }
+            </label>
+
+            <label class="adm-campo">
+                <span>Descripción</span>
+                <textarea class="adm-input" maxlength="240" rows="3"
+                    placeholder="Ej: Doble burger smasheada + x4 cheddar + salsa 'Mil-House'"
+                    [value]="form().descripcion" (input)="set('descripcion', texto($event))"></textarea>
+                <small>{{ form().descripcion.length }}/240 · En la card se ven 2 líneas, en la ficha completa.</small>
+            </label>
+        </section>
+
+        <section class="adm-panel bloque">
+            <h2 class="adm-panel__titulo">Precio</h2>
+
+            <label class="adm-campo">
+                <span>Precio</span>
+                <div class="adm-precio">
+                    <input class="adm-input" type="text" inputmode="numeric" placeholder="19800"
+                        [class.error]="intento() && errores().precio" [value]="form().precio ?? ''"
+                        (input)="set('precio', numero($event))">
+                </div>
+                @if (intento() && errores().precio) { <p class="adm-error">{{ errores().precio }}</p> }
+            </label>
+
+            <label class="adm-switch">
+                <input type="checkbox" role="switch" [checked]="form().conPapas"
+                    (change)="set('conPapas', marcado($event))">
+                <span>Tiene opción con papas <small>Aparece el switch "Con papas" en la ficha</small></span>
+            </label>
+
+            @if (form().conPapas) {
+            <label class="adm-campo">
+                <span>Precio con papas</span>
+                <div class="adm-precio">
+                    <input class="adm-input" type="text" inputmode="numeric" placeholder="23800"
+                        [class.error]="intento() && errores().papas" [value]="form().precio_con_papas ?? ''"
+                        (input)="set('precio_con_papas', numero($event))">
+                </div>
+                @if (intento() && errores().papas) { <p class="adm-error">{{ errores().papas }}</p> }
+                @else if (extraPapas() > 0) { <small>Las papas suman +{{ precio(extraPapas()) }}</small> }
+            </label>
+            }
+        </section>
+
+        <section class="adm-panel bloque">
+            <h2 class="adm-panel__titulo">Foto</h2>
+
+            <div class="foto" [class.arrastrando]="arrastrando()" (dragover)="sobre($event)"
+                (dragleave)="arrastrando.set(false)" (drop)="soltar($event)">
+                <div class="foto__vista">
+                    @if (fotoUrl(); as url) {
+                    <img [src]="url" alt="Foto del producto" width="160" height="120">
+                    }
+                </div>
+                <div class="foto__texto">
+                    @if (procesandoFoto()) {
+                    <p>Optimizando imagen…</p>
+                    } @else {
+                    <p>Arrastrá una foto acá o</p>
+                    <label class="adm-btn adm-btn--borde foto__elegir">
+                        Elegir archivo
+                        <input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/avif"
+                            (change)="elegirFoto($event)">
+                    </label>
+                    }
+                    <small>JPG, PNG o WebP. Se convierte sola a WebP (máx. 1200 px). Ideal horizontal 4:3.</small>
+                    @if (fotoNueva(); as f) {
+                    <small class="foto__ok">✓ Optimizada: {{ peso(pesoOriginal() ?? 0) }} → {{ peso(f.size) }} WebP</small>
+                    }
+                    @if (errorFoto()) { <p class="adm-error">{{ errorFoto() }}</p> }
+                    @if (fotoUrl()) {
+                    <button type="button" class="foto__quitar" (click)="sacarFoto()">Quitar foto</button>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <section class="adm-panel bloque">
+            <h2 class="adm-panel__titulo">Estado</h2>
+            <label class="adm-switch">
+                <input type="checkbox" role="switch" [checked]="form().stock" (change)="set('stock', marcado($event))">
+                <span>Hay stock <small>Sin stock se muestra en el menú pero no se puede pedir</small></span>
+            </label>
+            <label class="adm-switch">
+                <input type="checkbox" role="switch" [checked]="form().activo"
+                    (change)="set('activo', marcado($event))">
+                <span>Visible en el menú <small>Apagado, el producto no aparece en la página</small></span>
+            </label>
+        </section>
+
+        @if (errorGuardar()) {
+        <p class="adm-error" role="alert">{{ errorGuardar() }}</p>
+        }
+        @if (intento() && !valido()) {
+        <p class="adm-error" role="alert">Revisá los campos marcados en rojo.</p>
+        }
+
+        <div class="botones">
+            <button type="submit" class="adm-btn" [disabled]="guardando() || procesandoFoto()">
+                {{ guardando() ? 'Guardando…' : esNuevo() ? 'Crear producto' : 'Guardar cambios' }}
+            </button>
+            <a class="adm-btn adm-btn--borde" routerLink="/admin/productos">Cancelar</a>
+            @if (!esNuevo()) {
+            <button type="button" class="adm-btn adm-btn--peligro botones__borrar" [disabled]="guardando()"
+                (click)="eliminar()">Eliminar</button>
+            }
+        </div>
+    </form>
+
+    <!-- ===================== Vista previa ===================== -->
+    <aside class="previa" aria-label="Vista previa">
+        <div class="previa__head">
+            <h2 class="adm-panel__titulo">Vista previa</h2>
+            @if (modo() === 'card') {
+            <div class="previa__tabs" role="tablist">
+                <button type="button" role="tab" [attr.aria-selected]="!vistaFicha()" (click)="vistaFicha.set(false)">En el menú</button>
+                <button type="button" role="tab" [attr.aria-selected]="vistaFicha()" (click)="vistaFicha.set(true)">Ficha al tocarla</button>
+            </div>
+            }
+        </div>
+
+        @let f = form();
+        @let nombre = f.nombre.trim() || 'Nombre del producto';
+
+        @if (!f.activo) {
+        <p class="previa__aviso">Oculto: este producto no se va a ver en la página.</p>
+        }
+
+        @if (modo() === 'card' && vistaFicha()) {
+        <!-- Ficha (la misma hoja blanca que ve el cliente) -->
+        <div class="previa__ficha">
+            <div class="ficha__hoja">
+                <span class="ficha__cerrar" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round">
+                        <path d="M6 6l12 12M18 6L6 18" />
+                    </svg>
+                </span>
+                <div class="ficha__foto">
+                    @if (fotoUrl(); as url) { <img [src]="url" alt=""> }
+                </div>
+                <div class="ficha__cuerpo">
+                    <h3 class="ficha__nombre">{{ nombre }}</h3>
+                    @if (f.descripcion.trim()) { <p class="ficha__desc">{{ f.descripcion }}</p> }
+                    <p class="ficha__precio">{{ precio(f.precio ?? 0) }}</p>
+                    @if (f.conPapas) {
+                    <div class="ficha__papas">
+                        <span class="switch-falso" aria-hidden="true"></span>
+                        <span>Con papas</span>
+                        <span class="ficha__extra">+{{ precio(extraPapas()) }}</span>
+                    </div>
+                    }
+                    <div class="ficha__acciones">
+                        <div class="stepper" aria-hidden="true">
+                            <span class="stepper__btn apagado">−</span>
+                            <span class="stepper__cant">1</span>
+                            <span class="stepper__btn stepper__btn--lleno">+</span>
+                        </div>
+                        <span class="ficha__agregar">+ Agregar · {{ precio(f.precio ?? 0) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        } @else {
+        <!-- Card o fila, igual que en el menú -->
+        <div class="previa__menu">
+            @if (modo() === 'card') {
+            <article class="card">
+                <div class="card__foto">
+                    @if (fotoUrl(); as url) { <img [src]="url" alt=""> }
+                </div>
+                <div class="card__info">
+                    <h3 class="card__nombre">{{ nombre }}</h3>
+                    @if (f.descripcion.trim()) { <p class="card__desc">{{ f.descripcion }}</p> }
+                    <div class="card__precio">
+                        <span>{{ precio(f.precio ?? 0) }}</span>
+                        @if (f.conPapas && f.precio_con_papas) {
+                        <span class="card__papas"> · con papas {{ precio(f.precio_con_papas) }}</span>
+                        }
+                    </div>
+                </div>
+                @if (f.stock) {
+                <span class="previa__mas" aria-hidden="true">+</span>
+                } @else {
+                <span class="previa__sin-stock">Sin stock</span>
+                }
+            </article>
+            } @else {
+            <article class="fila">
+                <h3 class="fila__nombre">{{ nombre }}</h3>
+                <div class="fila__lado">
+                    <span class="fila__precio">{{ precio(f.precio ?? 0) }}</span>
+                    @if (f.stock) {
+                    <span class="previa__mas" aria-hidden="true">+</span>
+                    } @else {
+                    <span class="previa__sin-stock">Sin stock</span>
+                    }
+                </div>
+            </article>
+            <p class="previa__nota">{{ categoria()?.nombre }} se muestra en filas, sin foto.</p>
+            }
+        </div>
+        }
+    </aside>
+</div>
+}

@@ -6,6 +6,11 @@ html {
     scrollbar-color: $mostaza $negro-base;
 }
 
+// Con el carrito o la ficha abiertos la página de atrás no scrollea
+html:has(dialog[open]) {
+    overflow: hidden;
+}
+
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;

@@ -1,0 +1,45 @@
+<main class="login">
+    <form class="login__caja" (submit)="ingresar($event)" novalidate>
+        <img class="login__carita" src="/carita.svg" alt="" width="84" height="84" aria-hidden="true">
+        <p class="login__marca">THE BURGER <span>HOUSE</span></p>
+        <h1 class="adm-titulo login__titulo">Panel</h1>
+        <p class="adm-sub">Administrá el menú</p>
+
+        <label class="adm-campo">
+            <span>Usuario (email)</span>
+            <input class="adm-input" type="email" name="email" autocomplete="username" required
+                [class.error]="error() && !email().trim()" [value]="email()" (input)="email.set(valor($event))">
+        </label>
+
+        <label class="adm-campo">
+            <span>Contraseña</span>
+            <div class="login__pass">
+                <input class="adm-input" [type]="verPassword() ? 'text' : 'password'" name="password"
+                    autocomplete="current-password" required [class.error]="error() && !password()"
+                    [value]="password()" (input)="password.set(valor($event))">
+                <button type="button" class="login__ver" (click)="verPassword.set(!verPassword())"
+                    [attr.aria-label]="verPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                    [attr.aria-pressed]="verPassword()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+                        <circle cx="12" cy="12" r="3" />
+                        @if (verPassword()) {
+                        <path d="M4 4l16 16" />
+                        }
+                    </svg>
+                </button>
+            </div>
+        </label>
+
+        @if (error()) {
+        <p class="adm-error" role="alert">{{ error() }}</p>
+        }
+
+        <button type="submit" class="adm-btn login__entrar" [disabled]="enviando()">
+            {{ enviando() ? 'Ingresando…' : 'Ingresar' }}
+        </button>
+
+        <a class="login__volver" routerLink="/">← Volver al sitio</a>
+    </form>
+</main>

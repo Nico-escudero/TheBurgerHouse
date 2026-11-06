@@ -1,0 +1,72 @@
+@use 'styles/variables' as *;
+
+:host {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1; // por encima del botón invisible que abre la ficha
+}
+
+.acciones {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 42px; // misma altura con botón, contador o "Sin stock"
+}
+
+.btn-agregar,
+.btn-cant {
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.btn-agregar {
+    width: 42px;
+    height: 42px;
+    border: 0;
+    background: $mostaza;
+    color: $tinta;
+}
+
+.btn-cant {
+    width: 36px;
+    height: 36px;
+    border: 2px solid $mostaza;
+    background: transparent;
+    color: $mostaza;
+
+    &.lleno {
+        background: $mostaza;
+        color: $tinta;
+    }
+}
+
+.cant {
+    min-width: 24px;
+    text-align: center;
+    font: 800 21px $font-display;
+    color: $blanco;
+}
+
+.sin-stock {
+    font: 700 14px $font-text;
+    text-transform: uppercase;
+    color: #999999;
+    white-space: nowrap;
+}
+
+// Mobile: en las cards el contador va vertical (+ arriba, − abajo).
+// column-reverse: en el HTML va "−, cant, +" y se muestra "+, cant, −"
+@media (max-width: 575px) {
+    :host(.vertical) .contador {
+        flex-direction: column-reverse;
+        gap: 4px;
+    }
+
+    .btn-cant {
+        width: 32px;
+        height: 32px;
+    }
+}

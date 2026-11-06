@@ -1,0 +1,240 @@
+@use 'styles/variables' as *;
+
+.cabecera {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+// ===== Búsqueda + filtro por categoría =====
+.filtros {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.filtros__buscar {
+    max-width: 420px;
+}
+
+.filtros__cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    button {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 14px;
+        border: 1.5px solid $borde;
+        border-radius: 99px;
+        background: transparent;
+        color: $blanco;
+        font: 600 15px $font-text;
+        cursor: pointer;
+
+        span {
+            color: $gris-texto;
+            font-size: 13px;
+        }
+
+        &:hover {
+            border-color: $mostaza;
+        }
+
+        &.activo {
+            border-color: $mostaza;
+            background: $mostaza;
+            color: $tinta;
+
+            span {
+                color: $tinta;
+            }
+        }
+    }
+}
+
+.aviso {
+    margin-bottom: 16px;
+}
+
+.vacio {
+    margin: 0 0 12px;
+    font: 600 16px $font-text;
+    color: $gris-texto;
+}
+
+// ===== Categoría =====
+.categoria {
+    margin-bottom: 36px;
+}
+
+.categoria__titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 12px;
+    font: 900 22px $font-display;
+    text-transform: uppercase;
+    color: $blanco;
+
+    span {
+        padding: 2px 10px;
+        border-radius: 99px;
+        background: $mostaza;
+        color: $tinta;
+        font: 700 14px $font-text;
+    }
+}
+
+.lista {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+// ===== Fila de producto =====
+.prod {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 14px 10px 10px;
+    background: $superficie;
+    border: 1px solid $borde;
+    border-radius: 16px;
+    transition: opacity .2s $ease;
+
+    &.oculto {
+        border-style: dashed;
+
+        .prod__foto,
+        .prod__info {
+            opacity: .55;
+        }
+    }
+
+    &.ocupado {
+        opacity: .6;
+    }
+}
+
+.prod__foto {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    overflow: hidden;
+    background:
+        url('/carita.svg') center / 50% no-repeat,
+        repeating-linear-gradient(45deg, #1b1b1b 0 8px, $hover 8px 16px);
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.prod__info {
+    min-width: 0;
+}
+
+.prod__nombre {
+    font: 700 18px / 1.1 $font-text;
+    color: #ffffff;
+    text-transform: uppercase;
+    text-decoration: none;
+
+    &:hover {
+        color: $mostaza;
+    }
+}
+
+.prod__precio {
+    margin: 2px 0 0;
+    font: 800 15px $font-display;
+    color: $mostaza;
+
+    span {
+        font: 700 12px $font-text;
+        color: $gris-texto;
+        text-transform: uppercase;
+    }
+}
+
+.prod__etiquetas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+
+    &:empty {
+        display: none;
+    }
+}
+
+.etq {
+    padding: 1px 8px;
+    border-radius: 99px;
+    border: 1px solid $borde;
+    font: 700 11px $font-text;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: $gris-texto;
+
+    &--gris {
+        background: #2a2a2a;
+    }
+
+    &--rojo {
+        border-color: rgba($badge, .6);
+        color: #ff6b5e;
+    }
+}
+
+.prod__toggles {
+    display: flex;
+    gap: 18px;
+
+    .adm-switch {
+        font-size: 15px;
+    }
+}
+
+.prod__acciones {
+    display: flex;
+    gap: 6px;
+}
+
+@media (max-width: 860px) {
+    .prod {
+        grid-template-columns: 56px minmax(0, 1fr) auto;
+        grid-template-areas:
+            'foto info info'
+            'toggles toggles acciones';
+        row-gap: 12px;
+    }
+
+    .prod__foto {
+        grid-area: foto;
+    }
+
+    .prod__info {
+        grid-area: info;
+    }
+
+    .prod__toggles {
+        grid-area: toggles;
+    }
+
+    .prod__acciones {
+        grid-area: acciones;
+    }
+}

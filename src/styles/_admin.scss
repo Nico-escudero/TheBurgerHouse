@@ -1,0 +1,251 @@
+// Piezas compartidas del dashboard: títulos, paneles, campos y botones (misma estética que la página)
+@use 'styles/variables' as *;
+
+.adm-titulo {
+    margin: 0;
+    font: 900 clamp(32px, 5vw, 56px) / .9 $font-display;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 2px $mostaza;
+}
+
+.adm-sub {
+    margin: 6px 0 0;
+    font: 600 15px $font-text;
+    color: $gris-texto;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+
+.adm-panel {
+    padding: 20px;
+    background: $superficie;
+    border: 1px solid $borde;
+    border-radius: 20px;
+}
+
+.adm-panel__titulo {
+    margin: 0 0 14px;
+    font: 800 15px $font-display;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: $mostaza;
+}
+
+// ===== Campos =====
+.adm-campo {
+    display: grid;
+    gap: 6px;
+
+    > span {
+        font: 700 14px $font-text;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        color: $gris-texto;
+    }
+
+    small {
+        font: 500 13px $font-text;
+        color: #8a8a8a;
+    }
+}
+
+.adm-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 14px;
+    border: 1.5px solid $borde;
+    border-radius: 12px;
+    background: $negro-base;
+    color: $blanco;
+    font: 500 16px $font-text;
+    outline: 0;
+    transition: border-color .15s $ease, box-shadow .15s $ease;
+
+    &::placeholder {
+        color: #6f6f6f;
+    }
+
+    &:focus {
+        border-color: $mostaza;
+        box-shadow: 0 0 0 3px rgba($mostaza, .25);
+    }
+
+    &.error {
+        border-color: $badge;
+    }
+}
+
+textarea.adm-input {
+    min-height: 90px;
+    resize: vertical;
+}
+
+select.adm-input {
+    appearance: none;
+    padding-right: 40px;
+    background: $negro-base url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23F2B83B' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E") right 14px center no-repeat;
+}
+
+// Prefijo "$" en los precios
+.adm-precio {
+    position: relative;
+
+    &::before {
+        content: '$';
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font: 700 16px $font-text;
+        color: $mostaza;
+        pointer-events: none;
+    }
+
+    .adm-input {
+        padding-left: 28px;
+    }
+}
+
+.adm-error {
+    margin: 0;
+    font: 600 14px $font-text;
+    color: #ff6b5e;
+}
+
+// ===== Switch =====
+.adm-switch {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font: 600 16px $font-text;
+    color: $blanco;
+    cursor: pointer;
+
+    input {
+        appearance: none;
+        position: relative;
+        flex-shrink: 0;
+        width: 44px;
+        height: 26px;
+        margin: 0;
+        border-radius: 99px;
+        background: #3a3a3a;
+        cursor: pointer;
+        transition: background .2s $ease;
+
+        &::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            transition: transform .2s $ease;
+        }
+
+        &:checked {
+            background: $mostaza;
+
+            &::after {
+                transform: translateX(18px);
+            }
+        }
+
+        &:focus-visible {
+            outline: 2px solid $mostaza;
+            outline-offset: 2px;
+        }
+
+        &:disabled {
+            opacity: .5;
+            cursor: default;
+        }
+    }
+
+    small {
+        display: block;
+        font: 500 13px $font-text;
+        color: #8a8a8a;
+    }
+}
+
+// ===== Botones =====
+.adm-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 20px;
+    border: 2px solid $mostaza;
+    border-radius: 99px;
+    background: $mostaza;
+    color: $tinta;
+    font: 700 17px $font-text;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: filter .15s $ease, background .15s $ease;
+
+    &:hover {
+        filter: brightness(1.06);
+    }
+
+    &:disabled {
+        opacity: .5;
+        cursor: default;
+        filter: none;
+    }
+
+    &--borde {
+        background: transparent;
+        color: $mostaza;
+
+        &:hover {
+            background: rgba($mostaza, .1);
+        }
+    }
+
+    &--peligro {
+        border-color: $eliminar;
+        background: transparent;
+        color: #ff6b5e;
+
+        &:hover {
+            background: rgba($eliminar, .15);
+        }
+    }
+}
+
+// Botón redondo solo con ícono
+.adm-icono {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 1.5px solid $borde;
+    border-radius: 50%;
+    background: transparent;
+    color: $blanco;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover:not(:disabled) {
+        border-color: $mostaza;
+        color: $mostaza;
+    }
+
+    &:disabled {
+        opacity: .3;
+        cursor: default;
+    }
+
+    &--peligro:hover:not(:disabled) {
+        border-color: $eliminar;
+        color: #ff6b5e;
+    }
+}

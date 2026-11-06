@@ -1,0 +1,179 @@
+// Contenido de la ficha de producto (foto, textos, switch, cantidad, Agregar).
+// Lo usan la ficha del sitio y la vista previa del dashboard.
+@use 'styles/variables' as *;
+
+.ficha__hoja {
+    position: relative;
+}
+
+.ficha__cerrar {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 2px solid $tinta;
+    border-radius: 50%;
+    background: #ffffff;
+    color: $tinta;
+    cursor: pointer;
+}
+
+// Foto 4:3 con placeholder de rayas + carita
+.ficha__foto {
+    aspect-ratio: 4 / 3;
+    background:
+        url('/carita.svg') center / 26% no-repeat,
+        repeating-linear-gradient(45deg, #1b1b1b 0 12px, $hover 12px 24px);
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+
+        &[hidden] {
+            display: none;
+        }
+    }
+}
+
+.ficha__cuerpo {
+    padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+}
+
+.ficha__nombre {
+    margin: 0;
+    font: 900 28px / 1.05 $font-display;
+    text-transform: uppercase;
+}
+
+.ficha__desc {
+    margin: 8px 0 0;
+    font: 500 16px / 1.35 $font-text;
+    color: #555555;
+}
+
+.ficha__precio {
+    margin: 12px 0 0;
+    font: 800 22px $font-display;
+}
+
+// Fila "Con papas": switch + texto + precio extra
+.ficha__papas {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    font: 600 17px $font-text;
+    cursor: pointer;
+}
+
+.ficha__extra {
+    font-weight: 700;
+    color: $ambar;
+}
+
+.switch {
+    appearance: none;
+    position: relative;
+    flex-shrink: 0;
+    width: 44px;
+    height: 26px;
+    margin: 0;
+    border-radius: 99px;
+    background: #d6d6d6;
+    cursor: pointer;
+    transition: background .2s $ease;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+        transition: transform .2s $ease;
+    }
+
+    &:checked {
+        background: $mostaza;
+
+        &::after {
+            transform: translateX(18px);
+        }
+    }
+
+    &:focus-visible {
+        outline: 2px solid $tinta;
+        outline-offset: 2px;
+    }
+}
+
+// ===== Cantidad + Agregar =====
+.ficha__acciones {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 22px;
+}
+
+.stepper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.stepper__btn {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 2px solid $tinta;
+    border-radius: 50%;
+    background: transparent;
+    color: $tinta;
+    cursor: pointer;
+
+    &--lleno {
+        background: $tinta;
+        color: #ffffff;
+    }
+
+    &:disabled {
+        opacity: .35;
+        cursor: default;
+    }
+}
+
+.stepper__cant {
+    min-width: 20px;
+    text-align: center;
+    font: 800 20px $font-display;
+}
+
+.ficha__agregar {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 99px;
+    background: $mostaza;
+    color: $tinta;
+    font: 700 18px $font-text;
+    white-space: nowrap;
+    cursor: pointer;
+}

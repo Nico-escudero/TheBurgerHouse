@@ -1,0 +1,18 @@
+@use 'styles/variables' as *;
+
+.form {
+    display: grid;
+    gap: 18px;
+    max-width: 560px;
+    margin-top: 24px;
+
+    .adm-btn {
+        justify-self: start;
+    }
+}
+
+.ok {
+    margin: 0;
+    font: 700 15px $font-text;
+    color: #6fd08c;
+}

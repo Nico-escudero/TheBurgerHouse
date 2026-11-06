@@ -1,8 +1,9 @@
 import { Routes } from '@angular/router';
-import { MenuPage } from './public/menu-page';
 import { Sections } from './sections/sections';
 
 export const routes: Routes = [
     { path: '', component: Sections },
+    // Dashboard: se descarga aparte, solo cuando alguien entra a /admin
+    { path: 'admin', loadChildren: () => import('./admin/admin.routes') },
     { path: '**', redirectTo: '' },
 ];

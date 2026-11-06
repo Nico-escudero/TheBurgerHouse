@@ -1,0 +1,95 @@
+@use 'styles/variables' as *;
+@use 'styles/menu';
+
+// Sección invertida: fondo mostaza (lo pone sections.scss), texto y contornos en tinta
+.seccion__num {
+    background: $tinta;
+    color: $mostaza;
+}
+
+.seccion__title {
+    -webkit-text-stroke-color: $tinta;
+}
+
+.seccion__count {
+    color: #333333;
+}
+
+.salsas__grid {
+    gap: 14px 28px;
+}
+
+// Pastilla negra por salsa
+.salsa {
+    position: relative;
+    z-index: 1;
+    background: $tinta;
+    color: $mostaza;
+    border-radius: 34px;
+    padding: 16px 26px;
+}
+
+.salsa__nombre {
+    margin: 0;
+    font: 700 22px $font-text;
+    text-transform: uppercase;
+}
+
+.salsa__desc {
+    margin: 2px 0 0;
+    font: 600 14px $font-text;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+// Caritas de fondo: se ubican respecto de la <section> (position: relative en sections.scss)
+:host {
+    display: block;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.seccion__head,
+.seccion__grid {
+    position: relative;
+    z-index: 1;
+}
+
+.salsas__carita {
+    position: absolute;
+    pointer-events: none;
+
+    &--grande {
+        right: -60px;
+        top: -30px;
+        width: 420px;
+        height: 420px;
+        color: rgba($tinta, .14);
+    }
+
+    &--chica {
+        left: 35%;
+        bottom: -70px;
+        width: 160px;
+        height: 160px;
+        color: rgba(#ffffff, .4);
+    }
+}
+
+@media (max-width: 575px) {
+    .salsa {
+        padding: 14px 20px;
+    }
+
+    .salsa__nombre {
+        font-size: 19px;
+    }
+
+    // Más chica y corrida al borde para no tapar "de la casa"
+    .salsas__carita--grande {
+        right: -70px;
+        top: -50px;
+        width: 200px;
+        height: 200px;
+    }
+}

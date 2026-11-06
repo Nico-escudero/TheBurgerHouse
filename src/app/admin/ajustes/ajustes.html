@@ -1,0 +1,24 @@
+<h1 class="adm-titulo">Ajustes</h1>
+<p class="adm-sub">Datos del local</p>
+
+<form class="adm-panel form" (submit)="guardar($event)" novalidate>
+    <label class="adm-campo">
+        <span>WhatsApp para pedidos</span>
+        <input class="adm-input" type="tel" inputmode="numeric" autocomplete="off" placeholder="5492494606000"
+            [value]="whatsapp()" (input)="whatsapp.set(texto($event))">
+        <small>Con código de país y de área, sin el 0 ni el 15. Ej: 54 9 249 4606000 → 5492494606000</small>
+    </label>
+
+    <label class="adm-campo">
+        <span>Dirección para retirar</span>
+        <input class="adm-input" type="text" placeholder="Maipú 1712, Tandil" [value]="direccion()"
+            (input)="direccion.set(texto($event))">
+        <small>Se usa en el mensaje de WhatsApp cuando el cliente elige "Retiro".</small>
+    </label>
+
+    @if (mensaje(); as m) {
+    <p [class]="m.ok ? 'ok' : 'adm-error'" role="status">{{ m.texto }}</p>
+    }
+
+    <button type="submit" class="adm-btn" [disabled]="guardando()">{{ guardando() ? 'Guardando…' : 'Guardar' }}</button>
+</form>

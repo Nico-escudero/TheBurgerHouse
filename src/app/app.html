@@ -1,4 +1,6 @@
-﻿<header class="site-nav" #header>
+<!-- En /admin el dashboard tiene su propio header: no se muestra nada del sitio público -->
+@if (!enAdmin()) {
+<header class="site-nav" #header>
     <div class="site-nav__inner">
         <!-- Logo de la marca: reemplazar por <img src="/img/logo.webp" alt="The Burger House"> -->
         <a class="site-nav__logo" routerLink="/" [fragment]="HERO" (click)="activo.set(HERO)"
@@ -14,7 +16,7 @@
             }
         </nav>
 
-        <button class="site-nav__cart" type="button" aria-label="Abrir carrito">
+        <button class="site-nav__cart" type="button" aria-label="Abrir carrito" (click)="carrito.abierto.set(true)">
             <!-- Bootstrap Icons: bag -->
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16"
                 aria-hidden="true">
@@ -27,9 +29,11 @@
         </button>
     </div>
 </header>
+}
 
-<router-outlet></router-outlet>
+<router-outlet />
 
+@if (!enAdmin()) {
 <footer class="footer">
     <h2 class="footer__big">The Burger House</h2>
     <p>
@@ -37,3 +41,8 @@
         <a href="https://www.instagram.com/theburgerhouse.tandil" target="_blank">@theburgerhouse.tandil</a>
     </p>
 </footer>
+
+<!-- Paneles: carrito y ficha de producto (<dialog> modal) -->
+<app-carrito />
+<app-ficha />
+}

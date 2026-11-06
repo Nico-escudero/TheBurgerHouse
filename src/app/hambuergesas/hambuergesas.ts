@@ -1,14 +1,10 @@
 import { Component } from '@angular/core';
+import { MenuCategoria } from '../menu-categoria/menu-categoria';
 
 @Component({
   selector: 'app-hambuergesas',
-  imports: [],
+  imports: [MenuCategoria],
   templateUrl: './hambuergesas.html',
   styleUrl: './hambuergesas.scss',
 })
-export class Hambuergesas {
-  // Si la foto no carga, se oculta y queda visible el placeholder con la carita (fondo de .foto)
-  ocultarImagen(evento: Event) {
-    (evento.target as HTMLImageElement).hidden = true;
-  }
-}
+export class Hambuergesas {}

@@ -1,0 +1,27 @@
+@let p = producto();
+<div class="acciones" [class.contador]="cantidad() > 0">
+    @if (!p.stock) {
+    <span class="sin-stock">Sin stock</span>
+    } @else if (cantidad() === 0) {
+    <button type="button" class="btn-agregar" [attr.aria-label]="'Agregar ' + p.nombre" (click)="sumar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" />
+        </svg>
+    </button>
+    } @else {
+    <button type="button" class="btn-cant" [attr.aria-label]="'Quitar un ' + p.nombre" (click)="restar()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" aria-hidden="true">
+            <path d="M5 12h14" />
+        </svg>
+    </button>
+    <span class="cant" aria-live="polite">{{ cantidad() }}</span>
+    <button type="button" class="btn-cant lleno" [attr.aria-label]="'Agregar un ' + p.nombre" (click)="sumar()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" />
+        </svg>
+    </button>
+    }
+</div>
