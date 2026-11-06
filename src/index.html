@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>Smash burgers en Tandil | The Burger House</title>
+  <title>The Burger House | Smash burgers en Tandil</title>
   <base href="/" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description"
@@ -56,13 +56,61 @@
 
   <!-- Fuentes propias (antes Google Fonts por @import). Solo se descargan las variantes que se usan -->
   <style>
-    @font-face { font-family: 'Archivo'; font-style: normal; font-weight: 400; font-display: swap; src: url(/fonts/archivo-latin.woff2) format('woff2'); }
-    @font-face { font-family: 'Archivo'; font-style: normal; font-weight: 800; font-display: swap; src: url(/fonts/archivo-latin.woff2) format('woff2'); }
-    @font-face { font-family: 'Archivo'; font-style: normal; font-weight: 900; font-display: swap; src: url(/fonts/archivo-latin.woff2) format('woff2'); }
-    @font-face { font-family: 'Archivo'; font-style: italic; font-weight: 800; font-display: swap; src: url(/fonts/archivo-italic-latin.woff2) format('woff2'); }
-    @font-face { font-family: 'Barlow Semi Condensed'; font-style: normal; font-weight: 500; font-display: swap; src: url(/fonts/barlow-semi-condensed-500-latin.woff2) format('woff2'); }
-    @font-face { font-family: 'Barlow Semi Condensed'; font-style: normal; font-weight: 600; font-display: swap; src: url(/fonts/barlow-semi-condensed-600-latin.woff2) format('woff2'); }
-    @font-face { font-family: 'Barlow Semi Condensed'; font-style: normal; font-weight: 700; font-display: swap; src: url(/fonts/barlow-semi-condensed-700-latin.woff2) format('woff2'); }
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url(/fonts/archivo-latin.woff2) format('woff2');
+    }
+
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 800;
+      font-display: swap;
+      src: url(/fonts/archivo-latin.woff2) format('woff2');
+    }
+
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 900;
+      font-display: swap;
+      src: url(/fonts/archivo-latin.woff2) format('woff2');
+    }
+
+    @font-face {
+      font-family: 'Archivo';
+      font-style: italic;
+      font-weight: 800;
+      font-display: swap;
+      src: url(/fonts/archivo-italic-latin.woff2) format('woff2');
+    }
+
+    @font-face {
+      font-family: 'Barlow Semi Condensed';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url(/fonts/barlow-semi-condensed-500-latin.woff2) format('woff2');
+    }
+
+    @font-face {
+      font-family: 'Barlow Semi Condensed';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url(/fonts/barlow-semi-condensed-600-latin.woff2) format('woff2');
+    }
+
+    @font-face {
+      font-family: 'Barlow Semi Condensed';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url(/fonts/barlow-semi-condensed-700-latin.woff2) format('woff2');
+    }
   </style>
 
   <!-- Datos estructurados: local (Restaurant) y sitio web -->
@@ -112,39 +160,112 @@
 
   <!-- Loader principal: estilos inline para que se vea antes de que cargue la app -->
   <style>
-    html.cargando { overflow: hidden; }
+    html.cargando {
+      overflow: hidden;
+    }
+
     .loader {
-      position: fixed; inset: 0; z-index: 9999;
-      display: grid; place-items: center;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: grid;
+      place-items: center;
       background-color: #0A0A0A;
       background-image:
-        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+        linear-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .05) 1px, transparent 1px);
       background-size: 30px 30px;
       color: #F5F5F5;
       font-family: 'Barlow Semi Condensed', sans-serif;
     }
+
     /* Panel mostaza que barre detrás del loader al salir */
-    .loader__cortina { position: fixed; inset: 0; z-index: 9998; background: #F2B83B; }
-    .loader__centro { display: flex; flex-direction: column; align-items: center; gap: 22px; }
-    .loader__carita { width: 96px; height: 96px; }
-    .loader__carita svg { display: block; width: 100%; height: 100%; animation: loader-girar 2.4s linear infinite; }
+    .loader__cortina {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      background: #F2B83B;
+    }
+
+    .loader__centro {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .loader__carita {
+      width: 96px;
+      height: 96px;
+    }
+
+    .loader__carita svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      animation: loader-girar 2.4s linear infinite;
+    }
+
     .loader__marca {
-      margin: 0; overflow: hidden;
+      margin: 0;
+      overflow: hidden;
       font: italic 900 clamp(26px, 6vw, 44px)/1 'Archivo', sans-serif;
-      letter-spacing: .02em; text-transform: uppercase; white-space: nowrap;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
-    .loader__marca span { color: #F2B83B; }
-    .loader__barra { width: min(240px, 60vw); height: 4px; border-radius: 99px; background: #2D2D2D; overflow: hidden; }
-    .loader__progreso { height: 100%; background: #F2B83B; transform: scaleX(0); transform-origin: left; }
+
+    .loader__marca span {
+      color: #F2B83B;
+    }
+
+    .loader__barra {
+      width: min(240px, 60vw);
+      height: 4px;
+      border-radius: 99px;
+      background: #2D2D2D;
+      overflow: hidden;
+    }
+
+    .loader__progreso {
+      height: 100%;
+      background: #F2B83B;
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+
     .loader__pie {
-      position: absolute; left: clamp(20px, 4vw, 48px); right: clamp(20px, 4vw, 48px); bottom: clamp(20px, 4vw, 40px);
-      display: flex; justify-content: space-between; align-items: flex-end;
-      font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #BDBDBD; font-size: 14px;
+      position: absolute;
+      left: clamp(20px, 4vw, 48px);
+      right: clamp(20px, 4vw, 48px);
+      bottom: clamp(20px, 4vw, 40px);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #BDBDBD;
+      font-size: 14px;
     }
-    .loader__numero { font: 900 clamp(48px, 10vw, 96px)/.8 'Archivo', sans-serif; color: #F5F5F5; letter-spacing: 0; }
-    @keyframes loader-girar { to { transform: rotate(360deg); } }
-    @media (prefers-reduced-motion: reduce) { .loader__carita svg { animation: none; } }
+
+    .loader__numero {
+      font: 900 clamp(48px, 10vw, 96px)/.8 'Archivo', sans-serif;
+      color: #F5F5F5;
+      letter-spacing: 0;
+    }
+
+    @keyframes loader-girar {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .loader__carita svg {
+        animation: none;
+      }
+    }
   </style>
 </head>
 
@@ -161,7 +282,9 @@
         </svg>
       </div>
       <p class="loader__marca">The Burger <span>House</span></p>
-      <div class="loader__barra"><div class="loader__progreso"></div></div>
+      <div class="loader__barra">
+        <div class="loader__progreso"></div>
+      </div>
     </div>
     <div class="loader__pie">
       <span>Smash burgers · Tandil</span>
