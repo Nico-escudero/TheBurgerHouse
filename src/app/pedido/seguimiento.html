@@ -72,15 +72,21 @@
             @switch (p.pago_estado) {
             @case ('pendiente') {
             <app-datos-transferencia [total]="p.total" />
-            <app-subir-comprobante [codigoPublico]="p.codigo_publico" (subido)="alSubirComprobante($event)" />
+            @if (codigoParaSubir(); as cod) {
+            <app-subir-comprobante [codigoPublico]="cod" (subido)="alSubirComprobante($event)" />
+            } @else {
+            <p class="pago__nota">Para subir el comprobante abrí el pedido desde el celular donde lo hiciste, o mandalo por WhatsApp.</p>
+            }
             }
             @case ('enviado') {
             <p class="pago__estado">
                 <span class="pago__punto" aria-hidden="true"></span>
                 Comprobante enviado · lo estamos revisando
             </p>
-            <app-subir-comprobante [codigoPublico]="p.codigo_publico" texto="Subir otro comprobante" [secundario]="true"
+            @if (codigoParaSubir(); as cod) {
+            <app-subir-comprobante [codigoPublico]="cod" texto="Subir otro comprobante" [secundario]="true"
                 (subido)="alSubirComprobante($event)" />
+            }
             }
             @case ('confirmado') {
             <p class="pago__estado pago__estado--ok">

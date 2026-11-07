@@ -101,6 +101,16 @@ export class Seguimiento {
 
   protected readonly terminado = terminado;
 
+  // Código para subir el comprobante: el que devolvió la base (búsqueda por link) o, si se buscó por
+  // número + tel4, el guardado en este navegador al crear ese mismo pedido. Si no hay, se usa el link.
+  protected readonly codigoParaSubir = computed(() => {
+    const p = this.pedido();
+    if (!p) return null;
+    if (p.codigo_publico) return p.codigo_publico;
+    const guardado = this.pedidos.enCurso();
+    return guardado?.codigo === p.codigo ? guardado.codigo_publico : null;
+  });
+
   // Comprobante subido: se refleja al instante (el polling lo confirma después)
   protected alSubirComprobante(estado: PedidoPublico['pago_estado']): void {
     this.pedido.update((p) => (p ? { ...p, pago_estado: estado } : p));
@@ -208,6 +218,11 @@ export class Seguimiento {
         );
       }
     } catch (e) {
+      // Bloqueo por intentos fallidos de tel4 (consultar_pedido): no es un problema de conexión
+      if (e instanceof Error && /demasiados intentos/i.test(e.message)) {
+        this.errorForm.set('Demasiados intentos. Esperá unos minutos o escribinos por WhatsApp.');
+        return;
+      }
       console.error('No se pudo consultar el pedido', e);
       this.errorConexion.set(true);
     } finally {

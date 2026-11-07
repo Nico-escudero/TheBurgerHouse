@@ -432,6 +432,12 @@
     }
 }
 
+.pago__nota {
+    margin: 0;
+    font: 500 15px / 1.4 $font-text;
+    opacity: .8;
+}
+
 .pago__punto {
     flex-shrink: 0;
     width: 10px;

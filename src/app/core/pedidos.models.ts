@@ -55,7 +55,8 @@ export interface PedidoPublico {
   created_at: string;
   items: { nombre: string; cantidad: number; subtotal: number }[];
   historial: CambioEstado[];
-  codigo_publico: string;
+  // null si se buscó por número + tel4: el código (llave para subir comprobantes) solo viaja en el link
+  codigo_publico: string | null;
   medio_pago: MedioPago;
   pago_estado: PagoEstado;
 }
