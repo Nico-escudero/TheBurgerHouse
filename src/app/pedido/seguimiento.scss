@@ -267,11 +267,13 @@
         right: calc(-50% + 22px);
         height: 3px;
         border-radius: 3px;
-        background: #e2e2e2;
+        // Base gris + relleno negro que crece de izquierda a derecha cuando el paso queda hecho
+        background: linear-gradient($tinta, $tinta) 0 0 / 0% 100% no-repeat, #e2e2e2;
     }
 
     &--hecho:not(:last-child)::after {
-        background: $tinta;
+        background-size: 100% 100%, auto;
+        animation: llenar-x .7s $ease calc(var(--i, 0) * .12s + .15s) backwards;
     }
 }
 
@@ -294,6 +296,15 @@
         background: var(--estado);
         color: var(--estado-texto);
         box-shadow: 0 0 0 6px color-mix(in srgb, var(--estado) 30%, transparent);
+        animation:
+            pop .5s cubic-bezier(.34, 1.56, .64, 1) calc(var(--i, 0) * .12s) backwards,
+            halo 2s ease-in-out 1s infinite;
+    }
+
+    // Tilde que se dibuja
+    svg path {
+        stroke-dasharray: 24;
+        animation: dibujar .45s ease-out calc(var(--i, 0) * .12s + .1s) backwards;
     }
 }
 
@@ -336,6 +347,12 @@
             right: auto;
             width: 3px;
             height: 16px;
+            background-size: 100% 0%, auto;
+        }
+
+        &--hecho:not(:last-child)::after {
+            background-size: 100% 100%, auto;
+            animation-name: llenar-y;
         }
     }
 }
@@ -389,5 +406,138 @@
         span:last-child {
             font-size: 24px;
         }
+    }
+}
+
+// ===== Pago =====
+.pago {
+    display: grid;
+    gap: 10px;
+    margin: -8px 0 24px;
+    animation: subir .45s $ease backwards;
+}
+
+.pago__estado {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba($mostaza, .22);
+    font: 700 16px / 1.3 $font-text;
+
+    &--ok {
+        background: rgba($estado-entregado, .22);
+    }
+}
+
+.pago__punto {
+    flex-shrink: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: $mostaza;
+    animation: latir 1.6s ease-in-out infinite;
+}
+
+.pago-efectivo {
+    margin: -12px 0 20px;
+    font: 600 15px $font-text;
+    color: #555555;
+}
+
+// ===== Animaciones =====
+// Entrada de la tarjeta, el formulario y los avisos
+.tarjeta,
+.buscar,
+.seg__estado {
+    animation: subir .5s $ease backwards;
+}
+
+.seg__titulo {
+    animation: subir .6s $ease backwards;
+}
+
+// Al cambiar de estado: el chip salta y el título/bajada entran de nuevo
+.tarjeta__head .chip {
+    animation: pop .45s cubic-bezier(.34, 1.56, .64, 1) backwards;
+}
+
+.tarjeta__mensaje {
+    animation: subir .45s $ease backwards;
+}
+
+.paso {
+    animation: aparecer .4s ease-out calc(var(--i, 0) * .08s) backwards;
+}
+
+.items li,
+.entrega {
+    animation: subir .4s $ease .2s backwards;
+}
+
+@keyframes subir {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes pop {
+    from {
+        opacity: 0;
+        transform: scale(.6);
+    }
+}
+
+@keyframes halo {
+    50% {
+        box-shadow: 0 0 0 11px color-mix(in srgb, var(--estado) 12%, transparent);
+    }
+}
+
+@keyframes dibujar {
+    from {
+        stroke-dashoffset: 24;
+    }
+}
+
+@keyframes llenar-x {
+    from {
+        background-size: 0% 100%, auto;
+    }
+}
+
+@keyframes llenar-y {
+    from {
+        background-size: 100% 0%, auto;
+    }
+}
+
+// Movimiento reducido: solo fundidos cortos, sin saltos, rellenos ni halo
+@media (prefers-reduced-motion: reduce) {
+    .tarjeta,
+    .buscar,
+    .seg__estado,
+    .seg__titulo,
+    .tarjeta__head .chip,
+    .tarjeta__mensaje,
+    .items li,
+    .entrega {
+        animation: aparecer .25s ease-out backwards;
+    }
+
+    .paso__punto,
+    .pago__punto,
+    .paso__punto svg path,
+    .paso::after {
+        animation: none !important;
     }
 }

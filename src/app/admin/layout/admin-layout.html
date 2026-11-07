@@ -10,8 +10,10 @@
             <a routerLink="/admin/productos" routerLinkActive="activo" ariaCurrentWhenActive="page">Productos</a>
             <a routerLink="/admin/pedidos" routerLinkActive="activo" ariaCurrentWhenActive="page">
                 Pedidos
-                @if (pedidos.nuevos() > 0) {
-                <span class="adm-nav__nuevos" [attr.aria-label]="pedidos.nuevos() + ' nuevos'">{{ pedidos.nuevos() }}</span>
+                @for (n of [pedidos.nuevos()]; track n) {
+                @if (n > 0) {
+                <span class="adm-nav__nuevos" [attr.aria-label]="n + ' nuevos'">{{ n }}</span>
+                }
                 }
             </a>
             <a routerLink="/admin/salsas" routerLinkActive="activo" ariaCurrentWhenActive="page">Salsas</a>
@@ -19,6 +21,20 @@
         </nav>
 
         <div class="adm-nav__lado">
+            <!-- Aviso sonoro de pedidos nuevos: se ve desde cualquier sección -->
+            <button type="button" class="adm-nav__sonido" [attr.data-sonido]="pedidos.estadoSonido()"
+                [attr.aria-pressed]="pedidos.estadoSonido() !== 'apagado'" (click)="pedidos.alternarSonido()"
+                [attr.aria-label]="textoSonido()" [attr.title]="textoSonido()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 9v6h4l5 4V5L8 9z" />
+                    @if (pedidos.estadoSonido() === 'apagado') {
+                    <path d="M17 9l5 6M22 9l-5 6" />
+                    } @else {
+                    <path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12" />
+                    }
+                </svg>
+            </button>
             <a class="adm-nav__sitio" routerLink="/" target="_blank">Ver sitio ↗</a>
             <button type="button" class="adm-nav__salir" (click)="salir()"
                 [attr.title]="auth.sesion()?.user?.email">Salir</button>

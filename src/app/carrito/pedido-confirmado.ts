@@ -9,17 +9,22 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { cerrarDialogo } from '../core/animaciones';
+import { MedioPago, PagoEstado } from '../core/pedidos.models';
+import { DatosTransferencia } from '../pago/datos-transferencia';
+import { SubirComprobante } from '../pago/subir-comprobante';
 
 export interface Confirmacion {
   codigo: string; // 'BH-0427'
   codigoPublico: string;
-  whatsapp: string; // link wa.me con el mensaje armado
+  whatsapp: string; // link wa.me para consultas
+  medioPago: MedioPago;
+  total: number;
 }
 
 // Popup "¡Listo! Tu pedido es el BH-0427" que aparece al guardar el pedido
 @Component({
   selector: 'app-pedido-confirmado',
-  imports: [RouterLink],
+  imports: [RouterLink, DatosTransferencia, SubirComprobante],
   templateUrl: './pedido-confirmado.html',
   styleUrl: './pedido-confirmado.scss',
 })
@@ -29,6 +34,7 @@ export class PedidoConfirmado {
 
   private readonly dialogo = viewChild.required<ElementRef<HTMLDialogElement>>('dialogo');
   protected readonly copiado = signal(false);
+  protected readonly pago = signal<PagoEstado>('pendiente'); // solo transferencia
 
   constructor() {
     afterNextRender(() => this.dialogo().nativeElement.showModal());

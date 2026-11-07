@@ -16,6 +16,8 @@ const espera = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 // Se revisa cuadro a cuadro porque la imagen del HTML prerenderizado se reemplaza cuando arranca
 // Angular: un listener de "load" sobre la imagen vieja podría no dispararse nunca.
 async function fotoHero(): Promise<void> {
+  // Fuera de la home (ej. /pedido/:codigo desde el link del WhatsApp) no hay hero: no se espera nada
+  if (location.pathname !== '/') return;
   for (;;) {
     const img = document.querySelector<HTMLImageElement>('.hero__photo img');
     if (img?.isConnected && img.complete) return;
@@ -50,12 +52,23 @@ function correrLoader(): Promise<void> {
   };
 
   // Mientras carga: avanza rápido al principio y se frena cerca del final
-  const avance = gsap.to(estado, { valor: 85, duration: 1.2, ease: 'power2.out', onUpdate: pintar });
+  const avance = gsap.to(estado, {
+    valor: 85,
+    duration: 1.2,
+    ease: 'power2.out',
+    onUpdate: pintar,
+  });
 
   // Entrada de la marca
   if (!sinMovimiento) {
     gsap.from('.loader__carita', { scale: 0, rotate: -90, duration: 0.7, ease: 'back.out(1.8)' });
-    gsap.from('.loader__marca', { yPercent: 100, autoAlpha: 0, duration: 0.6, delay: 0.15, ease: 'power3.out' });
+    gsap.from('.loader__marca', {
+      yPercent: 100,
+      autoAlpha: 0,
+      duration: 0.6,
+      delay: 0.15,
+      ease: 'power3.out',
+    });
     gsap.from('.loader__pie', { autoAlpha: 0, duration: 0.6, delay: 0.3 });
   }
 

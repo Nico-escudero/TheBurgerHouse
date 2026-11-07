@@ -448,7 +448,8 @@
     font: 900 32px $font-display;
 }
 
-.whatsapp {
+.whatsapp,
+.confirmar {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -496,4 +497,25 @@
 .aviso {
     background: #f3f3f3;
     color: #444444;
+}
+
+// Botón principal: el pedido se manda desde el sitio (WhatsApp solo como respaldo)
+.confirmar {
+    background: $tinta;
+    color: $mostaza;
+}
+
+// ===== Pago =====
+.datos__titulo--pago {
+    margin-top: 8px;
+}
+
+.entrega.error .entrega__opcion {
+    border-color: $eliminar;
+}
+
+.pago__nota {
+    margin: 0;
+    font: 500 15px / 1.35 $font-text;
+    color: #555555;
 }

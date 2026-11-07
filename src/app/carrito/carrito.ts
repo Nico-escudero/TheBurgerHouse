@@ -5,11 +5,12 @@ import { borrarFila, cerrarDialogo, entrarPanel } from '../core/animaciones';
 import { MenuService } from '../core/menu.service';
 import { LocalCerrado, PedidosService, linkSeguimiento } from '../core/pedidos.service';
 import { PedidoConfirmado, Confirmacion } from './pedido-confirmado';
+import { DatosTransferencia } from '../pago/datos-transferencia';
 
 // Panel "Tu pedido": hoja desde abajo en mobile, panel lateral en desktop
 @Component({
   selector: 'app-carrito',
-  imports: [PedidoConfirmado],
+  imports: [PedidoConfirmado, DatosTransferencia],
   templateUrl: './carrito.html',
   styleUrl: './carrito.scss',
 })
@@ -31,11 +32,18 @@ export class Carrito {
   protected readonly faltaDireccion = computed(
     () => this.carrito.entrega() === 'envio' && !this.carrito.direccion().trim(),
   );
+  protected readonly faltaPago = computed(() => !this.carrito.medioPago());
+  // "$20.000" -> 20000 (null si no escribió nada)
+  protected readonly pagaConNumero = computed(() => {
+    const n = Number(this.carrito.pagaCon().replace(/\D/g, ''));
+    return n > 0 ? n : null;
+  });
   protected readonly faltan = computed(() =>
     [
       this.faltaNombre() && 'tu nombre',
       this.faltaTelefono() && 'tu teléfono',
       this.faltaDireccion() && 'la dirección de entrega',
+      this.faltaPago() && 'cómo pagás',
     ].filter((x): x is string => !!x),
   );
   // 'tu nombre, tu teléfono y la dirección de entrega'
@@ -130,7 +138,7 @@ export class Carrito {
     return (evento.target as HTMLInputElement | HTMLTextAreaElement).value;
   }
 
-  // Guarda el pedido en la base (número de orden + link de seguimiento) y abre WhatsApp.
+  // Guarda el pedido en la base (número de orden + link de seguimiento) y muestra la confirmación.
   // Si la base falla, tarda más de 4 s o no hay conexión, se pide por WhatsApp como antes:
   // el pedido nunca se pierde por un error de la base. Solo se frena si el local no toma pedidos.
   protected async pedir(): Promise<void> {
@@ -155,20 +163,23 @@ export class Carrito {
           tipo_entrega: this.carrito.entrega(),
           direccion: this.carrito.direccion(),
           aclaraciones: this.carrito.aclaraciones(),
+          medio_pago: this.carrito.medioPago()!,
+          paga_con: this.pagaConNumero(),
         },
         this.carrito.lineas(),
       );
-      const link = linkSeguimiento(creado.codigo_publico);
-      const whatsapp = this.carrito.linkWhatsApp({ codigo: creado.codigo, link });
+      // El pedido ya llegó al panel del local (Realtime): el cliente no sale del sitio.
+      // WhatsApp queda como opción para consultas desde el popup.
       this.confirmado.set({
         codigo: creado.codigo,
         codigoPublico: creado.codigo_publico,
-        whatsapp,
+        medioPago: creado.medio_pago,
+        total: creado.total,
+        whatsapp: this.carrito.linkConsulta(creado.codigo, linkSeguimiento(creado.codigo_publico)),
       });
       // Ya quedó guardado: se vacía para que un segundo toque no lo duplique
       this.cerrar();
       this.carrito.vaciar();
-      this.abrir(whatsapp);
     } catch (e) {
       if (e instanceof LocalCerrado) {
         // El local apagó los pedidos mientras la página estaba abierta
@@ -183,7 +194,7 @@ export class Carrito {
     }
   }
 
-  // Si el navegador bloquea la ventana, el popup de confirmación tiene su propio botón de WhatsApp
+  // Respaldo cuando falla la base: si el navegador bloquea la ventana, queda el botón "Enviar por WhatsApp"
   private abrir(link: string): void {
     window.open(link, '_blank', 'noopener');
   }

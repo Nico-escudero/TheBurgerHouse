@@ -2,6 +2,7 @@ import { Injectable, computed, effect, inject, signal, untracked } from '@angula
 import { MenuService } from './menu.service';
 import { Producto } from './models';
 import { formatoPrecio } from './formato';
+import type { MedioPago } from './pedidos.models';
 
 export interface LineaCarrito {
   producto: Producto;
@@ -38,6 +39,8 @@ export class CarritoService {
   readonly entrega = signal<Entrega>('envio');
   readonly direccion = signal('');
   readonly aclaraciones = signal('');
+  readonly medioPago = signal<MedioPago | null>(null); // obligatorio elegirlo
+  readonly pagaCon = signal(''); // efectivo: billete con el que paga (opcional, para el vuelto)
 
   readonly cantidadTotal = computed(() => this.lineas().reduce((n, l) => n + l.cantidad, 0));
   readonly total = computed(() => this.lineas().reduce((n, l) => n + this.subtotal(l), 0));
@@ -132,13 +135,22 @@ export class CarritoService {
   }
 
   // ===== WhatsApp =====
-  // Con `pedido` (guardado en la base) el mensaje arranca con el número y trae el link de seguimiento
-  linkWhatsApp(pedido?: { codigo: string; link: string }): string {
-    const numero = this.menu.config()['whatsapp'] ?? '';
-    return `https://wa.me/${numero}?text=${encodeURIComponent(this.mensaje(pedido))}`;
+  // Respaldo: el pedido completo por WhatsApp (solo si no se pudo guardar en la base)
+  linkWhatsApp(): string {
+    return this.linkLocal(this.mensaje());
   }
 
-  private mensaje(pedido?: { codigo: string; link: string }): string {
+  // Consulta opcional sobre un pedido ya guardado (link del popup de confirmación)
+  linkConsulta(codigo: string, seguimiento: string): string {
+    return this.linkLocal(`¡Hola! Tengo una consulta por mi pedido ${codigo}\n${seguimiento}`);
+  }
+
+  private linkLocal(texto: string): string {
+    const numero = this.menu.config()['whatsapp'] ?? '';
+    return `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
+  }
+
+  private mensaje(): string {
     const items = this.lineas().map(
       (l) =>
         `• ${l.cantidad}x ${l.producto.nombre}${l.conPapas ? ' (con papas)' : ''}: ${formatoPrecio(this.subtotal(l))}`,
@@ -151,7 +163,7 @@ export class CarritoService {
     const telefono = this.telefono().replace(/\D/g, '');
 
     return [
-      pedido ? `¡Hola! Pedido *${pedido.codigo}* 🍔` : '¡Hola! Quiero hacer un pedido 🍔',
+      '¡Hola! Quiero hacer un pedido 🍔',
       '',
       ...items,
       '',
@@ -160,8 +172,10 @@ export class CarritoService {
       `Nombre: ${this.nombre().trim()}`,
       ...(telefono ? [`Teléfono: ${telefono}`] : []),
       entrega,
+      ...(this.medioPago()
+        ? [`Pago: ${this.medioPago() === 'efectivo' ? 'efectivo' : 'transferencia'}`]
+        : []),
       ...(aclaraciones ? [`Aclaraciones: ${aclaraciones}`] : []),
-      ...(pedido ? ['', `Seguilo acá: ${pedido.link}`] : []),
     ].join('\n');
   }
 

@@ -16,6 +16,33 @@
         <small>Se usa en el mensaje de WhatsApp cuando el cliente elige "Retiro".</small>
     </label>
 
+    <h2 class="adm-panel__titulo">Datos para transferencias</h2>
+    <p class="nota">Se muestran al cliente cuando elige pagar por transferencia. Los campos vacíos no se muestran.</p>
+
+    <label class="adm-campo">
+        <span>Alias</span>
+        <input class="adm-input" type="text" autocomplete="off" placeholder="mi.alias.mp" [value]="alias()"
+            (input)="alias.set(texto($event))">
+    </label>
+
+    <label class="adm-campo">
+        <span>CBU / CVU</span>
+        <input class="adm-input" type="text" inputmode="numeric" autocomplete="off" placeholder="22 números"
+            [value]="cbu()" (input)="cbu.set(texto($event))">
+    </label>
+
+    <label class="adm-campo">
+        <span>Titular de la cuenta</span>
+        <input class="adm-input" type="text" autocomplete="off" placeholder="Nombre y apellido" [value]="titular()"
+            (input)="titular.set(texto($event))">
+    </label>
+
+    <label class="adm-campo">
+        <span>Banco o billetera</span>
+        <input class="adm-input" type="text" autocomplete="off" placeholder="Mercado Pago, Galicia…"
+            [value]="banco()" (input)="banco.set(texto($event))">
+    </label>
+
     @if (mensaje(); as m) {
     <p [class]="m.ok ? 'ok' : 'adm-error'" role="status">{{ m.texto }}</p>
     }

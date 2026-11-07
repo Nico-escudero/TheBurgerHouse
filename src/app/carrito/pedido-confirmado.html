@@ -10,22 +10,42 @@
     <img src="/carita.svg" alt="" width="64" height="64" aria-hidden="true">
     <h2 id="listo-titulo" class="listo__titulo">¡Listo! Tu pedido es el</h2>
     <p class="listo__numero">{{ pedido().codigo }}</p>
-    <p id="listo-bajada" class="listo__bajada">Mandanos el mensaje por WhatsApp y seguí el estado desde el link.</p>
+    @if (pedido().medioPago === 'transferencia') {
+    <p id="listo-bajada" class="listo__bajada">Para que lo empecemos a preparar, transferí y subí el comprobante.</p>
+    <div class="listo__pago">
+        @if (pago() === 'pendiente') {
+        <app-datos-transferencia [total]="pedido().total" />
+        <app-subir-comprobante [codigoPublico]="pedido().codigoPublico" (subido)="pago.set($event)" />
+        <p class="listo__nota">¿Lo hacés después? Podés subirlo desde "Seguir mi pedido".</p>
+        } @else {
+        <p class="listo__ok" role="status">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12l5 5L20 7" />
+            </svg>
+            Comprobante enviado. Lo revisamos y empezamos a prepararlo.
+        </p>
+        }
+    </div>
+    } @else {
+    <p id="listo-bajada" class="listo__bajada">Ya lo recibimos en el local. Pagás en efectivo al
+        recibirlo o retirarlo. Seguí cómo va desde acá: la página se actualiza sola.</p>
+    }
 
     <div class="listo__acciones">
-        <a class="listo__btn listo__btn--wa" [href]="pedido().whatsapp" target="_blank" rel="noopener">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 7.8 19.4z" />
-            </svg>
-            Enviar por WhatsApp
-        </a>
         <a class="listo__btn" [routerLink]="['/pedido', pedido().codigoPublico]" (click)="cerrar()">
             Seguir mi pedido
         </a>
         <button type="button" class="listo__btn listo__btn--borde" (click)="copiar()">
             {{ copiado() ? '¡Copiado!' : 'Copiar número' }}
         </button>
+        <a class="listo__wa" [href]="pedido().whatsapp" target="_blank" rel="noopener">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 7.8 19.4z" />
+            </svg>
+            ¿Dudas? Escribinos por WhatsApp
+        </a>
     </div>
     <p class="sr-only" aria-live="polite">{{ copiado() ? 'Número copiado' : '' }}</p>
 </dialog>

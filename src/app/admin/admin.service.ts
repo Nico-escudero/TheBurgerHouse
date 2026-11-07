@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { SupabaseService } from '../core/supabase.service';
 import { Categoria, Producto, Salsa } from '../core/models';
+import { extensionDe } from '../core/imagen';
 
 const BUCKET = 'productos';
 
@@ -102,10 +103,10 @@ export class AdminService {
   private async subirFoto(foto: Blob): Promise<string> {
     // randomUUID solo existe en https/localhost: si se abre por IP de la red local se usa otro nombre único
     const id = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-    const ruta = `${id}.webp`;
+    const ruta = `${id}.${extensionDe(foto)}`; // webp, o jpg si se subió desde Safari
     const { error } = await this.sb.storage
       .from(BUCKET)
-      .upload(ruta, foto, { contentType: 'image/webp', cacheControl: '31536000', upsert: false });
+      .upload(ruta, foto, { contentType: foto.type || 'image/webp', cacheControl: '31536000', upsert: false });
     if (error) throw error;
     return this.sb.storage.from(BUCKET).getPublicUrl(ruta).data.publicUrl;
   }

@@ -152,6 +152,50 @@
                         (input)="carrito.aclaraciones.set(valor($event))"></textarea>
                 </label>
 
+                <!-- ===== Pago ===== -->
+                <h3 class="datos__titulo datos__titulo--pago">¿Cómo pagás?</h3>
+                <div class="entrega" [class.error]="intento() && faltaPago()" role="radiogroup"
+                    aria-label="Medio de pago">
+                    <button type="button" role="radio" class="entrega__opcion"
+                        [attr.aria-checked]="carrito.medioPago() === 'efectivo'" (click)="carrito.medioPago.set('efectivo')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="2" y="6" width="20" height="12" rx="2" />
+                            <circle cx="12" cy="12" r="2.5" />
+                        </svg>
+                        Efectivo
+                    </button>
+                    <button type="button" role="radio" class="entrega__opcion"
+                        [attr.aria-checked]="carrito.medioPago() === 'transferencia'"
+                        (click)="carrito.medioPago.set('transferencia')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 8h13l-3-3M20 16H7l3 3" />
+                        </svg>
+                        Transferencia
+                    </button>
+                </div>
+
+                @if (carrito.medioPago() === 'efectivo') {
+                <p class="pago__nota">Pagás {{ carrito.entrega() === 'envio' ? 'al recibir' : 'al retirar' }}.</p>
+                @if (carrito.entrega() === 'envio') {
+                <label class="campo">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="2" y="6" width="20" height="12" rx="2" />
+                        <circle cx="12" cy="12" r="2.5" />
+                    </svg>
+                    <input type="text" inputmode="numeric" name="paga-con" autocomplete="off"
+                        placeholder="¿Con cuánto pagás? (para el vuelto)" aria-label="¿Con cuánto pagás? Opcional, para el vuelto"
+                        [value]="carrito.pagaCon()" (input)="carrito.pagaCon.set(valor($event))">
+                </label>
+                }
+                } @else if (carrito.medioPago() === 'transferencia') {
+                <app-datos-transferencia [total]="carrito.total()" />
+                <p class="pago__nota">Confirmá el pedido y después subí el comprobante (foto, captura o PDF). Lo
+                    empezamos a preparar cuando verificamos el pago.</p>
+                }
+
                 @if (intento() && faltan().length) {
                 <p class="datos__error" role="alert">
                     Completá {{ textoFaltan() }} para hacer el pedido.
@@ -169,17 +213,27 @@
             @if (!carrito.recibiendo()) {
             <p class="cerrado" role="status">Por ahora no tomamos pedidos. ¡Volvé en un rato!</p>
             } @else if (aviso() === 'sin-numero') {
-            <p class="aviso" role="status">No pudimos generar tu número de seguimiento. Tu pedido sale igual por
-                WhatsApp.</p>
+            <p class="aviso" role="status">No pudimos registrar tu pedido en el sistema. Envialo por WhatsApp y lo
+                tomamos igual.</p>
             }
-            <button type="button" class="whatsapp" (click)="pedir()" [disabled]="!carrito.recibiendo()"
-                [attr.aria-busy]="enviando()">
+            @if (aviso() === 'sin-numero') {
+            <button type="button" class="whatsapp" (click)="pedir()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 7.8 19.4z" />
                 </svg>
-                {{ enviando() ? 'Generando tu pedido…' : 'Pedir por WhatsApp' }}
+                Enviar por WhatsApp
             </button>
+            } @else {
+            <button type="button" class="confirmar" (click)="pedir()" [disabled]="!carrito.recibiendo()"
+                [attr.aria-busy]="enviando()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 12l5 5L20 7" />
+                </svg>
+                {{ enviando() ? 'Enviando tu pedido…' : 'Confirmar pedido' }}
+            </button>
+            }
         </footer>
         }
     </div>

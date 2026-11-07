@@ -1,6 +1,7 @@
 @use 'styles/variables' as *;
 
 .franja {
+    animation: franja-baja .45s cubic-bezier(.32, .72, 0, 1) backwards;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -62,5 +63,24 @@
 @media (min-width: 421px) {
     .franja__corto {
         display: none;
+    }
+}
+
+@keyframes franja-baja {
+    from {
+        margin-top: -44px;
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .franja {
+        animation-name: franja-fundido;
+    }
+
+    @keyframes franja-fundido {
+        from {
+            opacity: 0;
+        }
     }
 }

@@ -5,6 +5,10 @@ import { CambioEstado, EstadoPedido, Pedido } from '../../core/pedidos.models';
 import { AdminService } from '../admin.service';
 
 const ACTIVOS = '(recibido,preparacion,listo,camino)';
+const SONIDO_KEY = 'bh_admin_sonido'; // 'off' si el usuario lo apagó; por defecto está prendido
+
+// activo: suena · bloqueado: prendido pero el navegador espera el primer clic · apagado: lo apagó el usuario
+export type EstadoSonido = 'activo' | 'bloqueado' | 'apagado';
 
 export function inicioDeHoy(): Date {
   const d = new Date();
@@ -26,13 +30,22 @@ export class PedidosAdminService {
   // Interruptor del local: configuracion.recibiendo_pedidos ('true' / 'false')
   readonly recibiendo = computed(() => this.admin.config()['recibiendo_pedidos'] !== 'false');
 
-  readonly sonidoActivo = signal(false);
+  // Pedidos que acaban de llegar por Realtime: la lista los resalta unos segundos
+  readonly recienLlegados = signal<ReadonlySet<string>>(new Set());
+
+  // Preferencia guardada en este navegador (prendido por defecto)
+  readonly sonidoPrendido = signal(leerPreferencia());
+  private readonly audioCorriendo = signal(false);
+  readonly estadoSonido = computed<EstadoSonido>(() =>
+    !this.sonidoPrendido() ? 'apagado' : this.audioCorriendo() ? 'activo' : 'bloqueado',
+  );
   private audio?: AudioContext;
   private canal?: RealtimeChannel;
 
   // Lo llama el layout del panel: carga la lista y queda escuchando cambios en vivo
   iniciar(): void {
     if (this.canal) return;
+    if (this.sonidoPrendido()) this.prepararSonido();
     this.listarPedidosHoy();
     this.escucharPedidos();
   }
@@ -66,12 +79,24 @@ export class PedidosAdminService {
     this.canal = this.sb
       .channel('admin-pedidos')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pedidos' }, (cambio) => {
-        this.actualizarLocal(cambio.new as Pedido);
+        const nuevo = cambio.new as Pedido;
+        this.actualizarLocal(nuevo);
+        this.marcarLlegada(nuevo.id);
         this.sonar();
       })
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'pedidos' }, (cambio) =>
-        this.actualizarLocal(cambio.new as Pedido),
-      )
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'pedidos' }, (cambio) => {
+        const nuevo = cambio.new as Pedido;
+        const antes = this.pedidos().find((p) => p.id === nuevo.id);
+        this.actualizarLocal(nuevo);
+        // Llegó un comprobante de transferencia: mismo aviso que un pedido nuevo
+        if (
+          nuevo.pago_estado === 'enviado' &&
+          (antes?.pago_estado !== 'enviado' || antes?.comprobante_path !== nuevo.comprobante_path)
+        ) {
+          this.marcarLlegada(nuevo.id);
+          this.sonar();
+        }
+      })
       .subscribe((estado) => {
         // Al reconectar (se cortó internet, la pestaña durmió) se recarga por si se perdió algún evento
         if (estado === 'SUBSCRIBED' && this.pedidos().length) this.listarPedidosHoy();
@@ -83,6 +108,27 @@ export class PedidosAdminService {
   }
 
   // null = sin hora estimada
+  // ===== Pagos por transferencia =====
+  // Confirma el pago y, si se pide, lo pasa a preparación en el mismo paso
+  async confirmarPago(id: string, preparar: boolean): Promise<void> {
+    await this.actualizar(id, {
+      pago_estado: 'confirmado',
+      ...(preparar ? { estado: 'preparacion' as const } : {}),
+    });
+  }
+
+  // El comprobante no sirve: vuelve a "esperando" y el cliente puede subir otro desde su página
+  async rechazarComprobante(id: string): Promise<void> {
+    await this.actualizar(id, { pago_estado: 'pendiente', comprobante_path: null });
+  }
+
+  // Link temporal (10 min) para ver el comprobante: el bucket es privado
+  async urlComprobante(ruta: string): Promise<string> {
+    const { data, error } = await this.sb.storage.from('comprobantes').createSignedUrl(ruta, 600);
+    if (error) throw error;
+    return data.signedUrl;
+  }
+
   async fijarHora(id: string, horaEstimada: string | null): Promise<void> {
     await this.actualizar(id, { hora_estimada: horaEstimada });
   }
@@ -110,18 +156,50 @@ export class PedidosAdminService {
   }
 
   // ===== Sonido =====
-  // El navegador no deja reproducir audio hasta que el usuario toca algo: se activa con un botón
-  async activarSonido(): Promise<void> {
-    this.audio ??= new AudioContext();
-    await this.audio.resume();
-    this.sonidoActivo.set(this.audio.state === 'running');
-    this.sonar();
+  // Ningún navegador deja reproducir audio antes del primer clic o tecla en la página.
+  // Si al entrar ya hubo un clic (ej. "Ingresar" en el login) arranca directo; si no
+  // (recarga con la sesión abierta) se desbloquea solo con el primer clic o tecla en cualquier lado.
+  private prepararSonido(): void {
+    try {
+      this.audio ??= new AudioContext();
+    } catch {
+      return; // navegador sin Web Audio
+    }
+    const ctx = this.audio;
+    ctx.onstatechange = () => this.audioCorriendo.set(ctx.state === 'running');
+    this.audioCorriendo.set(ctx.state === 'running');
+    if (ctx.state === 'running') return;
+    ctx.resume().catch(() => {});
+
+    const desbloquear = () => {
+      ctx.resume().then(() => this.audioCorriendo.set(ctx.state === 'running'));
+      document.removeEventListener('pointerdown', desbloquear, true);
+      document.removeEventListener('keydown', desbloquear, true);
+    };
+    document.addEventListener('pointerdown', desbloquear, true);
+    document.addEventListener('keydown', desbloquear, true);
+  }
+
+  // Botón del panel: prende/apaga y lo recuerda en este navegador
+  async alternarSonido(): Promise<void> {
+    const prender = this.estadoSonido() !== 'activo';
+    this.sonidoPrendido.set(prender);
+    try {
+      localStorage.setItem(SONIDO_KEY, prender ? 'on' : 'off');
+    } catch {
+      /* modo privado */
+    }
+    if (!prender) return;
+    this.prepararSonido();
+    await this.audio?.resume();
+    this.audioCorriendo.set(this.audio?.state === 'running');
+    this.sonar(); // prueba: que se escuche cómo suena
   }
 
   // "Ding-dong" corto generado en el momento (sin archivo de audio)
   private sonar(): void {
     const ctx = this.audio;
-    if (!ctx || ctx.state !== 'running') return;
+    if (!this.sonidoPrendido() || !ctx || ctx.state !== 'running') return;
     [880, 660].forEach((frecuencia, i) => {
       const inicio = ctx.currentTime + i * 0.18;
       const osc = ctx.createOscillator();
@@ -148,11 +226,30 @@ export class PedidosAdminService {
     this.actualizarLocal(data as Pedido);
   }
 
+  private marcarLlegada(id: string): void {
+    this.recienLlegados.update((s) => new Set(s).add(id));
+    setTimeout(() => {
+      this.recienLlegados.update((s) => {
+        const copia = new Set(s);
+        copia.delete(id);
+        return copia;
+      });
+    }, 4000);
+  }
+
   private actualizarLocal(p: Pedido): void {
     this.pedidos.update((lista) => {
       const i = lista.findIndex((x) => x.id === p.id);
       if (i === -1) return [p, ...lista].sort((a, b) => b.created_at.localeCompare(a.created_at));
       return lista.map((x, j) => (j === i ? p : x));
     });
+  }
+}
+
+function leerPreferencia(): boolean {
+  try {
+    return localStorage.getItem(SONIDO_KEY) !== 'off';
+  } catch {
+    return true;
   }
 }

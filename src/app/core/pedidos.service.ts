@@ -1,10 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
+import { aWebp, extensionDe } from './imagen';
 import type { LineaCarrito } from './carrito.service';
 import {
   ConsultaPedido,
   DatosCliente,
   PedidoCreado,
+  PagoEstado,
   PedidoPublico,
   terminado,
 } from './pedidos.models';
@@ -12,6 +14,7 @@ import {
 const EN_CURSO_KEY = 'bh_pedido_en_curso';
 const TIMEOUT_MS = 4000; // más de esto esperando la base: se pide por WhatsApp sin número
 const POLLING_MS = 20_000;
+const COMPROBANTE_MAX = 5 * 1024 * 1024; // límite del bucket "comprobantes"
 
 // El local apagó "Recibiendo pedidos" (crear_pedido lanza este error)
 export class LocalCerrado extends Error {}
@@ -62,6 +65,8 @@ export class PedidosService {
         p_tipo_entrega: datos.tipo_entrega,
         p_direccion: datos.tipo_entrega === 'envio' ? datos.direccion.trim() : null,
         p_aclaraciones: datos.aclaraciones.trim() || null,
+        p_medio_pago: datos.medio_pago,
+        p_paga_con: datos.medio_pago === 'efectivo' ? datos.paga_con : null,
         p_items: carrito.map((l) => ({
           producto_id: l.producto.id,
           cantidad: l.cantidad,
@@ -72,6 +77,45 @@ export class PedidosService {
     );
     this.guardarEnCurso({ codigo_publico: creado.codigo_publico, codigo: creado.codigo });
     return creado;
+  }
+
+  /**
+   * Sube el comprobante de una transferencia y lo asocia al pedido (queda "para revisar" en el panel).
+   * Las fotos se pasan a WebP liviano; los PDF van tal cual. El storage solo acepta subirlo
+   * a la carpeta de este pedido y la base verifica que el archivo exista antes de asociarlo.
+   */
+  async subirComprobante(codigoPublico: string, archivo: File): Promise<PagoEstado> {
+    const esPdf = archivo.type === 'application/pdf';
+    if (!esPdf && !archivo.type.startsWith('image/')) {
+      throw new Error('Subí una foto, una captura o un PDF del comprobante.');
+    }
+    const cuerpo: Blob = esPdf ? archivo : await aWebp(archivo, 1800);
+    if (cuerpo.size > COMPROBANTE_MAX) throw new Error('El archivo pesa más de 5 MB.');
+
+    const id = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    const ruta = `${codigoPublico}/${id}.${esPdf ? 'pdf' : extensionDe(cuerpo)}`;
+    const res = await fetch(`${environment.supabaseUrl}/storage/v1/object/comprobantes/${ruta}`, {
+      method: 'POST',
+      headers: {
+        apikey: environment.supabaseKey,
+        Authorization: `Bearer ${environment.supabaseKey}`,
+        'Content-Type': cuerpo.type || (esPdf ? 'application/pdf' : 'image/webp'),
+      },
+      body: cuerpo,
+    });
+    if (!res.ok) {
+      throw new Error(
+        res.status === 413
+          ? 'El archivo pesa más de 5 MB.'
+          : 'No se pudo subir el comprobante. Revisá tu conexión y probá de nuevo.',
+      );
+    }
+    const r = await rpc<{ pago_estado: PagoEstado }>(
+      'adjuntar_comprobante',
+      { p_codigo: codigoPublico, p_ruta: ruta },
+      15_000,
+    );
+    return r.pago_estado;
   }
 
   // Por código público (link de WhatsApp) o por número + últimos 4 del teléfono. null = no existe
@@ -159,5 +203,5 @@ export class PedidosService {
 // Link de seguimiento: siteUrl de environment, o el dominio actual si está vacío
 export function linkSeguimiento(codigoPublico: string): string {
   const base = environment.siteUrl || (typeof location !== 'undefined' ? location.origin : '');
-  return `${base}/pedido/${codigoPublico}`;
+  return `${base.replace(/\/+$/, '')}/pedido/${codigoPublico}`; // tolera siteUrl con "/" al final
 }

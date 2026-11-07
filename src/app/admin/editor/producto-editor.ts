@@ -2,7 +2,7 @@ import { Component, DestroyRef, computed, effect, inject, input, signal } from '
 import { Router, RouterLink } from '@angular/router';
 import { formatoPrecio } from '../../core/formato';
 import { AdminService, DatosProducto } from '../admin.service';
-import { aWebp, pesoLegible } from '../imagen';
+import { aWebp, pesoLegible } from '../../core/imagen';
 import { describirError } from '../errores';
 import { ConfirmarService } from '../confirmar/confirmar.service';
 

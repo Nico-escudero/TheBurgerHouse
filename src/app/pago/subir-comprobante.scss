@@ -1,0 +1,57 @@
+@use 'styles/variables' as *;
+
+:host {
+    display: grid;
+    gap: 6px;
+}
+
+.subir {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 20px;
+    border-radius: 99px;
+    background: $mostaza;
+    color: $tinta;
+    font: 700 17px $font-text;
+    cursor: pointer;
+    transition: filter .2s ease;
+
+    &:hover {
+        filter: brightness(1.06);
+    }
+
+    // El input cubre el botón: el foco de teclado se ve en el label
+    input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    &:focus-within {
+        outline: 3px solid $tinta;
+        outline-offset: 2px;
+    }
+
+    &--secundario {
+        min-height: 44px;
+        border: 2px solid $tinta;
+        background: transparent;
+        font-size: 16px;
+    }
+
+    &.subiendo {
+        cursor: progress;
+        opacity: .75;
+    }
+}
+
+.subir__error {
+    margin: 0;
+    font: 600 14px $font-text;
+    color: $eliminar;
+}

@@ -22,6 +22,8 @@ import {
   terminado,
 } from '../core/pedidos.models';
 import { PedidosService } from '../core/pedidos.service';
+import { DatosTransferencia } from '../pago/datos-transferencia';
+import { SubirComprobante } from '../pago/subir-comprobante';
 
 interface Paso {
   estado: EstadoPedido;
@@ -52,7 +54,7 @@ const MENSAJES: Record<EstadoPedido, { titulo: string; bajada: string }> = {
 // /pedido (buscar por número + teléfono) y /pedido/:codigo (link del WhatsApp)
 @Component({
   selector: 'app-seguimiento',
-  imports: [RouterLink],
+  imports: [RouterLink, DatosTransferencia, SubirComprobante],
   templateUrl: './seguimiento.html',
   styleUrl: './seguimiento.scss',
 })
@@ -80,8 +82,29 @@ export class Seguimiento {
 
   protected readonly mensaje = computed(() => {
     const p = this.pedido();
-    return p ? MENSAJES[p.estado] : null;
+    if (!p) return null;
+    // Transferencia sin confirmar: lo primero que tiene que hacer el cliente es pagar
+    if (p.estado === 'recibido' && p.pago_estado === 'pendiente') {
+      return {
+        titulo: 'Falta tu pago',
+        bajada: 'Transferí y subí el comprobante para que empecemos a preparar tu pedido.',
+      };
+    }
+    if (p.estado === 'recibido' && p.pago_estado === 'enviado') {
+      return {
+        titulo: 'Estamos revisando tu pago',
+        bajada: 'Apenas lo confirmemos, empezamos a preparar tu pedido.',
+      };
+    }
+    return MENSAJES[p.estado];
   });
+
+  protected readonly terminado = terminado;
+
+  // Comprobante subido: se refleja al instante (el polling lo confirma después)
+  protected alSubirComprobante(estado: PedidoPublico['pago_estado']): void {
+    this.pedido.update((p) => (p ? { ...p, pago_estado: estado } : p));
+  }
 
   protected readonly direccionLocal = computed(() => this.menu.config()['direccion'] ?? '');
 

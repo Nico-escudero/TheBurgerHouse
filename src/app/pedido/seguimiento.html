@@ -29,7 +29,8 @@
         } @else if (noEncontrado()) {
         <div class="tarjeta tarjeta--vacia">
             <h2>No encontramos ese pedido</h2>
-            <p>Revisá el número y los últimos 4 números del teléfono que usaste al pedir.</p>
+            <p>Revisá el número y los últimos 4 números del teléfono que usaste al pedir. Los pedidos
+                entregados se guardan 2 días.</p>
             @if (codigo()) {
             <a class="btn btn--negro" routerLink="/pedido">Buscar por número</a>
             } @else {
@@ -46,21 +47,62 @@
     <article class="tarjeta" [attr.data-estado]="p.estado" aria-labelledby="seg-numero-pedido">
         <header class="tarjeta__head">
             <p id="seg-numero-pedido" class="tarjeta__numero">{{ p.codigo }}</p>
-            <span class="chip" [attr.data-estado]="p.estado">{{ nombreEstado[p.estado] }}</span>
+            <!-- @for sobre [estado]: al cambiar el estado el chip se vuelve a crear y entra con animación -->
+            @for (e of [p.estado]; track e) {
+            <span class="chip" [attr.data-estado]="e">{{ nombreEstado[e] }}</span>
+            }
         </header>
         <p class="tarjeta__meta">Hecho a las {{ hora(p.created_at) }} · {{ p.tipo_entrega === 'envio' ? 'Envío' : 'Retiro'
             }}</p>
 
+        @for (e of [p.estado]; track e) {
+        <div class="tarjeta__mensaje">
         <h2 class="tarjeta__titulo">{{ mensaje()?.titulo }}</h2>
         <p class="tarjeta__bajada">
             {{ mensaje()?.bajada }}
             @if (p.estado === 'listo' && direccionLocal()) { ({{ direccionLocal() }}) }
         </p>
+        </div>
+        }
+
+        <!-- Pago -->
+        @if (!terminado(p.estado)) {
+        @if (p.medio_pago === 'transferencia') {
+        <section class="pago" [attr.data-pago]="p.pago_estado" aria-label="Pago por transferencia">
+            @switch (p.pago_estado) {
+            @case ('pendiente') {
+            <app-datos-transferencia [total]="p.total" />
+            <app-subir-comprobante [codigoPublico]="p.codigo_publico" (subido)="alSubirComprobante($event)" />
+            }
+            @case ('enviado') {
+            <p class="pago__estado">
+                <span class="pago__punto" aria-hidden="true"></span>
+                Comprobante enviado · lo estamos revisando
+            </p>
+            <app-subir-comprobante [codigoPublico]="p.codigo_publico" texto="Subir otro comprobante" [secundario]="true"
+                (subido)="alSubirComprobante($event)" />
+            }
+            @case ('confirmado') {
+            <p class="pago__estado pago__estado--ok">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 12l5 5L20 7" />
+                </svg>
+                Pago por transferencia confirmado
+            </p>
+            }
+            }
+        </section>
+        } @else {
+        <p class="pago-efectivo">Pagás en efectivo {{ p.tipo_entrega === 'envio' ? 'al recibirlo' : 'al retirarlo' }}.</p>
+        }
+        }
 
         <!-- Stepper: horizontal en desktop, vertical en mobile -->
         <ol class="pasos" aria-label="Estado del pedido">
-            @for (paso of pasos(); track paso.estado) {
-            <li class="paso" [class]="'paso paso--' + paso.fase" [attr.data-estado]="paso.estado"
+            <!-- track con la fase: el paso que cambia se vuelve a crear y anima su llegada -->
+            @for (paso of pasos(); track paso.estado + paso.fase) {
+            <li class="paso" [class]="'paso paso--' + paso.fase" [style.--i]="$index" [attr.data-estado]="paso.estado"
                 [attr.aria-current]="paso.fase === 'actual' ? 'step' : null">
                 <span class="paso__punto" aria-hidden="true">
                     @if (paso.fase === 'hecho') {

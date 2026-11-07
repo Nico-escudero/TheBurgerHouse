@@ -20,9 +20,79 @@
     gap: 16px;
 }
 
-.sonido.on {
-    border-color: $borde;
+// ===== Sonido: activado (verde, ondas que laten), bloqueado (mostaza que titila), apagado (gris tachado) =====
+.sonido {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 18px 0 14px;
+    border: 2px solid $borde;
+    border-radius: 99px;
+    background: transparent;
     color: $gris-texto;
+    font: 700 16px $font-text;
+    cursor: pointer;
+    transition: background-color .25s $ease, border-color .25s $ease, color .25s $ease;
+
+    &:focus-visible {
+        outline: 2px solid $mostaza;
+        outline-offset: 2px;
+    }
+
+    &[data-sonido='activo'] {
+        border-color: $estado-entregado;
+        background: rgba($estado-entregado, .14);
+        color: $estado-entregado;
+
+        .onda {
+            animation: onda 1.6s ease-in-out infinite;
+        }
+
+        .onda--2 {
+            animation-delay: .25s;
+        }
+    }
+
+    &[data-sonido='bloqueado'] {
+        border-color: $mostaza;
+        background: rgba($mostaza, .12);
+        color: $mostaza;
+        animation: titilar 1.4s ease-in-out infinite;
+    }
+}
+
+.aviso-sonido {
+    margin: 0 0 16px;
+    padding: 12px 16px;
+    border: 1.5px solid $mostaza;
+    border-radius: 14px;
+    background: rgba($mostaza, .12);
+    color: $blanco;
+    font: 500 16px $font-text;
+
+    strong {
+        color: $mostaza;
+    }
+}
+
+@keyframes onda {
+    50% {
+        opacity: .25;
+    }
+}
+
+@keyframes titilar {
+    50% {
+        background: rgba($mostaza, .28);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sonido,
+    .sonido .onda {
+        animation: none !important;
+    }
 }
 
 .recibiendo {
@@ -364,4 +434,142 @@
     border-radius: 50%;
     background: $whatsapp;
     color: #ffffff;
+}
+
+// ===== Chip de pago =====
+.pago {
+    display: inline-block;
+    padding: 3px 10px;
+    border: 1.5px solid $borde;
+    border-radius: 99px;
+    color: $gris-texto;
+    font: 700 13px $font-text;
+    white-space: nowrap;
+
+    // Efectivo: no hay nada que revisar, solo texto
+    &[data-pago='no_aplica'] {
+        padding: 0;
+        border: 0;
+        font-weight: 600;
+    }
+
+    &[data-pago='enviado'] {
+        border-color: $mostaza;
+        background: $mostaza;
+        color: $tinta;
+        animation: adm-pop .45s cubic-bezier(.34, 1.56, .64, 1) backwards;
+    }
+
+    &[data-pago='confirmado'] {
+        border-color: $estado-entregado;
+        color: $estado-entregado;
+    }
+}
+
+.card__pago {
+    margin: 0;
+}
+
+.card__pasar--revisar {
+    background: $mostaza;
+    border-color: $mostaza;
+    color: $tinta;
+}
+
+// ===== Animaciones =====
+.resumen li,
+.tabla tbody tr,
+.card {
+    animation: adm-subir .4s cubic-bezier(.32, .72, 0, 1) backwards;
+}
+
+.resumen li:nth-child(2) { animation-delay: .04s; }
+.resumen li:nth-child(3) { animation-delay: .08s; }
+.resumen li:nth-child(4) { animation-delay: .12s; }
+.resumen li:nth-child(5) { animation-delay: .16s; }
+
+// Número del resumen o chip que cambió: salta
+.resumen strong,
+.chip {
+    animation: adm-pop .45s cubic-bezier(.34, 1.56, .64, 1) backwards;
+}
+
+.tabs button,
+.tabs button span,
+.card__pasar {
+    transition: background-color .25s $ease, border-color .25s $ease, color .25s $ease, transform .15s $ease;
+}
+
+.card__pasar:active:not(:disabled) {
+    transform: scale(.97);
+}
+
+// Pedido recién llegado por Realtime: entra desde arriba con un brillo mostaza que se apaga
+.tabla tbody tr.llego {
+    animation: adm-llega .5s cubic-bezier(.32, .72, 0, 1) backwards;
+
+    td {
+        animation: adm-brillo 3.5s ease-out;
+    }
+}
+
+.card.llego {
+    animation:
+        adm-llega .5s cubic-bezier(.32, .72, 0, 1) backwards,
+        adm-brillo-card 3.5s ease-out;
+}
+
+@keyframes adm-subir {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+@keyframes adm-pop {
+    from {
+        opacity: 0;
+        transform: scale(.6);
+    }
+}
+
+@keyframes adm-llega {
+    from {
+        opacity: 0;
+        transform: translateY(-16px);
+    }
+}
+
+@keyframes adm-brillo {
+    from {
+        background-color: rgba($mostaza, .28);
+    }
+}
+
+@keyframes adm-brillo-card {
+    from {
+        box-shadow: 0 0 0 3px $mostaza, 0 0 24px rgba($mostaza, .45);
+    }
+}
+
+@keyframes adm-fundido {
+    from {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .resumen li,
+    .tabla tbody tr,
+    .card,
+    .resumen strong,
+    .chip,
+    .tabla tbody tr.llego {
+        animation: adm-fundido .2s ease-out backwards;
+    }
+
+    // El brillo de "recién llegado" se mantiene (no es movimiento): avisa qué pedido es nuevo
+    .card.llego {
+        animation: adm-brillo-card 3.5s ease-out;
+    }
 }

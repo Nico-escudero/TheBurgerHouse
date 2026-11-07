@@ -1,0 +1,93 @@
+@use 'styles/variables' as *;
+
+.transf {
+    padding: 14px 16px;
+    border: 1.5px dashed $tinta;
+    border-radius: 14px;
+    background: #fafafa;
+    color: $tinta;
+    text-align: left;
+}
+
+.transf__monto {
+    margin: 0 0 8px;
+    font: 600 16px $font-text;
+
+    strong {
+        font: 900 20px $font-display;
+    }
+}
+
+.transf__datos {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+}
+
+// Etiqueta arriba del valor: el alias o el CBU entran enteros aunque la pantalla sea angosta
+.transf__fila {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        'etiqueta boton'
+        'valor boton';
+    align-items: center;
+    column-gap: 10px;
+
+    dt {
+        grid-area: etiqueta;
+    }
+
+    dd {
+        grid-area: valor;
+    }
+
+    .transf__copiar {
+        grid-area: boton;
+    }
+
+    dt {
+        font: 700 13px $font-text;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        color: #666666;
+    }
+
+    dd {
+        margin: 0;
+        font: 800 16px $font-display;
+        overflow-wrap: anywhere;
+    }
+}
+
+.transf__copiar {
+    min-width: 44px;
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1.5px solid $tinta;
+    border-radius: 99px;
+    background: #ffffff;
+    color: $tinta;
+    font: 700 14px $font-text;
+    cursor: pointer;
+    transition: background-color .2s ease, color .2s ease;
+
+    &:hover {
+        background: $tinta;
+        color: $mostaza;
+    }
+
+    &:focus-visible {
+        outline: 3px solid $mostaza;
+        outline-offset: 2px;
+    }
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}

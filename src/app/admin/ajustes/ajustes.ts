@@ -13,6 +13,10 @@ export class Ajustes {
 
   protected readonly whatsapp = signal('');
   protected readonly direccion = signal('');
+  protected readonly alias = signal('');
+  protected readonly cbu = signal('');
+  protected readonly titular = signal('');
+  protected readonly banco = signal('');
   protected readonly guardando = signal(false);
   protected readonly mensaje = signal<{ ok: boolean; texto: string } | null>(null);
 
@@ -21,6 +25,10 @@ export class Ajustes {
       const cfg = this.admin.config();
       this.whatsapp.set(cfg['whatsapp'] ?? '');
       this.direccion.set(cfg['direccion'] ?? '');
+      this.alias.set(cfg['alias_transferencia'] ?? '');
+      this.cbu.set(cfg['cbu_transferencia'] ?? '');
+      this.titular.set(cfg['titular_transferencia'] ?? '');
+      this.banco.set(cfg['banco_transferencia'] ?? '');
     });
   }
 
@@ -38,7 +46,14 @@ export class Ajustes {
     this.guardando.set(true);
     this.mensaje.set(null);
     try {
-      await this.admin.guardarConfig({ whatsapp: numero, direccion: this.direccion().trim() });
+      await this.admin.guardarConfig({
+        whatsapp: numero,
+        direccion: this.direccion().trim(),
+        alias_transferencia: this.alias().trim(),
+        cbu_transferencia: this.cbu().replace(/\s/g, ''),
+        titular_transferencia: this.titular().trim(),
+        banco_transferencia: this.banco().trim(),
+      });
       this.mensaje.set({ ok: true, texto: 'Guardado.' });
     } catch (e) {
       console.error(e);

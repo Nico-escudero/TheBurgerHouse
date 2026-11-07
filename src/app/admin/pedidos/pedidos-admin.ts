@@ -4,7 +4,9 @@ import {
   EstadoPedido,
   NOMBRE_ESTADO,
   Pedido,
+  NOMBRE_PAGO,
   codigoDe,
+  esperaPago,
   hora,
   siguienteEstado,
   terminado,
@@ -53,6 +55,8 @@ export class PedidosAdmin {
   protected readonly precio = formatoPrecio;
   protected readonly hora = hora;
   protected readonly codigo = codigoDe;
+  protected readonly nombrePago = NOMBRE_PAGO;
+  protected readonly esperaPago = esperaPago;
   protected readonly nombreEstado = NOMBRE_ESTADO;
   protected readonly siguiente = siguienteEstado;
   protected readonly linkCliente = linkCliente;
@@ -135,6 +139,8 @@ export class PedidosAdmin {
     evento.stopPropagation();
     const sig = siguienteEstado(p);
     if (!sig || this.ocupado()) return;
+    // Transferencia sin confirmar: hay que mirar el comprobante en el detalle
+    if (esperaPago(p)) return this.seleccionado.set(p.id);
     this.ocupado.set(p.id);
     this.error.set(null);
     try {

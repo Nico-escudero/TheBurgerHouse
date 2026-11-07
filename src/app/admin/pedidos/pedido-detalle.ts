@@ -14,7 +14,9 @@ import {
   EstadoPedido,
   NOMBRE_ESTADO,
   Pedido,
+  NOMBRE_PAGO,
   codigoDe,
+  esperaPago,
   flujoDe,
   hora,
 } from '../../core/pedidos.models';
@@ -47,6 +49,25 @@ export class PedidoDetalle {
   protected readonly codigo = codigoDe;
   protected readonly nombreEstado = NOMBRE_ESTADO;
   protected readonly linkCliente = linkCliente;
+  protected readonly nombrePago = NOMBRE_PAGO;
+  protected readonly esperaPago = esperaPago;
+
+  // Link temporal del comprobante (bucket privado) y si es imagen o PDF
+  protected readonly comprobanteUrl = signal<string | null>(null);
+  protected readonly comprobanteEsPdf = computed(
+    () => this.pedido().comprobante_path?.endsWith('.pdf') ?? false,
+  );
+
+  // Vuelto para el repartidor
+  protected readonly vuelto = computed(() => {
+    const p = this.pedido();
+    return p.paga_con && p.paga_con > p.total ? p.paga_con - p.total : null;
+  });
+
+  // Sin pago confirmado no se puede avanzar (también lo bloquea la base)
+  protected bloqueado(e: EstadoPedido): boolean {
+    return esperaPago(this.pedido()) && e !== 'recibido' && e !== 'cancelado';
+  }
 
   protected readonly historial = signal<CambioEstado[]>([]);
   protected readonly horaInput = signal('');
@@ -66,6 +87,11 @@ export class PedidoDetalle {
       const p = this.pedido();
       const clave = p.id + p.estado;
       untracked(() => this.cargarHistorial(p.id, clave));
+    });
+    // Comprobante: se pide un link nuevo cada vez que cambia el archivo
+    effect(() => {
+      const ruta = this.pedido().comprobante_path;
+      untracked(() => this.cargarComprobante(ruta));
     });
     // Hora estimada del pedido en el campo HH:MM
     effect(() => {
@@ -106,6 +132,35 @@ export class PedidoDetalle {
       return;
     }
     await this.guardar(() => this.svc.cambiarEstado(p.id, estado));
+  }
+
+  private async cargarComprobante(ruta: string | null): Promise<void> {
+    this.comprobanteUrl.set(null);
+    if (!ruta) return;
+    try {
+      const url = await this.svc.urlComprobante(ruta);
+      if (this.pedido().comprobante_path === ruta) this.comprobanteUrl.set(url);
+    } catch (e) {
+      console.error('No se pudo abrir el comprobante', e);
+      this.error.set('No se pudo abrir el comprobante. ' + describirError(e));
+    }
+  }
+
+  protected async confirmarPago(preparar: boolean): Promise<void> {
+    await this.guardar(() => this.svc.confirmarPago(this.pedido().id, preparar));
+  }
+
+  protected async rechazarComprobante(): Promise<void> {
+    const p = this.pedido();
+    const ok = await this.confirmar.preguntar({
+      titulo: '¿Rechazar el comprobante?',
+      mensaje:
+        'El pedido vuelve a "Esperando comprobante" y el cliente puede subir otro desde su página.',
+      detalle: 'Conviene avisarle por WhatsApp qué pasó.',
+      aceptar: 'Rechazar',
+      peligro: true,
+    });
+    if (ok) await this.guardar(() => this.svc.rechazarComprobante(p.id));
   }
 
   protected valor(evento: Event): string {

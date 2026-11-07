@@ -3,6 +3,7 @@ import {
   DestroyRef,
   ElementRef,
   afterNextRender,
+  computed,
   effect,
   inject,
   viewChild,
@@ -26,6 +27,14 @@ export class AdminLayout {
   private readonly router = inject(Router);
   // Pedidos en vivo para todo el panel: el contador del tab se actualiza desde cualquier sección
   protected readonly pedidos = inject(PedidosAdminService);
+  protected readonly textoSonido = computed(
+    () =>
+      ({
+        activo: 'Sonido de pedidos activado (tocá para apagar)',
+        bloqueado: 'Sonido de pedidos: hacé clic en cualquier parte para activarlo',
+        apagado: 'Sonido de pedidos apagado (tocá para prender)',
+      })[this.pedidos.estadoSonido()],
+  );
 
   private readonly tabs = viewChild.required<ElementRef<HTMLElement>>('tabs');
   private readonly pastilla = viewChild.required<ElementRef<HTMLElement>>('pastilla');

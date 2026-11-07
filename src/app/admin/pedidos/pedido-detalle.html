@@ -5,7 +5,9 @@
             <p class="detalle__meta">{{ hora(pedido().created_at) }} · {{ pedido().tipo_entrega === 'envio' ? 'Envío' :
                 'Retiro' }}</p>
         </div>
-        <span class="chip" [attr.data-estado]="pedido().estado">{{ nombreEstado[pedido().estado] }}</span>
+        @for (e of [pedido().estado]; track e) {
+        <span class="chip" [attr.data-estado]="e">{{ nombreEstado[e] }}</span>
+        }
         <button type="button" class="adm-icono" aria-label="Cerrar detalle" (click)="cerrar.emit()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" aria-hidden="true">
@@ -38,16 +40,67 @@
             <li class="items__total"><span>Total</span><span>{{ precio(pedido().total) }}</span></li>
         </ul>
 
+        <!-- Pago -->
+        <h3 class="adm-panel__titulo">Pago</h3>
+        @if (pedido().medio_pago === 'efectivo') {
+        <p class="pago-efectivo">
+            Efectivo
+            @if (pedido().paga_con) {
+            · paga con <strong>{{ precio(pedido().paga_con!) }}</strong>
+            @if (vuelto()) { · vuelto <strong>{{ precio(vuelto()!) }}</strong> }
+            }
+        </p>
+        } @else {
+        <div class="pago" [attr.data-pago]="pedido().pago_estado">
+            <p class="pago__estado">Transferencia · <strong>{{ nombrePago[pedido().pago_estado] }}</strong></p>
+
+            @if (pedido().comprobante_path) {
+            @if (comprobanteUrl(); as url) {
+            <a class="pago__comprobante" [href]="url" target="_blank" rel="noopener">
+                @if (comprobanteEsPdf()) {
+                <span class="pago__pdf">Ver comprobante (PDF) ↗</span>
+                } @else {
+                <img [src]="url" alt="Comprobante de transferencia" loading="lazy">
+                <span>Abrir en grande ↗</span>
+                }
+            </a>
+            } @else {
+            <p class="pago__cargando">Cargando comprobante…</p>
+            }
+            } @else if (pedido().pago_estado === 'pendiente') {
+            <p class="pago__nota">Todavía no subió el comprobante.</p>
+            }
+
+            @if (pedido().pago_estado !== 'confirmado') {
+            <div class="pago__acciones">
+                @if (pedido().estado === 'recibido') {
+                <button type="button" class="adm-btn" [disabled]="ocupado()" (click)="confirmarPago(true)">
+                    Confirmar pago y pasar a preparación</button>
+                }
+                <button type="button" class="adm-btn adm-btn--borde" [disabled]="ocupado()" (click)="confirmarPago(false)">
+                    {{ pedido().comprobante_path ? 'Solo confirmar pago' : 'Confirmar pago (lo vi en el banco)' }}</button>
+                @if (pedido().comprobante_path) {
+                <button type="button" class="adm-btn adm-btn--peligro" [disabled]="ocupado()"
+                    (click)="rechazarComprobante()">Rechazar comprobante</button>
+                }
+            </div>
+            }
+        </div>
+        }
+
         <!-- Estado -->
         <h3 class="adm-panel__titulo">Estado</h3>
         <div class="estados" role="group" aria-label="Cambiar estado">
             @for (e of botones(); track e) {
             <button type="button" class="estado" [attr.data-estado]="e" [class.actual]="pedido().estado === e"
-                [attr.aria-pressed]="pedido().estado === e" [disabled]="ocupado()" (click)="cambiar(e)">
+                [attr.aria-pressed]="pedido().estado === e" [disabled]="ocupado() || bloqueado(e)" (click)="cambiar(e)">
                 {{ nombreEstado[e] }}
             </button>
             }
         </div>
+        @if (esperaPago(pedido()) && pedido().estado === 'recibido') {
+        <p class="pago__nota">Confirmá el pago para poder avanzar el pedido.</p>
+        }
 
         <!-- Hora estimada -->
         <form class="hora" (submit)="guardarHora($event)">
@@ -71,7 +124,7 @@
         <h3 class="adm-panel__titulo">Historial</h3>
         <ol class="historial">
             @for (h of historial(); track h.at) {
-            <li [attr.data-estado]="h.estado"><span>{{ nombreEstado[h.estado] }}</span><time>{{ hora(h.at) }}</time></li>
+            <li [attr.data-estado]="h.estado" [style.--i]="$index"><span>{{ nombreEstado[h.estado] }}</span><time>{{ hora(h.at) }}</time></li>
             } @empty {
             <li><span>Recibido</span><time>{{ hora(pedido().created_at) }}</time></li>
             }

@@ -217,3 +217,67 @@
     text-align: center;
     vertical-align: 1px;
 }
+
+// El contador salta cada vez que cambia (se vuelve a crear con @for en el template)
+.adm-nav__nuevos {
+    animation: adm-contador .5s cubic-bezier(.34, 1.56, .64, 1) backwards;
+}
+
+@keyframes adm-contador {
+    from {
+        transform: scale(.3);
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .adm-nav__nuevos {
+        animation: none;
+    }
+}
+
+// Indicador de sonido en la barra: verde activado · mostaza que late si falta el primer clic · gris apagado
+.adm-nav__sonido {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 2px solid #cfcfcf;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #8a8a8a;
+    cursor: pointer;
+    transition: background-color .25s $ease, border-color .25s $ease, color .25s $ease;
+
+    &[data-sonido='activo'] {
+        border-color: #1d8a52;
+        background: #1d8a52;
+        color: #ffffff;
+    }
+
+    &[data-sonido='bloqueado'] {
+        border-color: $tinta;
+        background: $mostaza;
+        color: $tinta;
+        animation: adm-sonido-late 1.4s ease-in-out infinite;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $tinta;
+        outline-offset: 2px;
+    }
+}
+
+@keyframes adm-sonido-late {
+    50% {
+        box-shadow: 0 0 0 6px rgba($mostaza, .45);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .adm-nav__sonido {
+        animation: none !important;
+    }
+}

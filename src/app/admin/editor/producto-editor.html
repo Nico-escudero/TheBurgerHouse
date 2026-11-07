@@ -100,9 +100,9 @@
                             (change)="elegirFoto($event)">
                     </label>
                     }
-                    <small>JPG, PNG o WebP. Se convierte sola a WebP (máx. 1200 px). Ideal horizontal 4:3.</small>
+                    <small>JPG, PNG o WebP. Se optimiza sola (máx. 1200 px). Ideal horizontal 4:3.</small>
                     @if (fotoNueva(); as f) {
-                    <small class="foto__ok">✓ Optimizada: {{ peso(pesoOriginal() ?? 0) }} → {{ peso(f.size) }} WebP</small>
+                    <small class="foto__ok">✓ Optimizada: {{ peso(pesoOriginal() ?? 0) }} → {{ peso(f.size) }} {{ f.type === 'image/jpeg' ? 'JPG' : 'WebP' }}</small>
                     }
                     @if (errorFoto()) { <p class="adm-error">{{ errorFoto() }}</p> }
                     @if (fotoUrl()) {

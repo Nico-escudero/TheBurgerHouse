@@ -3,6 +3,9 @@
 export type EstadoPedido =
   'recibido' | 'preparacion' | 'listo' | 'camino' | 'entregado' | 'cancelado';
 export type TipoEntrega = 'retiro' | 'envio';
+export type MedioPago = 'efectivo' | 'transferencia';
+// no_aplica: efectivo · pendiente: falta comprobante · enviado: para revisar · confirmado: el local lo verificó
+export type PagoEstado = 'no_aplica' | 'pendiente' | 'enviado' | 'confirmado';
 
 // Ítem guardado en pedidos.items (lo arma la base con los precios reales)
 export interface ItemPedido {
@@ -30,6 +33,10 @@ export interface Pedido {
   hora_estimada: string | null;
   created_at: string;
   updated_at: string;
+  medio_pago: MedioPago;
+  pago_estado: PagoEstado;
+  comprobante_path: string | null;
+  paga_con: number | null;
 }
 
 export interface CambioEstado {
@@ -48,6 +55,9 @@ export interface PedidoPublico {
   created_at: string;
   items: { nombre: string; cantidad: number; subtotal: number }[];
   historial: CambioEstado[];
+  codigo_publico: string;
+  medio_pago: MedioPago;
+  pago_estado: PagoEstado;
 }
 
 // Lo que devuelve crear_pedido
@@ -56,6 +66,7 @@ export interface PedidoCreado {
   codigo: string;
   codigo_publico: string;
   total: number;
+  medio_pago: MedioPago;
 }
 
 export interface DatosCliente {
@@ -64,6 +75,8 @@ export interface DatosCliente {
   tipo_entrega: TipoEntrega;
   direccion: string;
   aclaraciones: string;
+  medio_pago: MedioPago;
+  paga_con: number | null; // efectivo: con qué billete paga (vuelto)
 }
 
 export type ConsultaPedido = { codigo_publico: string } | { numero: number; tel4: string };
@@ -120,3 +133,15 @@ export function hora(iso: string | null | undefined): string {
     hour12: false,
   });
 }
+
+// Transferencia sin pago confirmado: el local no la puede pasar a preparación (también lo valida la base)
+export function esperaPago(p: { medio_pago: MedioPago; pago_estado: PagoEstado }): boolean {
+  return p.medio_pago === 'transferencia' && p.pago_estado !== 'confirmado';
+}
+
+export const NOMBRE_PAGO: Record<PagoEstado, string> = {
+  no_aplica: 'Efectivo',
+  pendiente: 'Esperando comprobante',
+  enviado: 'Comprobante para revisar',
+  confirmado: 'Pagado',
+};
