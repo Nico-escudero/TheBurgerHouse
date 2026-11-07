@@ -15,7 +15,7 @@ $gris-texto: #BDBDBD; // descripciones y etiquetas
 $gris-claro: #D8D8D8; // bajadas del hero
 
 // ===== Estados =====
-$whatsapp: #1FA855; // botón de pedido
+$whatsapp: #148A43; // botón de pedido (texto blanco)
 $badge: #E0382C; // contador del carrito
 $ambar: #A56F00; // precio extra sobre blanco
 $eliminar: #B3261E; // ícono de borrar ítem
@@ -24,3 +24,29 @@ $eliminar: #B3261E; // ícono de borrar ítem
 $grilla: rgba(255, 255, 255, .05); // líneas del fondo (30 × 30 px)
 $ghost: rgba(255, 255, 255, .06); // texto gigante "Meat and Cheese"
 $ease: cubic-bezier(.32, .72, 0, 1);
+
+// ===== Estados de pedido (fondo, texto) =====
+$estado-recibido: #F2B83B; // nuevo
+$estado-preparacion: #FF8A3D;
+$estado-listo: #6CB4FF; // listo para retirar / en camino
+$estado-entregado: #4CD38A;
+$estado-cancelado: #3A3A3A;
+
+$estados-pedido: (
+    recibido: ($estado-recibido, $tinta),
+    preparacion: ($estado-preparacion, $tinta),
+    listo: ($estado-listo, $tinta),
+    camino: ($estado-listo, $tinta),
+    entregado: ($estado-entregado, $tinta),
+    cancelado: ($estado-cancelado, #ffffff),
+);
+
+// Define --estado y --estado-texto según [data-estado="..."] del elemento
+@mixin colores-estado {
+    @each $nombre, $c in $estados-pedido {
+        &[data-estado='#{$nombre}'] {
+            --estado: #{nth($c, 1)};
+            --estado-texto: #{nth($c, 2)};
+        }
+    }
+}

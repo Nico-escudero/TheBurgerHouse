@@ -1,0 +1,130 @@
+<div class="cabecera">
+    <div>
+        <h1 class="adm-titulo">Pedidos</h1>
+        <p class="adm-sub">{{ hoy }}</p>
+    </div>
+    <div class="cabecera__lado">
+        <button type="button" class="adm-btn adm-btn--borde sonido" [class.on]="svc.sonidoActivo()"
+            [attr.aria-pressed]="svc.sonidoActivo()" (click)="svc.activarSonido()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12" />
+            </svg>
+            {{ svc.sonidoActivo() ? 'Sonido activado' : 'Activar sonido' }}
+        </button>
+        <label class="adm-switch recibiendo" [class.apagado]="!svc.recibiendo()">
+            <input type="checkbox" [checked]="svc.recibiendo()" [disabled]="guardandoSwitch()"
+                (change)="cambiarRecibiendo($event)">
+            <span>Recibiendo pedidos
+                <small>{{ svc.recibiendo() ? 'El sitio acepta pedidos' : 'El sitio muestra "no tomamos pedidos"' }}</small>
+            </span>
+        </label>
+    </div>
+</div>
+
+@if (error()) {
+<p class="adm-error aviso" role="alert">{{ error() }}</p>
+}
+@if (svc.error()) {
+<p class="adm-error aviso" role="alert">No se pudieron cargar los pedidos. {{ describirError(svc.error()) }}
+    <button type="button" class="adm-btn adm-btn--borde" (click)="svc.listarPedidosHoy()">Reintentar</button>
+</p>
+}
+
+<!-- ===== Resumen del día ===== -->
+<ul class="resumen" aria-label="Resumen del día">
+    <li data-estado="recibido"><span>Nuevos</span><strong>{{ resumen().nuevos }}</strong></li>
+    <li data-estado="preparacion"><span>En preparación</span><strong>{{ resumen().preparacion }}</strong></li>
+    <li data-estado="camino"><span>Listos / en camino</span><strong>{{ resumen().listos }}</strong></li>
+    <li data-estado="entregado"><span>Entregados</span><strong>{{ resumen().entregados }}</strong></li>
+    <li class="resumen__total"><span>Vendido hoy</span><strong>{{ precio(resumen().vendido) }}</strong></li>
+</ul>
+
+<!-- ===== Filtros ===== -->
+<div class="tabs" role="group" aria-label="Filtrar pedidos">
+    @for (t of tabs(); track t.id) {
+    <button type="button" [class.activo]="filtro() === t.id" [attr.aria-pressed]="filtro() === t.id"
+        (click)="elegirFiltro(t.id)">
+        {{ t.nombre }} <span>{{ contadores()[t.id] }}</span>
+    </button>
+    }
+</div>
+
+<div class="zona" [class.con-detalle]="pedidoAbierto()">
+    <!-- ===== Lista ===== -->
+    <section aria-label="Lista de pedidos">
+        @if (svc.cargando() && !svc.pedidos().length) {
+        <p class="vacio">Cargando pedidos…</p>
+        } @else if (!lista().length) {
+        <p class="vacio">No hay pedidos acá por ahora.</p>
+        } @else if (!esMobile()) {
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Hora</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Entrega</th>
+                    <th scope="col" class="num">Total</th>
+                    <th scope="col">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (p of lista(); track p.id) {
+                <tr [class.sel]="seleccionado() === p.id" [attr.data-estado]="p.estado" (click)="seleccionado.set(p.id)">
+                    <td>
+                        <button type="button" class="tabla__abrir" [attr.aria-label]="'Ver pedido ' + codigo(p.numero)"
+                            (click)="seleccionado.set(p.id)">{{ codigo(p.numero) }}</button>
+                    </td>
+                    <td>{{ hora(p.created_at) }}</td>
+                    <td><strong>{{ p.nombre }}</strong> <small>{{ cantidadProductos(p) }} prod.</small></td>
+                    <td>{{ p.tipo_entrega === 'envio' ? 'Envío' : 'Retiro' }}</td>
+                    <td class="num precio">{{ precio(p.total) }}</td>
+                    <td><span class="chip" [attr.data-estado]="p.estado">{{ nombreEstado[p.estado] }}</span></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        } @else {
+        <ul class="cards">
+            @for (p of lista(); track p.id) {
+            <li class="card" [attr.data-estado]="p.estado">
+                <button type="button" class="card__abrir" (click)="seleccionado.set(p.id)"
+                    [attr.aria-label]="'Ver detalle del pedido ' + codigo(p.numero)"></button>
+                <div class="card__fila">
+                    <strong class="card__num">{{ codigo(p.numero) }}</strong>
+                    <span class="card__hora">{{ hora(p.created_at) }}</span>
+                    <span class="chip" [attr.data-estado]="p.estado">{{ nombreEstado[p.estado] }}</span>
+                </div>
+                <div class="card__fila">
+                    <span>{{ p.nombre }} · {{ p.tipo_entrega === 'envio' ? 'Envío' : 'Retiro' }}</span>
+                    <strong class="precio">{{ precio(p.total) }}</strong>
+                </div>
+                <p class="card__items">{{ resumenProductos(p) }}</p>
+                @if (p.aclaraciones) {
+                <p class="card__aclara">{{ p.aclaraciones }}</p>
+                }
+                <div class="card__acciones">
+                    @if (siguiente(p); as sig) {
+                    <button type="button" class="adm-btn card__pasar" [disabled]="ocupado() === p.id"
+                        (click)="avanzar(p, $event)">Pasar a: {{ nombreEstado[sig] }}</button>
+                    }
+                    <a class="wa" [href]="linkCliente(p)" target="_blank" rel="noopener"
+                        [attr.aria-label]="'Escribirle por WhatsApp a ' + p.nombre">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 7.8 19.4z" />
+                        </svg>
+                    </a>
+                </div>
+            </li>
+            }
+        </ul>
+        }
+    </section>
+
+    <!-- ===== Detalle ===== -->
+    @if (pedidoAbierto(); as p) {
+    <app-pedido-detalle [pedido]="p" (cerrar)="seleccionado.set(null)" />
+    }
+</div>

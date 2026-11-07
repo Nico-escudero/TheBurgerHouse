@@ -8,6 +8,12 @@
             <!-- Pastilla mostaza que se desliza hasta el tab activo -->
             <span class="adm-nav__pastilla" #pastilla aria-hidden="true"></span>
             <a routerLink="/admin/productos" routerLinkActive="activo" ariaCurrentWhenActive="page">Productos</a>
+            <a routerLink="/admin/pedidos" routerLinkActive="activo" ariaCurrentWhenActive="page">
+                Pedidos
+                @if (pedidos.nuevos() > 0) {
+                <span class="adm-nav__nuevos" [attr.aria-label]="pedidos.nuevos() + ' nuevos'">{{ pedidos.nuevos() }}</span>
+                }
+            </a>
             <a routerLink="/admin/salsas" routerLinkActive="activo" ariaCurrentWhenActive="page">Salsas</a>
             <a routerLink="/admin/ajustes" routerLinkActive="activo" ariaCurrentWhenActive="page">Ajustes</a>
         </nav>

@@ -7,7 +7,9 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/admin", "destination": "/index.csr.html" },
-    { "source": "/admin/:path*", "destination": "/index.csr.html" }
+    { "source": "/admin/:path*", "destination": "/index.csr.html" },
+    { "source": "/pedido", "destination": "/index.csr.html" },
+    { "source": "/pedido/:path*", "destination": "/index.csr.html" }
   ],
   "headers": [
     {
@@ -35,6 +37,10 @@
     },
     {
       "source": "/admin(.*)",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/pedido(.*)",
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     }
   ]

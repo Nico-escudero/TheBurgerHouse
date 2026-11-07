@@ -1,0 +1,66 @@
+@use 'styles/variables' as *;
+
+.franja {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 8px 0 16px;
+    background: $mostaza;
+    color: $tinta;
+}
+
+.franja__link {
+    flex: 1;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0 6px;
+    color: $tinta;
+    font: 600 16px $font-text;
+    text-align: center;
+    text-decoration: none;
+
+    strong {
+        font: 900 16px $font-display;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $tinta;
+        outline-offset: -2px;
+    }
+}
+
+.franja__cerrar {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: $tinta;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(0, 0, 0, .08);
+    }
+}
+
+// Pantallas chicas: "En curso: BH-0427 · Ver estado" en una sola línea
+@media (max-width: 420px) {
+    .franja__largo {
+        display: none;
+    }
+
+}
+
+@media (min-width: 421px) {
+    .franja__corto {
+        display: none;
+    }
+}

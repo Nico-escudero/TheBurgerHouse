@@ -1,0 +1,31 @@
+<dialog #dialogo class="listo" aria-labelledby="listo-titulo" aria-describedby="listo-bajada"
+    (cancel)="cancelar($event)">
+    <button type="button" class="listo__cerrar" aria-label="Cerrar" (click)="cerrar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" />
+        </svg>
+    </button>
+
+    <img src="/carita.svg" alt="" width="64" height="64" aria-hidden="true">
+    <h2 id="listo-titulo" class="listo__titulo">¡Listo! Tu pedido es el</h2>
+    <p class="listo__numero">{{ pedido().codigo }}</p>
+    <p id="listo-bajada" class="listo__bajada">Mandanos el mensaje por WhatsApp y seguí el estado desde el link.</p>
+
+    <div class="listo__acciones">
+        <a class="listo__btn listo__btn--wa" [href]="pedido().whatsapp" target="_blank" rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 7.8 19.4z" />
+            </svg>
+            Enviar por WhatsApp
+        </a>
+        <a class="listo__btn" [routerLink]="['/pedido', pedido().codigoPublico]" (click)="cerrar()">
+            Seguir mi pedido
+        </a>
+        <button type="button" class="listo__btn listo__btn--borde" (click)="copiar()">
+            {{ copiado() ? '¡Copiado!' : 'Copiar número' }}
+        </button>
+    </div>
+    <p class="sr-only" aria-live="polite">{{ copiado() ? 'Número copiado' : '' }}</p>
+</dialog>

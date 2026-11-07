@@ -34,12 +34,16 @@ export class CarritoService {
 
   // ===== Datos del cliente =====
   readonly nombre = signal('');
+  readonly telefono = signal('');
   readonly entrega = signal<Entrega>('envio');
   readonly direccion = signal('');
   readonly aclaraciones = signal('');
 
   readonly cantidadTotal = computed(() => this.lineas().reduce((n, l) => n + l.cantidad, 0));
   readonly total = computed(() => this.lineas().reduce((n, l) => n + this.subtotal(l), 0));
+
+  // Interruptor del local (configuracion.recibiendo_pedidos, se maneja desde Admin → Pedidos)
+  readonly recibiendo = computed(() => this.menu.config()['recibiendo_pedidos'] !== 'false');
 
   // Unidades por producto (sumando con y sin papas): lo usa el contador de cada card
   private readonly porProducto = computed(() => {
@@ -128,12 +132,13 @@ export class CarritoService {
   }
 
   // ===== WhatsApp =====
-  linkWhatsApp(): string {
+  // Con `pedido` (guardado en la base) el mensaje arranca con el número y trae el link de seguimiento
+  linkWhatsApp(pedido?: { codigo: string; link: string }): string {
     const numero = this.menu.config()['whatsapp'] ?? '';
-    return `https://wa.me/${numero}?text=${encodeURIComponent(this.mensaje())}`;
+    return `https://wa.me/${numero}?text=${encodeURIComponent(this.mensaje(pedido))}`;
   }
 
-  private mensaje(): string {
+  private mensaje(pedido?: { codigo: string; link: string }): string {
     const items = this.lineas().map(
       (l) =>
         `• ${l.cantidad}x ${l.producto.nombre}${l.conPapas ? ' (con papas)' : ''}: ${formatoPrecio(this.subtotal(l))}`,
@@ -143,16 +148,20 @@ export class CarritoService {
       this.entrega() === 'envio' ? `Envío a: ${this.direccion().trim()}` : `Retiro en ${local}`;
     const aclaraciones = this.aclaraciones().trim();
 
+    const telefono = this.telefono().replace(/\D/g, '');
+
     return [
-      '¡Hola! Quiero hacer un pedido 🍔',
+      pedido ? `¡Hola! Pedido *${pedido.codigo}* 🍔` : '¡Hola! Quiero hacer un pedido 🍔',
       '',
       ...items,
       '',
       `*Total: ${formatoPrecio(this.total())}*`,
       '',
       `Nombre: ${this.nombre().trim()}`,
+      ...(telefono ? [`Teléfono: ${telefono}`] : []),
       entrega,
       ...(aclaraciones ? [`Aclaraciones: ${aclaraciones}`] : []),
+      ...(pedido ? ['', `Seguilo acá: ${pedido.link}`] : []),
     ].join('\n');
   }
 

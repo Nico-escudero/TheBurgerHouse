@@ -203,3 +203,17 @@
         padding-top: 22px;
     }
 }
+
+// Contador de pedidos nuevos en el tab "Pedidos"
+.adm-nav__nuevos {
+    display: inline-block;
+    min-width: 22px;
+    margin-left: 4px;
+    padding: 1px 7px;
+    border-radius: 99px;
+    background: $badge;
+    color: #ffffff;
+    font: 700 13px / 18px $font-text;
+    text-align: center;
+    vertical-align: 1px;
+}

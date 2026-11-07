@@ -15,6 +15,7 @@ import { filter, map } from 'rxjs';
 import { Carrito } from './carrito/carrito';
 import { CarritoService } from './core/carrito.service';
 import { Ficha } from './ficha/ficha';
+import { PedidoEnCurso } from './pedido/pedido-en-curso';
 import { SplitText, animar, esperaVuelo, gsap } from './core/animaciones';
 
 interface NavLink {
@@ -28,7 +29,7 @@ const AIRE = 0;
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, Carrito, Ficha],
+  imports: [RouterOutlet, RouterLink, Carrito, Ficha, PedidoEnCurso],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   host: { '(window:scroll)': 'onScroll()' },

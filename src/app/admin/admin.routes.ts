@@ -13,6 +13,10 @@ export default [
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'productos' },
       {
+        path: 'pedidos',
+        loadComponent: () => import('./pedidos/pedidos-admin').then((m) => m.PedidosAdmin),
+      },
+      {
         path: 'productos',
         loadComponent: () => import('./productos/productos-admin').then((m) => m.ProductosAdmin),
       },

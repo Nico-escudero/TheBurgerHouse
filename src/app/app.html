@@ -1,5 +1,9 @@
 <!-- En /admin el dashboard tiene su propio header: no se muestra nada del sitio público -->
 @if (!enAdmin()) {
+<!-- Franja "Tenés un pedido en curso": solo en el navegador, cuando hay un pedido guardado sin terminar -->
+@defer (on idle) {
+<app-pedido-en-curso />
+}
 <header class="site-nav" #header>
     <div class="site-nav__inner">
         <!-- Logo de la marca: reemplazar por <img src="/img/logo.webp" alt="The Burger House"> -->

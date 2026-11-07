@@ -1,0 +1,257 @@
+@use 'styles/variables' as *;
+
+:host {
+    position: sticky;
+    top: 90px;
+    display: block;
+}
+
+.detalle {
+    @include colores-estado;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100dvh - 110px);
+    border: 1px solid $borde;
+    border-radius: 20px;
+    background: $superficie;
+    overflow: hidden;
+}
+
+.detalle__head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    border-bottom: 1px solid $borde;
+
+    > div {
+        margin-right: auto;
+    }
+
+    .adm-icono {
+        width: 44px;
+        height: 44px;
+    }
+}
+
+.detalle__num {
+    margin: 0;
+    font: 900 30px / 1 $font-display;
+}
+
+.detalle__meta {
+    margin: 4px 0 0;
+    font: 600 15px $font-text;
+    color: $gris-texto;
+}
+
+.detalle__scroll {
+    display: grid;
+    gap: 16px;
+    padding: 18px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    .adm-panel__titulo {
+        margin: 6px 0 -6px;
+    }
+}
+
+.chip {
+    @include colores-estado;
+    padding: 4px 12px;
+    border-radius: 99px;
+    background: var(--estado);
+    color: var(--estado-texto);
+    font: 700 13px $font-text;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.datos {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+
+    div {
+        display: grid;
+        grid-template-columns: 90px 1fr;
+        gap: 10px;
+    }
+
+    dt {
+        font: 700 13px / 22px $font-text;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        color: $gris-texto;
+    }
+
+    dd {
+        margin: 0;
+        font: 600 17px $font-text;
+        overflow-wrap: anywhere;
+    }
+
+    a {
+        color: $mostaza;
+    }
+}
+
+.aclara {
+    margin: 0;
+    padding: 12px 14px;
+    border: 1px solid rgba($mostaza, .45);
+    border-radius: 10px;
+    background: rgba($mostaza, .14);
+    color: $blanco;
+    font: 500 16px / 1.35 $font-text;
+
+    strong {
+        color: $mostaza;
+    }
+}
+
+.items {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 0;
+        border-bottom: 1px dashed $borde;
+        font: 600 16px $font-text;
+
+        span:last-child {
+            font: 800 16px $font-display;
+            white-space: nowrap;
+        }
+    }
+
+    em {
+        margin-left: 6px;
+        font-style: normal;
+        font-size: 13px;
+        color: $mostaza;
+    }
+
+    .items__total {
+        border-bottom: 0;
+        font: 900 17px $font-display;
+        text-transform: uppercase;
+
+        span:last-child {
+            font-size: 22px;
+            color: $mostaza;
+        }
+    }
+}
+
+.estados {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.estado {
+    @include colores-estado;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1.5px solid var(--estado);
+    border-radius: 99px;
+    background: transparent;
+    color: $blanco;
+    font: 700 15px $font-text;
+    cursor: pointer;
+
+    &[data-estado='cancelado'] {
+        border-color: #6a6a6a;
+    }
+
+    &.actual {
+        background: var(--estado);
+        color: var(--estado-texto);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--estado) 35%, transparent);
+    }
+
+    &:disabled {
+        opacity: .6;
+        cursor: progress;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $blanco;
+        outline-offset: 2px;
+    }
+}
+
+.hora {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .adm-campo {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .adm-input {
+        min-height: 44px;
+        color-scheme: dark;
+    }
+}
+
+.historial {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        @include colores-estado;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font: 600 15px $font-text;
+
+        &::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--estado, #{$mostaza});
+        }
+    }
+
+    time {
+        margin-left: auto;
+        font: 700 15px $font-display;
+        color: $gris-texto;
+    }
+}
+
+.wa {
+    border-color: $whatsapp;
+    background: $whatsapp;
+    color: #ffffff;
+}
+
+// Mobile: el detalle ocupa toda la pantalla por encima de la lista
+@media (max-width: 760px) {
+    :host {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        padding: 12px;
+        background: rgba(0, 0, 0, .7);
+    }
+
+    .detalle {
+        height: 100%;
+        max-height: none;
+    }
+}

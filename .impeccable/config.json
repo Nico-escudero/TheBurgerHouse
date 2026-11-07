@@ -65,6 +65,15 @@
         ],
         "createdAt": "2026-11-06T17:45:14.123Z",
         "reason": "model: src bound via [src] to fotoUrl() inside @if, preview of uploaded/stored photo"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "src/app/admin/pedidos/pedidos-admin.scss"
+        ],
+        "createdAt": "2026-11-07T14:39:31.220Z",
+        "reason": "user spec: mobile order cards must have 'borde izquierdo del color del estado' (requested in the task brief)"
       }
     ]
   }

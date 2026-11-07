@@ -1,0 +1,140 @@
+@use 'styles/variables' as *;
+
+.listo {
+    width: min(420px, calc(100% - 32px));
+    padding: 32px 24px 24px;
+    border: 0;
+    border-radius: 24px;
+    background: #ffffff;
+    color: $tinta;
+    text-align: center;
+
+    &[open] {
+        animation: aparecer .35s $ease;
+    }
+
+    &.cerrando {
+        animation: desaparecer .2s ease-in forwards;
+    }
+
+    &::backdrop {
+        background: rgba(0, 0, 0, .6);
+        backdrop-filter: blur(6px);
+    }
+
+    img {
+        display: block;
+        margin: 0 auto 10px;
+    }
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: scale(.92);
+    }
+}
+
+@keyframes desaparecer {
+    to {
+        opacity: 0;
+        transform: scale(.96);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    @keyframes aparecer {
+        from {
+            opacity: 0;
+        }
+    }
+
+    @keyframes desaparecer {
+        to {
+            opacity: 0;
+        }
+    }
+}
+
+.listo__cerrar {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 2px solid $tinta;
+    border-radius: 50%;
+    background: #ffffff;
+    color: $tinta;
+    cursor: pointer;
+}
+
+.listo__titulo {
+    margin: 0;
+    font: 800 20px $font-display;
+}
+
+.listo__numero {
+    margin: 4px 0 8px;
+    font: 900 clamp(44px, 12vw, 56px) / 1 $font-display;
+    letter-spacing: .02em;
+}
+
+.listo__bajada {
+    margin: 0 0 20px;
+    font: 500 16px / 1.35 $font-text;
+    color: #555555;
+}
+
+.listo__acciones {
+    display: grid;
+    gap: 10px;
+}
+
+.listo__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 20px;
+    border: 2px solid $tinta;
+    border-radius: 99px;
+    background: $tinta;
+    color: $mostaza;
+    font: 700 17px $font-text;
+    text-decoration: none;
+    cursor: pointer;
+
+    &--wa {
+        border-color: $whatsapp;
+        background: $whatsapp;
+        color: #ffffff;
+    }
+
+    &--borde {
+        background: transparent;
+        color: $tinta;
+    }
+
+    &:hover {
+        filter: brightness(1.08);
+    }
+
+    &:focus-visible {
+        outline: 3px solid $mostaza;
+        outline-offset: 2px;
+    }
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
