@@ -9,10 +9,11 @@ import { Extras } from '../extras/extras';
 import { Postres } from '../postres/postres';
 import { Bebidas } from '../bebidas/bebidas';
 import { Salsas } from '../salsas/salsas';
+import { Ubicacion } from '../ubicacion/ubicacion';
 
 @Component({
   selector: 'app-sections',
-  imports: [Hero, Marquee, Hambuergesas, Acompaniamientos, Extras, Postres, Bebidas, Salsas],
+  imports: [Hero, Marquee, Hambuergesas, Acompaniamientos, Extras, Postres, Bebidas, Salsas, Ubicacion],
   templateUrl: './sections.html',
   styleUrl: './sections.scss',
 })

@@ -1,0 +1,219 @@
+@use 'styles/variables' as *;
+@use 'styles/menu';
+
+// ===== Sección Ubicación: mapa + datos del local =====
+.ubicacion__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 32px;
+    align-items: stretch;
+
+    @media (max-width: 900px) {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}
+
+// Mapa con borde mostaza, igual que las cards del menú
+.ubicacion__mapa {
+    position: relative;
+    min-height: 420px;
+    border: 1px solid $mostaza;
+    border-radius: 20px;
+    overflow: hidden;
+    background: $superficie;
+
+    iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        // Mapa en tonos oscuros para que no desentone con el fondo negro
+        filter: grayscale(.35) invert(.9) hue-rotate(180deg) contrast(.9);
+    }
+
+    @media (max-width: 575px) {
+        min-height: 320px;
+    }
+}
+
+.ubicacion__info {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 28px;
+    background: $superficie;
+    border: 1px solid $borde;
+    border-radius: 20px;
+
+    @media (max-width: 575px) {
+        padding: 22px 18px;
+    }
+}
+
+// ===== Abierto / cerrado =====
+.ubicacion__estado {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 4px 14px;
+    border-radius: 99px;
+    background: $estado-cancelado;
+    color: #fff;
+    font: 700 15px $font-text;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+
+    &.is-abierto {
+        background: $estado-entregado;
+        color: $tinta;
+
+        .ubicacion__punto {
+            animation: latido 1.6s ease-in-out infinite;
+        }
+    }
+}
+
+.ubicacion__punto {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+@keyframes latido {
+    50% {
+        opacity: .25;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ubicacion__estado.is-abierto .ubicacion__punto {
+        animation: none;
+    }
+}
+
+// ===== Cada dato: ícono + texto =====
+.ubicacion__dato {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+
+    h3 {
+        margin: 0 0 4px;
+        font: 900 15px $font-display;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        color: $mostaza;
+    }
+
+    p {
+        margin: 0;
+        font: 600 18px / 1.35 $font-text;
+        color: $blanco;
+    }
+}
+
+.ubicacion__icono {
+    width: 44px;
+    height: 44px;
+    padding: 11px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: $mostaza;
+    color: $tinta;
+}
+
+.ubicacion__dato p.ubicacion__nota {
+    margin-top: 4px;
+    font-size: 15px;
+    color: $gris-texto;
+}
+
+.ubicacion__horario {
+    margin: 0;
+
+    div {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 4px 0;
+        border-bottom: 1px dashed $borde;
+
+        &:last-child {
+            border-bottom: 0;
+        }
+    }
+
+    dt,
+    dd {
+        margin: 0;
+        font: 600 17px $font-text;
+    }
+
+    dt {
+        color: $gris-texto;
+    }
+
+    dd {
+        color: $blanco;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+.ubicacion__tel {
+    color: $blanco;
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+
+    &:hover {
+        color: $mostaza;
+    }
+}
+
+// ===== Botones =====
+.ubicacion__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.ubicacion__btn {
+    flex: 1 1 180px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 48px;
+    padding: 10px 18px;
+    border-radius: 99px;
+    font: 700 17px $font-text;
+    text-decoration: none;
+    text-align: center;
+    transition: transform .3s $ease, filter .3s $ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.08);
+    }
+
+    &:focus-visible {
+        outline: 2px solid $blanco;
+        outline-offset: 3px;
+    }
+
+    &--principal {
+        background: $mostaza;
+        color: $tinta;
+    }
+
+    &--whatsapp {
+        background: $whatsapp;
+        color: #fff;
+    }
+}

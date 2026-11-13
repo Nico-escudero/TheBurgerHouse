@@ -45,6 +45,7 @@ export class App {
     { label: 'Postres', id: 'postres' },
     { label: 'Bebidas', id: 'bebidas' },
     { label: 'Salsas', id: 'salsas' },
+    { label: 'Ubicación', id: 'ubicacion' },
   ];
 
   // id de la <section> del hero: destino del logo, sin link resaltado
