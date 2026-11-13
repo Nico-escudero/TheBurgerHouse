@@ -245,3 +245,11 @@
         color: $tinta;
     }
 }
+
+
+@media (min-width: 992px) and (max-width: 1600px) and (max-height: 820px) {
+    .hero__title {
+        margin-top: 1rem;
+        margin-bottom: 0;
+    }
+}
