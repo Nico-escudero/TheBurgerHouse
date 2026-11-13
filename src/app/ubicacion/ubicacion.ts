@@ -12,7 +12,7 @@ const ABRE = 20 * 60; // minutos desde las 00:00
 const CIERRA = 23 * 60 + 30;
 
 // Respaldos si la base todavía no cargó la configuración
-const WHATSAPP_RESPALDO = '5492494001424';
+const WHATSAPP_RESPALDO = '5492494606000';
 const DIRECCION_RESPALDO = 'Maipú 1712';
 
 @Component({
